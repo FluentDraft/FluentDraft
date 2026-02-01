@@ -17,40 +17,90 @@ FluentDraft is a high-performance Windows desktop application that brings AI-pow
 - **Visual Feedback** — Minimalist, dark-themed UI with real-time waveform animation.
 - **Provider Agnostic** — Supports Groq (fastest) and OpenAI, with extensible architecture.
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
-### Prerequisites
+### Download & Install
+
+1. **Download** [FluentDraft.exe](https://github.com/FluentDraft/FluentDraft/releases/latest/download/FluentDraft.exe) (latest version)
+2. **Run** the downloaded file — that's it!
+
+> 💡 You can also browse all versions on the [Releases](https://github.com/FluentDraft/FluentDraft/releases) page
+
+### System Requirements
+
 - Windows 10/11
-- .NET 8 Runtime
+- .NET 8 Runtime (will prompt to install if missing)
 
-### Installation
-1. Clone the repository
-   ```bash
-   git clone https://github.com/FluentDraft/FluentDraft.git
-   ```
-2. Build the project
-   ```bash
-   dotnet build
-   ```
-3. Run the application
-   ```bash
-   dotnet run --project FluentDraft
-   ```
+---
+
+## 📖 How to Use
+
+### First Launch
+
+1. Launch **FluentDraft** — the app will appear in the system tray
+2. Right-click the tray icon → **Settings**
+3. Enter your **API Key** (get one from [Groq](https://console.groq.com/) or [OpenAI](https://platform.openai.com/))
+4. Select your **Microphone**
+5. Click **Save** — you're ready!
+
+### Voice Typing
+
+1. Open any application (Notepad, Browser, Slack, etc.)
+2. **Hold `CapsLock`** (or your configured hotkey)
+3. **Speak** — the waveform animation shows recording is active
+4. **Release** the hotkey
+5. Your text will be automatically typed with corrected grammar and punctuation!
+
+### Refinement Presets
+
+Create custom presets for different contexts:
+- **Casual Chat** — informal, friendly tone
+- **Professional Email** — formal business style
+- **Code Comment** — concise technical documentation
+
+Access presets in Settings → Presets.
+
+---
 
 ## ⚙️ Configuration
 
-1. **API Keys**: Launch the app and go to Settings. Enter your API Key for Groq or OpenAI.
-2. **Hotkeys**: Default hotkey is `CapsLock` (configurable in settings).
-3. **Microphone**: Select your preferred input device.
+| Setting | Description | Default |
+|---------|-------------|---------|
+| **Hotkey** | Key to hold while speaking | `CapsLock` |
+| **Microphone** | Audio input device | System default |
+| **AI Provider** | Transcription & refinement service | Groq |
+| **Preset** | Text refinement style | Default |
 
-## 🛠️ Built With
+---
 
-- **C# / .NET 8**
-- **WPF** (Windows Presentation Foundation)
-- **CommunityToolkit.Mvvm**
-- **NAudio**
-- **H.NotifyIcon**
+## 🛠️ For Developers
+
+Want to contribute or build your own version? The project is open source under MIT license.
+
+### Build from Source
+
+```bash
+# Clone the repository
+git clone https://github.com/FluentDraft/FluentDraft.git
+cd FluentDraft
+
+# Build the project
+dotnet build
+
+# Run the application
+dotnet run --project src/FluentDraft
+```
+
+### Tech Stack
+
+- **C# / .NET 8** — Modern, high-performance runtime
+- **WPF** — Windows Presentation Foundation for UI
+- **CommunityToolkit.Mvvm** — MVVM pattern implementation
+- **NAudio** — Audio capture and processing
+- **H.NotifyIcon** — System tray integration
+
+---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
