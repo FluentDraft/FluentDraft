@@ -55,7 +55,7 @@ jobs:
 
     - name: Pack with Velopack
       run: |
-        vpk pack --packId FluentDraft --packVersion ${{ steps.version.outputs.VERSION }} --packDir ./publish --mainExe FluentDraft.exe -o ./releases
+        vpk pack --packId FluentDraft --packVersion ${{ steps.version.outputs.VERSION }} --packDir ./publish --mainExe FluentDraft.exe -o ./releases --icon src/FluentDraft/Icons/app_icon.ico
 
     - name: Upload to GitHub Release
       run: |

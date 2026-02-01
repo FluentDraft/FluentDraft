@@ -11,6 +11,8 @@ using FluentDraft.Utils;
 using FluentDraft.ViewModels;
 using FluentDraft.Views;
 using Velopack;
+using CommunityToolkit.Mvvm.Messaging;
+using FluentDraft.Messages;
 
 namespace FluentDraft
 {
@@ -137,7 +139,13 @@ namespace FluentDraft
                     try 
                     {
                         var updateService = ServiceProvider.GetRequiredService<IUpdateService>();
-                        await updateService.CheckDownloadAndApplyAsync();
+                        var update = await updateService.CheckForUpdatesAsync();
+                        if (update != null)
+                        {
+                            await updateService.DownloadUpdateAsync(update);
+                            // Notify UI that update is ready
+                            WeakReferenceMessenger.Default.Send(new UpdateReadyMessage(update));
+                        }
                     }
                     catch (Exception ex)
                     {

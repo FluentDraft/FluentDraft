@@ -458,34 +458,62 @@
 
                             <!-- Updates -->
                             <TextBlock Text="Updates" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
-                                <Button Command="{Binding CheckForUpdatesCommand}" 
-                                        Content="{Binding UpdateStatus}"
-                                        IsEnabled="{Binding IsCheckingForUpdates, Converter={StaticResource InverseBoolConverter}}"
-                                        Padding="15,6" Background="#333" Foreground="White" BorderThickness="0" Cursor="Hand">
-                                    <Button.Style>
-                                        <Style TargetType="Button">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="Button">
-                                                        <Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
-                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsEnabled" Value="False">
-                                                    <Setter Property="Opacity" Value="0.6"/>
-                                                </Trigger>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#444"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                                <!-- Optional: Spinner or separate status text if needed, but button content handles it for now -->
+                            <StackPanel Margin="0,0,0,25">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <Button Command="{Binding CheckForUpdatesCommand}" 
+                                            Content="{Binding UpdateStatus}"
+                                            IsEnabled="{Binding IsCheckingForUpdates, Converter={StaticResource InverseBoolConverter}}"
+                                            Padding="15,6" Background="#333" Foreground="White" BorderThickness="0" Cursor="Hand">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Opacity" Value="0.6"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#444"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+
+                                    <Button Command="{Binding ApplyUpdateCommand}" 
+                                            Content="Restart to Update"
+                                            Visibility="{Binding IsUpdateReady, Converter={StaticResource BoolToVis}}"
+                                            Margin="10,0,0,0" Padding="15,6" Background="#007AFF" Foreground="White" BorderThickness="0" Cursor="Hand">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="4"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </StackPanel>
+
+                                <!-- Download Progress -->
+                                <Grid Visibility="{Binding IsCheckingForUpdates, Converter={StaticResource BoolToVis}}">
+                                    <ProgressBar Height="4" Background="#333" Foreground="#007AFF" 
+                                                 Value="{Binding UpdateDownloadProgress}" Maximum="100" BorderThickness="0">
+                                        <ProgressBar.Template>
+                                            <ControlTemplate TargetType="ProgressBar">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="2">
+                                                    <Grid x:Name="PART_Track">
+                                                        <Border x:Name="PART_Indicator" Background="{TemplateBinding Foreground}" HorizontalAlignment="Left" CornerRadius="2"/>
+                                                    </Grid>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </ProgressBar.Template>
+                                    </ProgressBar>
+                                </Grid>
                             </StackPanel>
 
                             <!-- Copyright -->

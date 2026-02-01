@@ -12,6 +12,7 @@ using FluentDraft.Models;
 using FluentDraft.Services;
 using FluentDraft.Services.Interfaces;
 using FluentDraft.Utils;
+using Velopack;
 
 namespace FluentDraft.ViewModels
 {
@@ -108,6 +109,14 @@ namespace FluentDraft.ViewModels
         [ObservableProperty]
         private bool _isCheckingForUpdates = false;
 
+        [ObservableProperty]
+        private bool _isUpdateReady = false;
+
+        [ObservableProperty]
+        private int _updateDownloadProgress = 0;
+
+        private UpdateInfo? _pendingUpdate;
+
         // About Properties
         public string AppVersion => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
         public string DotNetVersion => Environment.Version.ToString();
@@ -120,6 +129,7 @@ namespace FluentDraft.ViewModels
         public RelayCommand StartRecordingHotkeyCommand { get; }
         public RelayCommand CloseSettingsCommand { get; }
         public RelayCommand CheckForUpdatesCommand { get; }
+        public RelayCommand ApplyUpdateCommand { get; }
 
         public SettingsViewModel(
             ISettingsService settingsService,
@@ -150,6 +160,17 @@ namespace FluentDraft.ViewModels
             StartRecordingHotkeyCommand = new RelayCommand(StartNewHotkeyCapture);
             CloseSettingsCommand = new RelayCommand(RequestCloseSettings);
             CheckForUpdatesCommand = new RelayCommand(async () => await CheckForUpdates());
+            ApplyUpdateCommand = new RelayCommand(ApplyUpdate);
+
+            WeakReferenceMessenger.Default.Register<UpdateReadyMessage>(this, (r, m) => 
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() => 
+                {
+                    _pendingUpdate = m.Update;
+                    IsUpdateReady = true;
+                    UpdateStatus = $"Update v{m.Update.TargetFullRelease.Version} is ready!";
+                });
+            });
 
             LoadSettings();
 
@@ -558,6 +579,8 @@ namespace FluentDraft.ViewModels
             try
             {
                 IsCheckingForUpdates = true;
+                IsUpdateReady = false;
+                UpdateDownloadProgress = 0;
                 UpdateStatus = "Checking for updates...";
                 
                 var updateInfo = await _updateService.CheckForUpdatesAsync();
@@ -571,9 +594,18 @@ namespace FluentDraft.ViewModels
                 else
                 {
                      UpdateStatus = $"Found v{updateInfo.TargetFullRelease.Version}! Downloading...";
-                     await _updateService.DownloadUpdateAsync(updateInfo);
-                     UpdateStatus = "Installing...";
-                     _updateService.ApplyUpdateAndRestart(updateInfo);
+                     await _updateService.DownloadUpdateAsync(updateInfo, (p) => 
+                     {
+                         System.Windows.Application.Current.Dispatcher.Invoke(() => 
+                         {
+                             UpdateDownloadProgress = p;
+                             UpdateStatus = $"Downloading: {p}%";
+                         });
+                     });
+                     
+                     _pendingUpdate = updateInfo;
+                     IsUpdateReady = true;
+                     UpdateStatus = $"Version {updateInfo.TargetFullRelease.Version} ready to install!";
                 }
             }
             catch (Exception ex)
@@ -586,6 +618,12 @@ namespace FluentDraft.ViewModels
             {
                 IsCheckingForUpdates = false;
             }
+        }
+
+        private void ApplyUpdate()
+        {
+            if (_pendingUpdate == null) return;
+            _updateService.ApplyUpdateAndRestart(_pendingUpdate);
         }
 
         private void LoadAudioDevices()
