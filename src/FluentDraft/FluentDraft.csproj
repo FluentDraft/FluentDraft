@@ -13,6 +13,9 @@
     <Description>Global Voice Typing for Windows powered by AI</Description>
     <Copyright>Copyright (c) 2026 FluentDraft Contributors</Copyright>
     <AssemblyTitle>FluentDraft</AssemblyTitle>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
