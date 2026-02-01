@@ -28,9 +28,9 @@ jobs:
     - name: Build
       run: dotnet build FluentDraft.sln --configuration Release --no-restore
 
-    - name: Publish (ClickOnce / Standalone)
+    - name: Publish (Single File)
       run: |
-        dotnet publish FluentDraft.sln -c Release -r win-x64 --self-contained true -o ./publish /p:PublishSingleFile=false /p:PublishReadyToRun=true
+        dotnet publish src/FluentDraft/FluentDraft.csproj -c Release -r win-x64 --self-contained true -o ./publish /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 
     - name: Zip Release
       run: Compress-Archive -Path ./publish/* -DestinationPath FluentDraft_Release.zip
