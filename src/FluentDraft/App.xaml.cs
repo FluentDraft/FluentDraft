@@ -107,7 +107,19 @@ namespace FluentDraft
                 var settingsService = ServiceProvider.GetRequiredService<ISettingsService>();
                 var settings = settingsService.LoadSettings();
 
-                if (!settings.IsSetupCompleted)
+                // Check if we have valid providers (with API keys)
+                bool hasValidProviders = settings.Providers?.Any(p => !string.IsNullOrWhiteSpace(p.ApiKey)) == true;
+                
+                // Auto-fix: if we have providers but the flag is false, correct the flag
+                if (hasValidProviders && !settings.IsSetupCompleted)
+                {
+                    File.AppendAllText("startup_log.txt", $"{DateTime.Now}: Auto-fixing IsSetupCompleted flag (providers exist)\n");
+                    settings.IsSetupCompleted = true;
+                    settingsService.SaveSettings(settings);
+                }
+
+                // Only show wizard if BOTH: flag is false AND no valid providers exist
+                if (!settings.IsSetupCompleted && !hasValidProviders)
                 {
                     File.AppendAllText("startup_log.txt", $"{DateTime.Now}: Launching Setup Wizard\n");
                     var wizard = ServiceProvider.GetRequiredService<SetupWizardWindow>();

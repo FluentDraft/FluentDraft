@@ -225,27 +225,47 @@ namespace FluentDraft.ViewModels
             // Save everything
             var settings = _settingsService.LoadSettings();
             
-            var newProfile = new ProviderProfile
-            {
-                Id = Guid.NewGuid(),
-                Name = SelectedProviderType,
-                Type = SelectedProviderType,
-                ApiKey = ApiKey,
-                BaseUrl = BaseUrl,
-                TranscriptionModel = SelectedTranscriptionModel,
-                RefinementModel = SelectedRefinementModel,
-                IsTranscriptionEnabled = true,
-                IsRefinementEnabled = true
-            };
+            // Check for existing provider with same API key and BaseUrl to avoid duplicates
+            var existingProvider = settings.Providers.FirstOrDefault(p => 
+                p.ApiKey == ApiKey && p.BaseUrl == BaseUrl);
 
-            settings.Providers.Add(newProfile);
-            settings.SelectedTranscriptionProfileId = newProfile.Id;
-            settings.SelectedRefinementProfileId = newProfile.Id;
+            ProviderProfile profileToUse;
+
+            if (existingProvider != null)
+            {
+                // Update existing provider instead of creating duplicate
+                existingProvider.TranscriptionModel = SelectedTranscriptionModel;
+                existingProvider.RefinementModel = SelectedRefinementModel;
+                existingProvider.IsTranscriptionEnabled = true;
+                existingProvider.IsRefinementEnabled = true;
+                profileToUse = existingProvider;
+            }
+            else
+            {
+                // Create new provider
+                var newProfile = new ProviderProfile
+                {
+                    Id = Guid.NewGuid(),
+                    Name = SelectedProviderType,
+                    Type = SelectedProviderType,
+                    ApiKey = ApiKey,
+                    BaseUrl = BaseUrl,
+                    TranscriptionModel = SelectedTranscriptionModel,
+                    RefinementModel = SelectedRefinementModel,
+                    IsTranscriptionEnabled = true,
+                    IsRefinementEnabled = true
+                };
+                settings.Providers.Add(newProfile);
+                profileToUse = newProfile;
+            }
+
+            settings.SelectedTranscriptionProfileId = profileToUse.Id;
+            settings.SelectedRefinementProfileId = profileToUse.Id;
             
             // Update presets with selected model
             foreach (var preset in settings.RefinementPresets)
             {
-                preset.ProfileId = newProfile.Id;
+                preset.ProfileId = profileToUse.Id;
                 preset.Model = SelectedRefinementModel;
             }
 
