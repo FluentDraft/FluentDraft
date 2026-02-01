@@ -12,6 +12,9 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+    # Only run on main repository, not on forks
+    if: github.repository == 'FluentDraft/FluentDraft'
+
 
     steps:
     - name: Checkout code
