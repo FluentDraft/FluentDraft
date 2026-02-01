@@ -25,6 +25,7 @@ jobs:
       with:
         dotnet-version: '10.0.x'
         cache: true
+        cache-dependency-path: FluentDraft.sln
 
     - name: Extract version from tag
       id: version
