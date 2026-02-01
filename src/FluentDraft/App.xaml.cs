@@ -142,7 +142,14 @@ namespace FluentDraft
                         var update = await updateService.CheckForUpdatesAsync();
                         if (update != null)
                         {
-                            await updateService.DownloadUpdateAsync(update);
+                            // Notify UI that update is available
+                            WeakReferenceMessenger.Default.Send(new UpdateAvailableMessage(update));
+
+                            await updateService.DownloadUpdateAsync(update, (progress) => 
+                            {
+                                WeakReferenceMessenger.Default.Send(new UpdateProgressMessage(progress));
+                            });
+
                             // Notify UI that update is ready
                             WeakReferenceMessenger.Default.Send(new UpdateReadyMessage(update));
                         }

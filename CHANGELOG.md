@@ -2,6 +2,13 @@
 
 All notable changes to FluentDraft will be documented in this file.
 
+## [1.3.2] - 2026-02-02
+
+### 🔔 Interactive Updates
+- **New Notification System** — When an update is found, you'll see a notification in the main window.
+- **You're in Control** — Choose to "Update" immediately (restart) or select "Later" to let it download in the background and install next time.
+- **No More Interruptions** — Updates no longer restart the app automatically without your permission.
+
 ## [1.3.1] - 2026-02-02
 
 ### ⚡ Improvements

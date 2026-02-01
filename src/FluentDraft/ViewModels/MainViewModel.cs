@@ -14,6 +14,7 @@ using FluentDraft.Models;
 using FluentDraft.Services;
 using FluentDraft.Services.Interfaces;
 using FluentDraft.Utils;
+using Velopack;
 
 namespace FluentDraft.ViewModels
 {
@@ -31,7 +32,7 @@ namespace FluentDraft.ViewModels
         private double _height = 4.0;
     }
 
-    public partial class MainViewModel : ObservableObject, IRecipient<SettingsChangedMessage>
+    public partial class MainViewModel : ObservableObject, IRecipient<SettingsChangedMessage>, IRecipient<UpdateAvailableMessage>, IRecipient<UpdateReadyMessage>, IRecipient<UpdateProgressMessage>
     {
         private readonly IAudioRecorder _audioRecorder;
         private readonly IInputInjector _inputInjector;
@@ -214,7 +215,7 @@ namespace FluentDraft.ViewModels
             ISystemControlService systemControl,
             AudioDeviceService audioDeviceService,
             IHistoryService historyService,
-            // IUpdateService updateService, // Removed
+            IUpdateService updateService,
             IServiceProvider serviceProvider)
         {
             _audioRecorder = audioRecorder;
@@ -227,10 +228,11 @@ namespace FluentDraft.ViewModels
             _systemControl = systemControl;
             _audioDeviceService = audioDeviceService;
             _historyService = historyService;
+            _updateService = updateService;
             _serviceProvider = serviceProvider;
 
             // Register for messages
-            WeakReferenceMessenger.Default.Register(this);
+            WeakReferenceMessenger.Default.RegisterAll(this);
 
             LoadAudioDevices();
 
@@ -261,6 +263,9 @@ namespace FluentDraft.ViewModels
             SelectAllHistoryCommand = new RelayCommand(SelectAllHistory);
             DeselectAllHistoryCommand = new RelayCommand(DeselectAllHistory);
             CopySelectedHistoryCommand = new RelayCommand(CopySelectedHistory);
+
+            UpdateNowCommand = new RelayCommand(ExecuteUpdateNow);
+            DismissUpdateCommand = new RelayCommand(DismissUpdate);
 
             LoadSettings();
             InitializeHistory();
@@ -319,6 +324,99 @@ namespace FluentDraft.ViewModels
 
         [ObservableProperty]
         private bool _isCopiedNotificationVisible;
+
+        // Update Notification Properties
+        [ObservableProperty]
+        private bool _isUpdateNotificationVisible;
+
+        [ObservableProperty]
+        private string _updateNotificationTitle = "";
+
+        [ObservableProperty]
+        private string _updateNotificationButtonText = "Update";
+
+        [ObservableProperty]
+        private double _updateProgress = 0;
+
+        [ObservableProperty]
+        private bool _isUpdateDownloading = false;
+
+        [ObservableProperty]
+        private bool _isUpdateReadyToInstall = false;
+
+        private UpdateInfo? _pendingUpdateInfo;
+        private readonly IUpdateService? _updateService; // We need to inject this or resolve it
+
+        public RelayCommand UpdateNowCommand { get; }
+        public RelayCommand DismissUpdateCommand { get; }
+
+        public void Receive(UpdateAvailableMessage message)
+        {
+             System.Windows.Application.Current.Dispatcher.Invoke(() => 
+             {
+                 _pendingUpdateInfo = message.Update;
+                 UpdateNotificationTitle = $"New version {message.Update.TargetFullRelease.Version} available";
+                 IsUpdateNotificationVisible = true;
+                 IsUpdateDownloading = true; // Started download in background
+                 UpdateProgress = 0;
+                 UpdateNotificationButtonText = "Update"; // Will wait if clicked
+                 IsUpdateReadyToInstall = false;
+             });
+        }
+
+        public void Receive(UpdateProgressMessage message)
+        {
+             System.Windows.Application.Current.Dispatcher.Invoke(() => 
+             {
+                 UpdateProgress = message.Progress;
+                 // If user hasn't dismissed, they see the bar filling
+             });
+        }
+
+        public void Receive(UpdateReadyMessage message)
+        {
+             System.Windows.Application.Current.Dispatcher.Invoke(() => 
+             {
+                 _pendingUpdateInfo = message.Update;
+                 IsUpdateDownloading = false;
+                 IsUpdateReadyToInstall = true;
+                 UpdateNotificationButtonText = "Restart";
+                 UpdateProgress = 100;
+                 
+                 // If notification was dismissed (Later), we *could* show it again?
+                 // Or just let Settings handle it.
+                 // Let's bring it back if it was dismissed, or just update text if visible.
+                 if (IsUpdateNotificationVisible)
+                 {
+                     UpdateNotificationTitle = $"Version {message.Update.TargetFullRelease.Version} ready to install";
+                 }
+             });
+        }
+
+        private void ExecuteUpdateNow()
+        {
+            if (_pendingUpdateInfo == null) return;
+
+            if (IsUpdateReadyToInstall)
+            {
+                // Restart immediately
+                _updateService?.ApplyUpdateAndRestart(_pendingUpdateInfo);
+            }
+            else
+            {
+                // User wants to update but it's still downloading.
+                // We should probably just show a modal or keep the notification and disable the button?
+                // Or since App.xaml.cs is downloading, we just wait.
+                // Optimally: Change UI to invalid/waiting state.
+                UpdateNotificationButtonText = "Downloading...";
+                // We rely on UpdateReadyMessage to eventually enable Restart.
+            }
+        }
+
+        private void DismissUpdate()
+        {
+            IsUpdateNotificationVisible = false;
+        }
 
         private void CopyLastTranscription()
         {

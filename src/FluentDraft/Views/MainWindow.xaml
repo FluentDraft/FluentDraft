@@ -230,6 +230,35 @@
                             <TextBlock Text="Copied!" Foreground="White" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
+
+                    <!-- 6. Update Notification Overlay -->
+                    <Border Background="#1E1E1E" CornerRadius="8" BorderBrush="#333" BorderThickness="1"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="4" Padding="10,8"
+                            Visibility="{Binding IsUpdateNotificationVisible, Converter={StaticResource BoolToVis}}">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.4"/>
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel VerticalAlignment="Center" Margin="0,0,10,0">
+                                <TextBlock Text="{Binding UpdateNotificationTitle}" Foreground="White" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                <StatusBarItem Padding="0" Margin="0,4,0,0" Visibility="{Binding IsUpdateDownloading, Converter={StaticResource BoolToVis}}">
+                                    <ProgressBar Value="{Binding UpdateProgress}" Maximum="100" Height="4" BorderThickness="0" Background="#333" Foreground="#007AFF" Width="150" HorizontalAlignment="Left"/>
+                                </StatusBarItem>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button Command="{Binding UpdateNowCommand}" Content="{Binding UpdateNotificationButtonText}"
+                                        Style="{StaticResource IconButtonStyle}" Foreground="#007AFF" FontWeight="SemiBold" FontSize="12" Margin="0,0,8,0" Padding="8,4"/>
+                                <Button Command="{Binding DismissUpdateCommand}" Content="Later"
+                                        Style="{StaticResource IconButtonStyle}" Foreground="#AAA" FontSize="12" Padding="8,4"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
                 </Grid>
 
                 <!-- Footer: Controls -->
