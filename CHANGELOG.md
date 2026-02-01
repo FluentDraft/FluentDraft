@@ -2,6 +2,19 @@
 
 All notable changes to FluentDraft will be documented in this file.
 
+## [1.3.0] - 2026-02-02
+
+### ✨ What's New
+- **Preset Management** — Added easy ways to delete or reset your refinement style presets to defaults
+- **Manual Update Check** — You can now check for application updates at any time from the Settings window
+
+### 🐛 Bug Fixes
+- Fixed a silent crash that could occur when starting the application
+- Improved settings stability and migration across versions
+
+### ⚡ Improvements
+- Background update checks on startup to ensure you're always on the latest version
+
 ## [1.2.9] - 2026-02-01
 
 ### ✨ What's New
