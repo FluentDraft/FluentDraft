@@ -7,7 +7,7 @@ namespace FluentDraft.Views
     {
         private readonly System.IServiceProvider _serviceProvider;
 
-        public SettingsWindow(MainViewModel viewModel, System.IServiceProvider serviceProvider)
+        public SettingsWindow(SettingsViewModel viewModel, System.IServiceProvider serviceProvider)
         {
             InitializeComponent();
             DataContext = viewModel;
@@ -33,22 +33,13 @@ namespace FluentDraft.Views
             wizard.Owner = this;
             if (wizard.ShowDialog() == true)
             {
-                // Refresh ViewModel settings if needed (MainViewModel likely needs a Refresh method call or it binds to the same source)
-                // Since MainViewModel reloads settings on OnStartup/etc, we might want to manually trigger a reload or simple property notification.
-                // For now, wizard updates the SettingsService, so next time settings are read they are fresh.
-                // To reflect immediately, we might need:
-                // (DataContext as MainViewModel)?.LoadSettings(); // but LoadSettings is private.
-                // We'll trust that most settings are bound or will refresh on next use.
-                // Actually, the user might want immediate reflection. Let's see.
-                // MainViewModel has commands that reload settings? Or `LoadSettings` is private.
-                 // Ideally MainViewModel should have a "RefreshSettings" public method.
-                 // For now, let's just close wizard.
+               // Wizard completed
             }
         }
 
         private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (DataContext is MainViewModel vm && vm.IsRecordingHotkey)
+            if (DataContext is SettingsViewModel vm && vm.IsRecordingHotkey)
             {
                 vm.HandleHotkeyInput(e.Key);
                 e.Handled = true;

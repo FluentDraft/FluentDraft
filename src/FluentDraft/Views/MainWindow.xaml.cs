@@ -42,9 +42,10 @@ namespace FluentDraft.Views
 
         private void OpenSettings()
         {
-            if (_settingsWindow == null && DataContext is MainViewModel vm)
+            if (_settingsWindow == null)
             {
-                _settingsWindow = new SettingsWindow(vm, _serviceProvider);
+                // Use DI to resolve SettingsWindow (and its ViewModel)
+                _settingsWindow = Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<SettingsWindow>(_serviceProvider);
                 _settingsWindow.Owner = this;
                 _settingsWindow.Closed += (s, args) => 
                 { 
@@ -61,12 +62,8 @@ namespace FluentDraft.Views
         {
             if (DataContext is MainViewModel vm)
             {
-                if (vm.IsRecordingHotkey)
-                {
-                    vm.HandleHotkeyInput(e.Key == Key.System ? e.SystemKey : e.Key);
-                    e.Handled = true;
-                }
-                else if (e.Key == Key.Escape)
+                // Hotkey recording moved to SettingsViewModel/SettingsWindow
+                if (e.Key == Key.Escape)
                 {
                     if (vm.CancelCommand.CanExecute(null))
                     {
@@ -112,7 +109,6 @@ namespace FluentDraft.Views
         {
             ShowAndActivate();
         }
-
         private void ShowMenuItem_Click(object sender, RoutedEventArgs e)
         {
             ShowAndActivate();

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:FluentDraft.Converters"
         xmlns:viewmodels="clr-namespace:FluentDraft.ViewModels"
-        mc:Ignorable="d" d:DataContext="{d:DesignInstance viewmodels:MainViewModel}"
+        mc:Ignorable="d" d:DataContext="{d:DesignInstance viewmodels:SettingsViewModel}"
         Title="Settings" Height="550" Width="700"
         WindowStartupLocation="CenterScreen"
         Background="Transparent" ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True"

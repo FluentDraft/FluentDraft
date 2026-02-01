@@ -27,32 +27,40 @@ namespace FluentDraft
         [STAThread]
         private static void Main(string[] args)
         {
-            // Velopack MUST be the first thing to run - it handles update installation
-            VelopackApp.Build().Run();
+            try
+            {
+                // Velopack MUST be the first thing to run - it handles update installation
+                VelopackApp.Build().Run();
             
-            // Now start the WPF application normally
-            App app = new();
-            app.InitializeComponent();
-            app.Run();
+                // Now start the WPF application normally
+                App app = new();
+                app.InitializeComponent();
+                app.Run();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fatal Error: {ex.Message}");
+            }
         }
 
 
         public App()
         {
-            try 
+            // Catch unhandled exceptions
+            AppDomain.CurrentDomain.UnhandledException += (s, e) => 
             {
-                File.AppendAllText("startup_log.txt", $"{DateTime.Now}: App Constructor Started\n");
-                ServiceCollection services = new ServiceCollection();
-                ConfigureServices(services);
-                ServiceProvider = services.BuildServiceProvider();
-                File.AppendAllText("startup_log.txt", $"{DateTime.Now}: DI Built\n");
-            }
-            catch (Exception ex)
+                MessageBox.Show($"Unhandled Error: {e.ExceptionObject}");
+            };
+            
+            this.DispatcherUnhandledException += (s, e) =>
             {
-                 File.AppendAllText("startup_log.txt", $"{DateTime.Now}: App Constructor Error: {ex}\n");
-                 MessageBox.Show($"Startup Error: {ex.Message}");
-                 Shutdown();
-            }
+                    MessageBox.Show($"UI Error: {e.Exception.Message}");
+                    e.Handled = true;
+            };
+
+            ServiceCollection services = new ServiceCollection();
+            ConfigureServices(services);
+            ServiceProvider = services.BuildServiceProvider();
         }
 
         private void ConfigureServices(ServiceCollection services)
@@ -82,6 +90,7 @@ namespace FluentDraft
 
             // ViewModels
             services.AddTransient<MainViewModel>();
+            services.AddTransient<SettingsViewModel>();
             services.AddTransient<SetupWizardViewModel>();
 
             // Windows
@@ -104,10 +113,6 @@ namespace FluentDraft
                     {
                         WindowsNative.ShowWindow(hWnd, WindowsNative.SW_RESTORE);
                         WindowsNative.SetForegroundWindow(hWnd);
-                    }
-                    else
-                    {
-                        MessageBox.Show("FluentDraft is already running in the background.", "Instance Active", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
                 
@@ -176,7 +181,8 @@ namespace FluentDraft
                     var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
                     Application.Current.MainWindow = mainWindow;
                     mainWindow.Show();
-                    Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+                    // Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+                    Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 }
             }
             catch (Exception ex)
