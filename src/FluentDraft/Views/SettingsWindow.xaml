@@ -385,9 +385,15 @@
                                 <TextBox Text="{Binding SelectedEditingPreset.SystemPrompt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                          Height="120" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,15"/>
 
-                                <Button Command="{Binding RemovePresetCommand}" CommandParameter="{Binding SelectedEditingPreset}"
-                                        Content="Delete Preset" Background="#FF453A" Foreground="White" Padding="15,6" BorderThickness="0"
-                                        HorizontalAlignment="Left"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <Button Command="{Binding RemovePresetCommand}" CommandParameter="{Binding SelectedEditingPreset}"
+                                            Content="Delete Preset" Background="#FF453A" Foreground="White" Padding="15,6" BorderThickness="0"
+                                            HorizontalAlignment="Left" Margin="0,0,10,0"/>
+                                    
+                                    <Button Command="{Binding ResetPresetCommand}" CommandParameter="{Binding SelectedEditingPreset}"
+                                            Content="Reset to Default" Background="#333" Foreground="#DDD" Padding="15,6" BorderThickness="0"
+                                            HorizontalAlignment="Left"/>
+                                </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
                          

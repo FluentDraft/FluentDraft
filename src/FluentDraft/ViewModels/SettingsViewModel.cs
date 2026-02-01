@@ -62,6 +62,7 @@ namespace FluentDraft.ViewModels
         // Commands for Preset Management
         public RelayCommand AddPresetCommand { get; }
         public RelayCommand<RefinementPreset> RemovePresetCommand { get; }
+        public RelayCommand<RefinementPreset> ResetPresetCommand { get; }
 
         // General Settings
         [ObservableProperty]
@@ -144,6 +145,7 @@ namespace FluentDraft.ViewModels
             
             AddPresetCommand = new RelayCommand(AddPreset);
             RemovePresetCommand = new RelayCommand<RefinementPreset>(RemovePreset);
+            ResetPresetCommand = new RelayCommand<RefinementPreset>(ResetPreset);
 
             StartRecordingHotkeyCommand = new RelayCommand(StartNewHotkeyCapture);
             CloseSettingsCommand = new RelayCommand(RequestCloseSettings);
@@ -245,6 +247,26 @@ namespace FluentDraft.ViewModels
             if (SelectedEditingPreset == preset) SelectedEditingPreset = null;
             if (SelectedRefinementPreset == preset) SelectedRefinementPreset = RefinementPresets.FirstOrDefault();
             SaveSettings();
+        }
+
+        private void ResetPreset(RefinementPreset? preset)
+        {
+            if (preset == null) return;
+            
+            if (System.Windows.MessageBox.Show($"Are you sure you want to reset '{preset.Name}' to default values?", "Confirm Reset", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
+            {
+                // Reset to default system prompt
+                preset.SystemPrompt = "You are a text refinement assistant. Your goal is to correct grammar, add punctuation, and improve clarity of the text provided. Maintain the original meaning and tone. Output ONLY the refined text itself, without any tags or additional comments.";
+                
+                // Also reset model to profile default if possible
+                var profile = Providers.FirstOrDefault(p => p.Id == preset.ProfileId);
+                if (profile != null && !string.IsNullOrEmpty(profile.RefinementModel))
+                {
+                    preset.Model = profile.RefinementModel;
+                }
+
+                SaveSettings();
+            }
         }
 
         private async Task FetchModels(ProviderProfile? profile)
