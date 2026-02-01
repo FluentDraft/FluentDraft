@@ -188,6 +188,11 @@ namespace FluentDraft.ViewModels
 
         public ObservableCollection<string> AvailableProviderTypes { get; } = new() { "Groq", "OpenAI", "Custom" };
 
+        // About properties
+        public string AppVersion => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
+        public string DotNetVersion => Environment.Version.ToString();
+        public string OsVersion => $"{Environment.OSVersion.Platform} {Environment.OSVersion.Version}";
+
         private List<int> _currentHotkeyCodes = new List<int> { 0x14 };
         private CancellationTokenSource? _processingCts;
 

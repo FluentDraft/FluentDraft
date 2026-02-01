@@ -406,6 +406,55 @@
                     </Grid>
                 </TabItem>
 
+                <TabItem Header="About">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="20">
+                            <!-- App Icon and Name -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
+                                <Image Source="/Icons/app_icon.png" Width="64" Height="64" Margin="0,0,15,0"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="FluentDraft" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                                    <TextBlock Text="{Binding AppVersion, StringFormat='Version {0}'}" Foreground="#888" FontSize="13"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Description -->
+                            <TextBlock Text="Description" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <TextBlock Text="Global Voice Typing for Windows powered by AI. Record your voice with a hotkey and get instant transcription inserted anywhere." 
+                                       Foreground="#CCC" TextWrapping="Wrap" Margin="0,0,0,25" LineHeight="22"/>
+
+                            <!-- Links -->
+                            <TextBlock Text="Links" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="GitHub:" Foreground="#888" Width="100"/>
+                                <TextBlock>
+                                    <Hyperlink NavigateUri="https://github.com/FluentDraft/FluentDraft" RequestNavigate="Hyperlink_RequestNavigate" Foreground="#007AFF">
+                                        github.com/FluentDraft/FluentDraft
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
+                                <TextBlock Text="License:" Foreground="#888" Width="100"/>
+                                <TextBlock Text="MIT License" Foreground="#CCC"/>
+                            </StackPanel>
+
+                            <!-- System Info -->
+                            <TextBlock Text="System Information" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text=".NET Runtime:" Foreground="#888" Width="100"/>
+                                <TextBlock Text="{Binding DotNetVersion}" Foreground="#CCC"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
+                                <TextBlock Text="OS:" Foreground="#888" Width="100"/>
+                                <TextBlock Text="{Binding OsVersion}" Foreground="#CCC"/>
+                            </StackPanel>
+
+                            <!-- Copyright -->
+                            <TextBlock Text="Copyright © 2026 FluentDraft Contributors" Foreground="#666" FontSize="11"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
             </TabControl>
         </Grid>
 
