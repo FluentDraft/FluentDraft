@@ -24,7 +24,7 @@ FluentDraft is a high-performance Windows desktop application that brings AI-pow
 ### Installation
 1. Clone the repository
    ```bash
-   git clone https://github.com/your-username/FluentDraft.git
+   git clone https://github.com/FluentDraft/FluentDraft.git
    ```
 2. Build the project
    ```bash
