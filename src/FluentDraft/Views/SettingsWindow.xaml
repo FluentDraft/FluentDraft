@@ -346,8 +346,7 @@
                             <CheckBox Grid.Row="0" IsChecked="{Binding IsPostProcessingEnabled}" Content="Enable AI Refinement" Foreground="White" Margin="0,0,0,15"/>
                             
                             <ListBox Grid.Row="1" ItemsSource="{Binding RefinementPresets}" SelectedItem="{Binding SelectedEditingPreset}" 
-                                     Background="#202020" BorderThickness="0" Foreground="White" Margin="0,0,0,10"
-                                     Visibility="{Binding IsPostProcessingEnabled, Converter={StaticResource BoolToVis}}">
+                                     Background="#202020" BorderThickness="0" Foreground="White" Margin="0,0,0,10">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Name}" Padding="5"/>
@@ -356,8 +355,7 @@
                             </ListBox>
 
                             <Button Grid.Row="2" Command="{Binding AddPresetCommand}" Content="+ Add Preset" 
-                                    Background="#333" Foreground="White" BorderThickness="0" Padding="10,5" Cursor="Hand"
-                                    Visibility="{Binding IsPostProcessingEnabled, Converter={StaticResource BoolToVis}}"/>
+                                    Background="#333" Foreground="White" BorderThickness="0" Padding="10,5" Cursor="Hand"/>
                         </Grid>
 
                         <!-- Right: Details Form -->

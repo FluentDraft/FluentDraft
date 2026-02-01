@@ -742,6 +742,9 @@ namespace FluentDraft.ViewModels
             var profile = Providers.FirstOrDefault(p => p.Id == preset.ProfileId);
             if (profile == null) return;
             
+            // Save current model before fetching
+            var currentModel = preset.Model;
+            
             try
             {
                 _logger.LogInfo($"Fetching text models for preset '{preset.Name}'...");
@@ -760,16 +763,26 @@ namespace FluentDraft.ViewModels
                 
                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
+                    // Build new list without clearing first to avoid UI reset
+                    var newModels = new List<string>(textModels);
+                    
+                    // If current model is not in list, add it at the beginning
+                    if (!string.IsNullOrEmpty(currentModel) && !newModels.Contains(currentModel))
+                    {
+                        newModels.Insert(0, currentModel);
+                    }
+                    
+                    // Now update the collection
                     preset.AvailableModels.Clear();
-                    foreach (var model in textModels)
+                    foreach (var model in newModels)
                     {
                         preset.AvailableModels.Add(model);
                     }
                     
-                    // If current model is not in list, add it
-                    if (!string.IsNullOrEmpty(preset.Model) && !preset.AvailableModels.Contains(preset.Model))
+                    // Restore the model selection after updating the list
+                    if (!string.IsNullOrEmpty(currentModel))
                     {
-                        preset.AvailableModels.Insert(0, preset.Model);
+                        preset.Model = currentModel;
                     }
                     
                     _logger.LogInfo($"Found {textModels.Count} text models for preset.");
