@@ -2,6 +2,13 @@
 
 All notable changes to FluentDraft will be documented in this file.
 
+## [1.3.1] - 2026-02-02
+
+### ⚡ Improvements
+- **Smoother Updates** — Updates are now downloaded quietly in the background when you start the app.
+- **Branded Experience** — The updater and installer windows now feature the FluentDraft icon.
+- **Update Control** — Added a progress bar and a "Restart to Update" button in the Settings window so you can choose when to apply updates.
+
 ## [1.3.0] - 2026-02-02
 
 ### ✨ What's New
