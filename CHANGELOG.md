@@ -2,6 +2,11 @@
 
 All notable changes to FluentDraft will be documented in this file.
 
+## [1.2.8] - 2026-02-01
+
+### ⚡ Improvements
+- Improved release process and documentation
+
 ## [1.2.1] - 2026-02-01
 
 ### ✨ What's New
