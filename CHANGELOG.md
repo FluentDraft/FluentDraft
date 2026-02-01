@@ -2,6 +2,11 @@
 
 All notable changes to FluentDraft will be documented in this file.
 
+## [1.2.9] - 2026-02-01
+
+### ✨ What's New
+- **About Tab** — Added a new tab in settings with application information, version details, and a link to the GitHub repository
+
 ## [1.2.8] - 2026-02-01
 
 ### ⚡ Improvements
