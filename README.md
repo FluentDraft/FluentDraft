@@ -4,7 +4,9 @@
 
 FluentDraft is a high-performance Windows desktop application that brings AI-powered voice typing to any application. Hold a hotkey, speak, and watch your refined, perfectly puntucated text appear instantly.
 
-![FluentDraft App Icon](src/FluentDraft/Icons/app_icon.png)
+<p align="center">
+  <img src="src/FluentDraft/Icons/app_icon.png" alt="FluentDraft App Icon" width="128">
+</p>
 
 ## ✨ Features
 
