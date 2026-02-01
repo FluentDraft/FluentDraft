@@ -54,4 +54,5 @@ jobs:
 
     - name: Upload to GitHub Release
       run: |
-        vpk upload github --repoUrl "https://github.com/${{ github.repository }}" --token "${{ secrets.GITHUB_TOKEN }}" -o ./releases --releaseName "FluentDraft v${{ steps.version.outputs.VERSION }}" --tag "${{ github.ref_name }}"
+        vpk upload github --repoUrl "https://github.com/${{ github.repository }}" --token "${{ secrets.GITHUB_TOKEN }}" -o ./releases --releaseName "FluentDraft v${{ steps.version.outputs.VERSION }}" --tag "${{ github.ref_name }}" --publish
+
