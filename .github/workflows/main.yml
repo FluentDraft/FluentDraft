@@ -30,16 +30,18 @@ jobs:
 
     - name: Publish (Single File)
       run: |
-        dotnet publish src/FluentDraft/FluentDraft.csproj -c Release -r win-x64 --self-contained true -o ./publish /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+        dotnet publish src/FluentDraft/FluentDraft.csproj -c Release -r win-x64 --self-contained true -o ./publish /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=None
 
-    - name: Zip Release
-      run: Compress-Archive -Path ./publish/* -DestinationPath FluentDraft_Release.zip
+    - name: Rename exe with version
+      run: |
+        $version = "${{ github.ref_name }}"
+        Move-Item ./publish/FluentDraft.exe "./publish/FluentDraft_$version.exe"
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: FluentDraft_Release.zip
+        files: ./publish/FluentDraft_*.exe
         draft: false
         prerelease: false
       env:
