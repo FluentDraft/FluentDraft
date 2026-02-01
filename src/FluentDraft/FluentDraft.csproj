@@ -13,14 +13,22 @@
     <Description>Global Voice Typing for Windows powered by AI</Description>
     <Copyright>Copyright (c) 2026 FluentDraft Contributors</Copyright>
     <AssemblyTitle>FluentDraft</AssemblyTitle>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.2.1</Version>
+    <AssemblyVersion>1.2.1.0</AssemblyVersion>
+    <FileVersion>1.2.1.0</FileVersion>
+    <!-- Velopack: Custom Main method entry point -->
+    <StartupObject>FluentDraft.App</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
     <Resource Include="Icons\app_icon.png" />
     <Resource Include="Icons\app_icon.ico" />
+  </ItemGroup>
+
+  <!-- Velopack: Change App.xaml from ApplicationDefinition to Page -->
+  <ItemGroup>
+    <ApplicationDefinition Remove="App.xaml"/>
+    <Page Include="App.xaml"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +37,8 @@
     <PackageReference Include="H.InputSimulator" Version="1.4.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
     <PackageReference Include="NAudio" Version="2.2.1" />
+    <!-- Velopack for auto-updates -->
+    <PackageReference Include="Velopack" Version="0.0.1015" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,3 +47,4 @@
     </None>
   </ItemGroup>
 </Project>
+

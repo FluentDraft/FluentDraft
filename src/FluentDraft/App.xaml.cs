@@ -10,6 +10,7 @@ using FluentDraft.Services.Interfaces;
 using FluentDraft.Utils;
 using FluentDraft.ViewModels;
 using FluentDraft.Views;
+using Velopack;
 
 namespace FluentDraft
 {
@@ -18,6 +19,23 @@ namespace FluentDraft
         public IServiceProvider ServiceProvider { get; private set; } = null!;
         private static Mutex? _mutex = null;
         private const string MutexName = "Global\\FluentDraft_Mutex";
+
+        /// <summary>
+        /// Custom entry point for Velopack integration.
+        /// Velopack must run first to handle updates before any WPF initialization.
+        /// </summary>
+        [STAThread]
+        private static void Main(string[] args)
+        {
+            // Velopack MUST be the first thing to run - it handles update installation
+            VelopackApp.Build().Run();
+            
+            // Now start the WPF application normally
+            App app = new();
+            app.InitializeComponent();
+            app.Run();
+        }
+
 
         public App()
         {
@@ -60,6 +78,7 @@ namespace FluentDraft
             // Utils
             services.AddSingleton<GlobalHotkeyManager>();
             services.AddSingleton<IHistoryService, JSONHistoryService>();
+            services.AddSingleton<IUpdateService, UpdateService>();
 
             // ViewModels
             services.AddTransient<MainViewModel>();
