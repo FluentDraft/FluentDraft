@@ -1,0 +1,56 @@
+## [Visual Studio / .NET]
+.vs/
+bin/
+obj/
+TestResults/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## [NuGet]
+packages/
+*.nuget.props
+*.nuget.targets
+
+## [Visual Studio Code]
+.vscode/
+.history/
+
+## [JetBrains / Rider]
+.idea/
+*.sln.iml
+
+## [User Secrets & Environment]
+secrets.json
+.whisper_secrets
+.env
+appsettings*.json
+!appsettings.Example.json
+!appsettings.Development.json
+
+## [App Specific - Whisper]
+audio/
+logs/
+settings.json
+build_errors*.txt
+*.wav
+*.mp3
+*.webm
+startup_log.txt
+Sounds/custom/
+
+## [Publish]
+*.pubxml.user
+*.publishsettings
+publish/
+
+## [OS / Temporary]
+.DS_Store
+thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+*.tmp
+*.log
+*.bak
+*.swp

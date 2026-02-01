@@ -1,0 +1,43 @@
+name: Build and Release FluentDraft
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore FluentDraft.sln
+
+    - name: Build
+      run: dotnet build FluentDraft.sln --configuration Release --no-restore
+
+    - name: Publish (ClickOnce / Standalone)
+      run: |
+        dotnet publish FluentDraft.sln -c Release -r win-x64 --self-contained true -o ./publish /p:PublishSingleFile=false /p:PublishReadyToRun=true
+
+    - name: Zip Release
+      run: Compress-Archive -Path ./publish/* -DestinationPath FluentDraft_Release.zip
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: FluentDraft_Release.zip
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
