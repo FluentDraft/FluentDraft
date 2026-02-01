@@ -9,8 +9,7 @@ This skill guides the process of creating a new release for FluentDraft.
 ## Project Info
 - **Repository**: https://github.com/FluentDraft/FluentDraft
 - **Version file**: `src/FluentDraft/FluentDraft.csproj`
-- **Release artifact**: `FluentDraft.exe`
-- **Direct download URL**: `https://github.com/FluentDraft/FluentDraft/releases/latest/download/FluentDraft.exe`
+- **Direct download URL**: `https://github.com/FluentDraft/FluentDraft/releases/latest/download/FluentDraft-Setup.exe`
 
 ## Prerequisites
 Before running this skill, ensure:
@@ -37,43 +36,55 @@ Before running this skill, ensure:
 
 4. **Determine new version** based on changes:
    - **MAJOR** (x.0.0): Breaking changes
-   - **MINOR** (0.x.0): New features (feat commits)
-   - **PATCH** (0.0.x): Bug fixes and improvements (fix, refactor, perf commits)
+   - **MINOR** (0.x.0): New features
+   - **PATCH** (0.0.x): Bug fixes and improvements
 
-### Step 2: Review Changes
+### Step 2: Write User-Friendly Release Notes
 
-1. **Generate a diff summary:**
-   ```bash
-   git diff $(git describe --tags --abbrev=0)..HEAD --stat
-   ```
+**IMPORTANT**: Release notes should be written for END USERS, not developers!
 
-2. **List all commit authors:**
-   ```bash
-   git log $(git describe --tags --abbrev=0)..HEAD --format="%an" | sort -u
-   ```
+#### What to INCLUDE (user-facing):
+- ✅ New features users can see or use
+- ✅ Bug fixes that affected user experience
+- ✅ Performance improvements users will notice
+- ✅ UI/UX changes
 
-3. **Categorize commits by type:**
-   - Group by: feat, fix, docs, refactor, perf, chore
-   - Note any breaking changes
+#### What to EXCLUDE (internal/technical):
+- ❌ Commit hashes
+- ❌ Internal refactoring
+- ❌ CI/CD changes
+- ❌ Code cleanup
+- ❌ Developer tooling changes
+- ❌ Technical implementation details
 
 ### Step 3: Generate Changelog
 
-Create or update `CHANGELOG.md` with the following format:
+Update `CHANGELOG.md` with the following USER-FRIENDLY format:
 
 ```markdown
-## [vX.Y.Z] - YYYY-MM-DD
+## [X.Y.Z] - YYYY-MM-DD
 
-### ✨ New Features
-- Description of new feature (#commit-short-hash)
+### ✨ What's New
+- Clear description of new feature from user perspective
 
-### 🐛 Bug Fixes  
-- Description of fix (#commit-short-hash)
+### 🐛 Bug Fixes
+- What was broken and now works correctly
 
-### 🔧 Improvements
-- Description of improvement (#commit-short-hash)
+### ⚡ Improvements
+- What became better/faster
+```
 
-### 📝 Documentation
-- Description of docs change (#commit-short-hash)
+**Example - BAD (too technical):**
+```markdown
+- Add UpdateService and IUpdateService for managing updates (#442c9c8)
+- Refactor App.xaml.cs to use custom Main() entry point
+- Fix IsSetupCompleted flag not being set correctly
+```
+
+**Example - GOOD (user-friendly):**
+```markdown
+- The app now automatically checks for updates when you start it
+- Fixed an issue where the setup wizard appeared every time you launched the app
 ```
 
 ### Step 4: Update Version
@@ -81,6 +92,8 @@ Create or update `CHANGELOG.md` with the following format:
 1. Update version in `src/FluentDraft/FluentDraft.csproj`:
    ```xml
    <Version>X.Y.Z</Version>
+   <AssemblyVersion>X.Y.Z.0</AssemblyVersion>
+   <FileVersion>X.Y.Z.0</FileVersion>
    ```
 
 ### Step 5: Commit Version Changes
@@ -90,15 +103,16 @@ git add CHANGELOG.md src/FluentDraft/FluentDraft.csproj
 git commit -m "chore(release): bump version to vX.Y.Z"
 ```
 
-### Step 6: Create Git Tag
+### Step 6: Create Git Tag with User-Friendly Message
 
 ```bash
-git tag -a vX.Y.Z -m "Release vX.Y.Z
+git tag -a vX.Y.Z -m "Version X.Y.Z
 
-## Changelog
-- Feature 1
-- Fix 1
-- etc."
+✨ What's New
+- Feature description for users
+
+🐛 Bug Fixes
+- Fix description for users"
 ```
 
 ### Step 7: Verify and Push
@@ -118,12 +132,11 @@ git tag -a vX.Y.Z -m "Release vX.Y.Z
 ## Output
 
 After completion, provide:
-- Summary of changes included in this release
+- Summary of changes in user-friendly language
 - Link to GitHub releases page: https://github.com/FluentDraft/FluentDraft/releases
-- Reminder that GitHub Actions will automatically build and publish the release
 
 ## Notes
 
-- GitHub Actions workflow (`main.yml`) will automatically create a release when a tag is pushed
-- The release artifact is named `FluentDraft.exe` (without version in filename)
-- Users can always download the latest version from the direct download URL above
+- GitHub Actions will automatically build and publish the release
+- The installer is named `FluentDraft-Setup.exe`
+- App automatically updates from GitHub Releases via Velopack

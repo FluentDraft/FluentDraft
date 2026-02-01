@@ -2,46 +2,32 @@
 
 All notable changes to FluentDraft will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
 ## [1.2.1] - 2026-02-01
 
-### ✨ New Features
-- Add **Velopack auto-update system** - app now checks for updates on startup
-- Add `UpdateService` for managing application updates from GitHub Releases
-- New GitHub Actions workflow with Velopack CLI for creating installers
+### ✨ What's New
+- **Automatic Updates** — The app now checks for updates when you start it and can update itself automatically
 
 ### 🐛 Bug Fixes
-- Fix Setup Wizard showing on every launch even when providers are configured
-- Prevent duplicate providers from being created in Setup Wizard
-- Smart detection of existing providers by API key and Base URL
+- Fixed the Setup Wizard appearing every time you launch the app, even when already configured
+- Fixed duplicate AI providers being created when going through setup multiple times
 
-### 🔧 Improvements
-- Settings now properly persist between app updates (`%APPDATA%/FluentDraft/`)
-- Auto-fix `IsSetupCompleted` flag if valid providers exist
+### ⚡ Improvements
+- Your settings now properly persist when you update to a new version
 
 ## [1.1.0] - 2026-02-01
 
-
-### ✨ New Features
-- Add GitHub Actions workflow for automated builds and releases (#af879b4)
-- Add CI/CD pipeline with automatic release on tag push (#d32e769)
-- Update README with Quick Start guide and user-friendly documentation (#d32e769)
+### ✨ What's New
+- Updated documentation with Quick Start guide
 
 ### 🐛 Bug Fixes
-- Fix preset model selection being lost when switching between presets (#5ed772a)
-- Always show presets list even when AI Refinement is disabled (#5ed772a)
-- Fix README image path to correctly display app icon (#1943679)
-
-### 📝 Documentation
-- Center and resize app icon in README for better appearance (#cf3a1bc)
-- Add direct download link for latest release
+- Fixed preset model selection being lost when switching between different presets
+- Presets list now always visible in settings, even when AI Refinement is disabled
 
 ## [1.0.2] - 2026-02-01
 
-- Initial public release
-- Global voice typing with AI refinement
-- Support for Groq and OpenAI providers
-- Customizable refinement presets
-- System tray integration
+### 🎉 Initial Release
+- **Global Voice Typing** — Record your voice from any app using a hotkey
+- **AI-Powered Refinement** — Improve your transcriptions with AI (grammar, clarity, tone)
+- **Multiple Providers** — Support for Groq and OpenAI
+- **Customizable Presets** — Create different refinement styles for different use cases
+- **System Tray** — Runs quietly in the background
