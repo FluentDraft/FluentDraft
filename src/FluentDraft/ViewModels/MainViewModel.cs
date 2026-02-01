@@ -43,6 +43,7 @@ namespace FluentDraft.ViewModels
 
         private readonly AudioDeviceService _audioDeviceService;
         private readonly IHistoryService _historyService;
+        private readonly IUpdateService _updateService; // Added
         private readonly IServiceProvider _serviceProvider;
 
         [ObservableProperty]
@@ -193,12 +194,20 @@ namespace FluentDraft.ViewModels
         public string DotNetVersion => Environment.Version.ToString();
         public string OsVersion => $"{Environment.OSVersion.Platform} {Environment.OSVersion.Version}";
 
+        // Update Properties
+        [ObservableProperty]
+        private string _updateStatus = "Check for updates";
+
+        [ObservableProperty]
+        private bool _isCheckingForUpdates = false;
+
         private List<int> _currentHotkeyCodes = new List<int> { 0x14 };
         private CancellationTokenSource? _processingCts;
 
         public RelayCommand StartRecordingHotkeyCommand { get; }
         public RelayCommand ToggleSettingsCommand { get; }
         public RelayCommand CloseSettingsCommand { get; }
+        public RelayCommand CheckForUpdatesCommand { get; } // Added
         
         private void RequestCloseSettings()
         {
@@ -258,6 +267,7 @@ namespace FluentDraft.ViewModels
             ISystemControlService systemControl,
             AudioDeviceService audioDeviceService,
             IHistoryService historyService,
+            IUpdateService updateService,
             IServiceProvider serviceProvider)
         {
             _audioRecorder = audioRecorder;
@@ -270,6 +280,7 @@ namespace FluentDraft.ViewModels
             _systemControl = systemControl;
             _audioDeviceService = audioDeviceService;
             _historyService = historyService;
+            _updateService = updateService; // Added
             _serviceProvider = serviceProvider;
 
             LoadAudioDevices();
@@ -293,6 +304,7 @@ namespace FluentDraft.ViewModels
             RemoveProviderCommand = new RelayCommand<ProviderProfile>(RemoveProvider);
             TestProviderCommand = new RelayCommand<ProviderProfile>(async (p) => await TestProvider(p));
             FetchModelsCommand = new RelayCommand<ProviderProfile>(async (p) => await FetchModels(p));
+            CheckForUpdatesCommand = new RelayCommand(async () => await CheckForUpdates()); // Added
 
             AddPresetCommand = new RelayCommand(AddPreset);
             RemovePresetCommand = new RelayCommand<RefinementPreset>(RemovePreset);
@@ -796,6 +808,46 @@ namespace FluentDraft.ViewModels
             catch (Exception ex)
             {
                 _logger.LogError($"Failed to fetch models for preset: {ex.Message}");
+            }
+        }
+
+        private async Task CheckForUpdates()
+        {
+            if (IsCheckingForUpdates) return;
+
+            try
+            {
+                IsCheckingForUpdates = true;
+                UpdateStatus = "Checking for updates...";
+                
+                // Only check, don't auto apply yet
+                var updateInfo = await _updateService.CheckForUpdatesAsync();
+
+                if (updateInfo == null)
+                {
+                    UpdateStatus = "No updates available.";
+                    await Task.Delay(3000);
+                    UpdateStatus = "Check for updates";
+                }
+                else
+                {
+                     UpdateStatus = $"Found v{updateInfo.TargetFullRelease.Version}! Downloading...";
+                     
+                     // Download and Restart
+                     await _updateService.DownloadUpdateAsync(updateInfo);
+                     UpdateStatus = "Installing...";
+                     _updateService.ApplyUpdateAndRestart(updateInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                UpdateStatus = "Update failed.";
+                _logger.LogError("Manual update check failed", ex);
+                System.Windows.MessageBox.Show($"Update check failed: {ex.Message}", "Update Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsCheckingForUpdates = false;
             }
         }
 

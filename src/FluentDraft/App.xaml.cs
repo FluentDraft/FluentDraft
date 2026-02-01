@@ -120,11 +120,25 @@ namespace FluentDraft
             }
 
             base.OnStartup(e);
-            File.AppendAllText("startup_log.txt", $"{DateTime.Now}: OnStartup Started\n");
+                File.AppendAllText("startup_log.txt", $"{DateTime.Now}: OnStartup Started\n");
             try 
             {
                 var settingsService = ServiceProvider.GetRequiredService<ISettingsService>();
                 var settings = settingsService.LoadSettings();
+
+                // Check for updates in background
+                Task.Run(async () => 
+                {
+                    try 
+                    {
+                        var updateService = ServiceProvider.GetRequiredService<IUpdateService>();
+                        await updateService.CheckDownloadAndApplyAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        File.AppendAllText("startup_log.txt", $"{DateTime.Now}: Auto-update check failed: {ex.Message}\n");
+                    }
+                });
 
                 // Check if we have valid providers (with API keys)
                 bool hasValidProviders = settings.Providers?.Any(p => !string.IsNullOrWhiteSpace(p.ApiKey)) == true;
