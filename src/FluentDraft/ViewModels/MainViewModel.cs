@@ -588,6 +588,7 @@ namespace FluentDraft.ViewModels
         partial void OnIsAlwaysOnTopChanged(bool value) => SaveSettings();
         // Other operational settings saving...
         partial void OnSelectedTranscriptionProfileChanged(ProviderProfile? value) => SaveSettings();
+        partial void OnSelectedRefinementPresetChanged(RefinementPreset? value) => SaveSettings();
         // ... if Main UI allows changing these.
 
         private void RefreshFilteredCollections()
