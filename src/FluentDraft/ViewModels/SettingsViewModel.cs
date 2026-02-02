@@ -130,6 +130,9 @@ namespace FluentDraft.ViewModels
         public RelayCommand CloseSettingsCommand { get; }
         public RelayCommand CheckForUpdatesCommand { get; }
         public RelayCommand ApplyUpdateCommand { get; }
+        
+        public RelayCommand<ProviderProfile> OpenApiKeyUrlCommand { get; }
+        public RelayCommand<ProviderProfile> PasteApiKeyCommand { get; }
 
         public SettingsViewModel(
             ISettingsService settingsService,
@@ -162,6 +165,9 @@ namespace FluentDraft.ViewModels
             CloseSettingsCommand = new RelayCommand(RequestCloseSettings);
             CheckForUpdatesCommand = new RelayCommand(async () => await CheckForUpdates());
             ApplyUpdateCommand = new RelayCommand(ApplyUpdate);
+            
+            OpenApiKeyUrlCommand = new RelayCommand<ProviderProfile>(OpenApiKeyUrl);
+            PasteApiKeyCommand = new RelayCommand<ProviderProfile>(PasteApiKey);
 
             WeakReferenceMessenger.Default.Register<UpdateReadyMessage>(this, (r, m) => 
             {
@@ -450,9 +456,23 @@ namespace FluentDraft.ViewModels
             RefreshFilteredCollections();
         }
 
+        public bool IsApiKeyUrlSupported
+        {
+            get
+            {
+                if (SelectedEditingProvider == null) return false;
+                var type = SelectedEditingProvider.Type;
+                return type == "Groq" || type == "OpenAI";
+            }
+        }
+
         private void OnItemChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             SaveSettings();
+            if (e.PropertyName == nameof(ProviderProfile.Type))
+            {
+                OnPropertyChanged(nameof(IsApiKeyUrlSupported));
+            }
         }
 
         public void SaveSettings()
@@ -640,6 +660,29 @@ namespace FluentDraft.ViewModels
             _updateService.ApplyUpdateAndRestart(_pendingUpdate);
         }
 
+        private void OpenApiKeyUrl(ProviderProfile? profile)
+        {
+            if (profile == null) return;
+            string url = "";
+            if (profile.Type == "Groq") url = "https://console.groq.com/keys";
+            else if (profile.Type == "OpenAI") url = "https://platform.openai.com/api-keys";
+            
+            if (!string.IsNullOrEmpty(url))
+            {
+                try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo { FileName = url, UseShellExecute = true }); }
+                catch { }
+            }
+        }
+
+        private void PasteApiKey(ProviderProfile? profile)
+        {
+            if (profile == null) return;
+            if (System.Windows.Clipboard.ContainsText())
+            {
+                profile.ApiKey = System.Windows.Clipboard.GetText().Trim();
+            }
+        }
+
         private void LoadAudioDevices()
         {
              var devices = _audioDeviceService.GetRecordingDevices();
@@ -664,6 +707,13 @@ namespace FluentDraft.ViewModels
         partial void OnSelectedRefinementProfileChanged(ProviderProfile? value) => SaveSettings();
         partial void OnSelectedRefinementPresetChanged(RefinementPreset? value) => SaveSettings();
         
+
+        
+        partial void OnSelectedEditingProviderChanged(ProviderProfile? value)
+        {
+            OnPropertyChanged(nameof(IsApiKeyUrlSupported));
+        }
+
         partial void OnSelectedEditingPresetChanged(RefinementPreset? value)
         {
             if (value != null)

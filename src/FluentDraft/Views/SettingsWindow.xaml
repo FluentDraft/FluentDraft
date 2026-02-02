@@ -262,9 +262,37 @@
                                 <TextBox Text="{Binding SelectedEditingProvider.BaseUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"
                                          ToolTip="E.g. https://api.openai.com/v1"/>
 
-                                <TextBlock Text="API Key" Foreground="#888" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding SelectedEditingProvider.ApiKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                         Margin="0,0,0,15"/> 
+                                <Grid Margin="0,0,0,5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="API Key" Foreground="#888"/>
+                                    <Button Command="{Binding OpenApiKeyUrlCommand}" CommandParameter="{Binding SelectedEditingProvider}"
+                                            Content="Get your API key →" Foreground="#007AFF" Background="Transparent" BorderThickness="0" 
+                                            FontSize="11" Cursor="Hand" HorizontalAlignment="Right"
+                                            Visibility="{Binding IsApiKeyUrlSupported, Converter={StaticResource BoolToVis}}"/>
+                                </Grid>
+                                
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <PasswordBox converters:PasswordBoxHelper.BindPassword="True"
+                                                 converters:PasswordBoxHelper.BoundPassword="{Binding SelectedEditingProvider.ApiKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 VerticalContentAlignment="Center"/>
+                                                 
+                                    <Button Grid.Column="1" Command="{Binding PasteApiKeyCommand}" CommandParameter="{Binding SelectedEditingProvider}"
+                                            Content="Paste" Margin="10,0,0,0" Padding="12,5" Background="#333" Foreground="White" BorderThickness="0" Cursor="Hand">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="4"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </Grid> 
 
                                 <!-- Model removed from here -->
 
