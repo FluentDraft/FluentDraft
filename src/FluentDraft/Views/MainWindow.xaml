@@ -18,6 +18,10 @@
         Icon="/Icons/app_icon.png"
         WindowStartupLocation="CenterScreen">
 
+    <Window.InputBindings>
+        <KeyBinding Key="Escape" Command="{Binding CancelCommand}"/>
+    </Window.InputBindings>
+
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
@@ -385,9 +389,9 @@
                                 <TextBlock Text="⚙" Foreground="#AAA" FontSize="12"/>
                             </Button>
 
-                             <!-- Stop/Cancel Hints -->
+                            <!-- Stop/Cancel Hints -->
                             <StackPanel Orientation="Horizontal" Visibility="{Binding UiState, Converter={StaticResource RecordingColorConverter}, ConverterParameter=ListeningVis}">
-                                <Button Command="{Binding StartManualRecordingCommand}" Style="{StaticResource IconButtonStyle}">
+                                <Button Command="{Binding CancelCommand}" Style="{StaticResource IconButtonStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="Stop" Foreground="#AAA" FontSize="12" Margin="0,0,5,0"/>
                                         <Border CornerRadius="3" Background="#333" Padding="4,1">

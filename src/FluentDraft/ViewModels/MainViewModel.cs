@@ -454,6 +454,8 @@ namespace FluentDraft.ViewModels
 
         private void CancelProcessing()
         {
+            _recordingTimer?.Stop();
+            
             if (_audioRecorder.IsRecording)
             {
                 _audioRecorder.StopRecordingAsync();
@@ -462,8 +464,12 @@ namespace FluentDraft.ViewModels
             
             _processingCts?.Cancel();
             IsProcessing = false;
+            UiState = "None";
             Status = "Cancelled";
-            _ = Task.Delay(2000).ContinueWith(_ => Status = "Ready");
+            _ = Task.Delay(2000).ContinueWith(_ => 
+            {
+                if (UiState == "None") Status = "Ready";
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void ResetChatSession()
