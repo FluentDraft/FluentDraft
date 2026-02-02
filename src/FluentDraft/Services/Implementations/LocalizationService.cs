@@ -55,7 +55,6 @@ namespace FluentDraft.Services.Implementations
             
             try 
             {
-                System.Diagnostics.Debug.WriteLine($"[LocService] Loading: {source}");
                 dict.Source = new Uri(source);
                 
                 var appResources = Application.Current.Resources;
@@ -63,12 +62,10 @@ namespace FluentDraft.Services.Implementations
                 
                 if (oldDict != null)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[LocService] Removing old: {oldDict.Source}");
                     appResources.MergedDictionaries.Remove(oldDict);
                 }
                 
                 appResources.MergedDictionaries.Add(dict);
-                System.Diagnostics.Debug.WriteLine($"[LocService] Added new dictionary. Count: {appResources.MergedDictionaries.Count}");
                 
                 CurrentLanguageCode = code;
                 
