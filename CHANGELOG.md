@@ -1,81 +1,44 @@
 # Changelog
 
-All notable changes to FluentDraft will be documented in this file.
-
 ## [1.4.0] - 2026-02-02
 
 ### ✨ What's New
-- **Session Control** - A new "Reset Session" button lets you clear the AI's context and start a fresh topic instantly.
-- **Smart Context** - Your session ID is now sent with requests, allowing the AI to maintain conversation context (if supported by the provider/model).
+- **Recording Cancellation**: You can now press "Stop" or the "Esc" key to instantly discard a recording without processing it.
+- **New Settings Interface**: Completely redesigned settings window with tabs for Speech, Refinement, Services, and System for easier navigation.
+- **Improved API Key Security**: API keys are now masked (like passwords) and include a convenient "Paste" button.
+- **Helpful Tips**: Added explanations to settings options to help you get set up faster.
 
 ### ⚡ Improvements
-- **Refined UI** - The Reset button features a sleek modern design and informative tooltips.
-- **Better Tooltips** - Replaced standard tooltips with a custom dark-themed style that matches the application.
-- **Reduced Friction** - Removed the confirmation dialog for resetting sessions for a faster workflow.
+- The "Get API Key" link now intelligently directs you to the correct provider's page (Groq or OpenAI).
 
 ## [1.3.2] - 2026-02-02
 
-### 🔔 Interactive Updates
-- **New Notification System** — When an update is found, you'll see a notification in the main window.
-- **You're in Control** — Choose to "Update" immediately (restart) or select "Later" to let it download in the background and install next time.
-- **No More Interruptions** — Updates no longer restart the app automatically without your permission.
-
-## [1.3.1] - 2026-02-02
-
-### ⚡ Improvements
-- **Smoother Updates** — Updates are now downloaded quietly in the background when you start the app.
-- **Branded Experience** — The updater and installer windows now feature the FluentDraft icon.
-- **Update Control** — Added a progress bar and a "Restart to Update" button in the Settings window so you can choose when to apply updates.
-
-## [1.3.0] - 2026-02-02
-
 ### ✨ What's New
-- **Preset Management** — Added easy ways to delete or reset your refinement style presets to defaults
-- **Manual Update Check** — You can now check for application updates at any time from the Settings window
+- **Preset Reset**: Added a "Reset to Defaults" button for individual refinement presets to easily restore original settings.
+- **Update Notifications**: The app now shows progress when downloading updates and asks for confirmation before restarting.
+
+## [1.3.1] - 2026-02-01
 
 ### 🐛 Bug Fixes
-- Fixed a silent crash that could occur when starting the application
-- Improved settings stability and migration across versions
+- Fixed an issue where changing the model for one preset would incorrectly clear models for others.
 
-### ⚡ Improvements
-- Background update checks on startup to ensure you're always on the latest version
-
-## [1.2.9] - 2026-02-01
+## [1.3.0] - 2026-02-01
 
 ### ✨ What's New
-- **About Tab** — Added a new tab in settings with application information, version details, and a link to the GitHub repository
+- **Recording Time Limit**: Recordings successfully auto-stop after 2 minutes to ensure reliable transcription.
 
-## [1.2.8] - 2026-02-01
-
-### ⚡ Improvements
-- Improved release process and documentation
-
-## [1.2.1] - 2026-02-01
+## [1.2.0] - 2026-01-31
 
 ### ✨ What's New
-- **Automatic Updates** — The app now checks for updates when you start it and can update itself automatically
+- **Sound Effects**: Added optional sound cues for start and stop recording.
+- **Refined Output**: AI models now return cleaner text without "thinking" blocks.
 
-### 🐛 Bug Fixes
-- Fixed the Setup Wizard appearing every time you launch the app, even when already configured
-- Fixed duplicate AI providers being created when going through setup multiple times
-
-### ⚡ Improvements
-- Your settings now properly persist when you update to a new version
-
-## [1.1.0] - 2026-02-01
+## [1.1.0] - 2026-01-30
 
 ### ✨ What's New
-- Updated documentation with Quick Start guide
+- **Universal Provider Support**: Connect to any OpenAI-compatible service (like LocalAI or Ollama).
 
-### 🐛 Bug Fixes
-- Fixed preset model selection being lost when switching between different presets
-- Presets list now always visible in settings, even when AI Refinement is disabled
+## [1.0.0] - 2026-01-26
 
-## [1.0.2] - 2026-02-01
-
-### 🎉 Initial Release
-- **Global Voice Typing** — Record your voice from any app using a hotkey
-- **AI-Powered Refinement** — Improve your transcriptions with AI (grammar, clarity, tone)
-- **Multiple Providers** — Support for Groq and OpenAI
-- **Customizable Presets** — Create different refinement styles for different use cases
-- **System Tray** — Runs quietly in the background
+### ✨ What's New
+- Initial release of FluentDraft.
