@@ -83,6 +83,15 @@ namespace FluentDraft.ViewModels
         private bool _isRecordingHotkey = false;
 
         [ObservableProperty]
+        private bool _isHotkeySuppressionEnabled = false;
+
+        partial void OnIsHotkeySuppressionEnabledChanged(bool value)
+        {
+            _hotkeyManager.IsSuppressionEnabled = value;
+            SaveSettings();
+        }
+
+        [ObservableProperty]
         private ObservableCollection<AudioDeviceModel> _audioDevices = new();
 
         [ObservableProperty]
@@ -451,6 +460,7 @@ namespace FluentDraft.ViewModels
             MaxRecordingSeconds = settings.MaxRecordingSeconds;
 
             _currentHotkeyCodes = settings.HotkeyCodes ?? new List<int> { 0x14 };
+            IsHotkeySuppressionEnabled = settings.IsHotkeySuppressionEnabled;
             UpdateHotkeyDisplay();
             
             RefreshFilteredCollections();
@@ -489,6 +499,7 @@ namespace FluentDraft.ViewModels
                 IsPostProcessingEnabled = IsPostProcessingEnabled,
                 IsAlwaysOnTop = IsAlwaysOnTop,
                 HotkeyCodes = _currentHotkeyCodes,
+                IsHotkeySuppressionEnabled = IsHotkeySuppressionEnabled,
                 CloseToTray = CloseToTray,
                 ActivationMode = ActivationMode,
                 PlaySoundOnRecord = PlaySoundOnRecord,

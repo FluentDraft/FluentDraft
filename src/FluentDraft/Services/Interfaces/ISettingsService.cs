@@ -28,6 +28,7 @@ namespace FluentDraft.Services.Interfaces
         // General Settings
         public bool IsAlwaysOnTop { get; set; } = false;
         public List<int> HotkeyCodes { get; set; } = new List<int> { 0x14 }; // Default to CapsLock
+        public bool IsHotkeySuppressionEnabled { get; set; } = false;
         public int ActivationMode { get; set; } = 1; // 0 = TapToTalk, 1 = PushToTalk
         public bool PlaySoundOnRecord { get; set; } = true;
         public int SelectedMicrophone { get; set; } = 0; // Default to first available

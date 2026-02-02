@@ -179,7 +179,7 @@
                             <!-- Hotkey -->
                             <TextBlock Text="Hotkey" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
                             <TextBlock Text="Press this key combination to start recording." Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                 <Border Background="#333" CornerRadius="4" Padding="8" MinWidth="100">
                                     <TextBlock Text="{Binding HotkeyDisplay}" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
                                 </Border>
@@ -187,6 +187,9 @@
                                         Command="{Binding StartRecordingHotkeyCommand}"
                                         Background="#444" Foreground="White" BorderThickness="0" Cursor="Hand"/>
                             </StackPanel>
+                            
+                            <CheckBox IsChecked="{Binding IsHotkeySuppressionEnabled}" Content="Block original key function" Foreground="White" Margin="0,0,0,20"/>
+                            <TextBlock Text="Prevents the key from working in other apps (e.g. stops Caps Lock from toggling)." Foreground="#666" FontSize="11" Margin="24,-15,0,20" TextWrapping="Wrap"/>
 
                             <!-- Activation -->
                             <TextBlock Text="Recording Mode" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
