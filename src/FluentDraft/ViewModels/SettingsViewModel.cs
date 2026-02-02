@@ -64,6 +64,7 @@ namespace FluentDraft.ViewModels
         public RelayCommand AddPresetCommand { get; }
         public RelayCommand<RefinementPreset> RemovePresetCommand { get; }
         public RelayCommand<RefinementPreset> ResetPresetCommand { get; }
+        public RelayCommand<RefinementPreset> FetchPresetModelsCommand { get; }
 
         // General Settings
         [ObservableProperty]
@@ -155,6 +156,7 @@ namespace FluentDraft.ViewModels
             AddPresetCommand = new RelayCommand(AddPreset);
             RemovePresetCommand = new RelayCommand<RefinementPreset>(RemovePreset);
             ResetPresetCommand = new RelayCommand<RefinementPreset>(ResetPreset);
+            FetchPresetModelsCommand = new RelayCommand<RefinementPreset>(async (p) => { if (p != null) await FetchPresetModelsAsync(p); });
 
             StartRecordingHotkeyCommand = new RelayCommand(StartNewHotkeyCapture);
             CloseSettingsCommand = new RelayCommand(RequestCloseSettings);
@@ -221,6 +223,7 @@ namespace FluentDraft.ViewModels
         private void AddProvider()
         {
             var newProfile = new ProviderProfile { Name = "New Provider", Type = "Groq", IsTranscriptionEnabled=true, IsRefinementEnabled=true };
+            newProfile.PropertyChanged += OnItemChanged;
             Providers.Add(newProfile);
             SelectedEditingProvider = newProfile; // Auto-select for editing
             SaveSettings(); // Auto-save on add? Or wait? MainViewModel did save.
@@ -230,6 +233,7 @@ namespace FluentDraft.ViewModels
         private void RemoveProvider(ProviderProfile? profile)
         {
             if (profile == null) return;
+            profile.PropertyChanged -= OnItemChanged;
             Providers.Remove(profile);
             if (SelectedEditingProvider == profile) SelectedEditingProvider = null;
             if (SelectedTranscriptionProfile == profile) SelectedTranscriptionProfile = Providers.FirstOrDefault(p => p.IsTranscriptionEnabled);
@@ -255,6 +259,7 @@ namespace FluentDraft.ViewModels
                 Model = defaultProfile?.RefinementModel ?? "",
                 SystemPrompt = "You are a text refinement assistant. Your goal is to correct grammar, add punctuation, and improve clarity of the text provided. Maintain the original meaning and tone. Output ONLY the refined text itself, without any tags or additional comments."
             };
+            newPreset.PropertyChanged += OnItemChanged;
             RefinementPresets.Add(newPreset);
             SelectedEditingPreset = newPreset;
             SaveSettings();
@@ -263,6 +268,7 @@ namespace FluentDraft.ViewModels
         private void RemovePreset(RefinementPreset? preset)
         {
             if (preset == null || RefinementPresets.Count <= 1) return; // Keep at least one preset
+            preset.PropertyChanged -= OnItemChanged;
             RefinementPresets.Remove(preset);
             if (SelectedEditingPreset == preset) SelectedEditingPreset = null;
             if (SelectedRefinementPreset == preset) SelectedRefinementPreset = RefinementPresets.FirstOrDefault();
@@ -415,7 +421,7 @@ namespace FluentDraft.ViewModels
                  // BUT if we open settings first, we need this.
                  // Let's just create one default if empty
                  if (settings.RefinementPresets == null) settings.RefinementPresets = new List<RefinementPreset>();
-                 if (settings.RefinementPresets.Count == 0)
+            if (settings.RefinementPresets.Count == 0)
                  {
                     settings.RefinementPresets.Add(new RefinementPreset { Name="Default", ProfileId = defaultProfile?.Id });
                  }
@@ -423,6 +429,10 @@ namespace FluentDraft.ViewModels
             
             RefinementPresets = new ObservableCollection<RefinementPreset>(settings.RefinementPresets);
             SelectedRefinementPreset = RefinementPresets.FirstOrDefault(p => p.Id == settings.SelectedRefinementPresetId) ?? RefinementPresets.FirstOrDefault();
+
+            // Subscribe to changes
+            foreach(var p in Providers) p.PropertyChanged += OnItemChanged;
+            foreach(var r in RefinementPresets) r.PropertyChanged += OnItemChanged;
 
             IsAlwaysOnTop = settings.IsAlwaysOnTop;
             CloseToTray = settings.CloseToTray;
@@ -438,6 +448,11 @@ namespace FluentDraft.ViewModels
             UpdateHotkeyDisplay();
             
             RefreshFilteredCollections();
+        }
+
+        private void OnItemChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            SaveSettings();
         }
 
         public void SaveSettings()
@@ -653,7 +668,7 @@ namespace FluentDraft.ViewModels
         {
             if (value != null)
             {
-                _ = FetchPresetModelsAsync(value);
+                // _ = FetchPresetModelsAsync(value); // Auto-fetch removed to prevent overwrite/errors
             }
         }
     }

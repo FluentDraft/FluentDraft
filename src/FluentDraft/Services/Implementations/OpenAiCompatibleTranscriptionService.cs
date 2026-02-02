@@ -73,20 +73,33 @@ namespace FluentDraft.Services.Implementations
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
-                using var doc = JsonDocument.Parse(json);
+                
+                JsonDocument doc;
+                try 
+                {
+                    doc = JsonDocument.Parse(json);
+                }
+                catch (JsonException)
+                {
+                    // Likely HTML error page or non-JSON response
+                    throw new Exception($"Invalid API response (not JSON): {json.Substring(0, Math.Min(100, json.Length))}...");
+                }
                 
                 var models = new List<string>();
-                if (doc.RootElement.TryGetProperty("data", out var data) && data.ValueKind == JsonValueKind.Array)
+                using (doc)
                 {
-                    foreach (var element in data.EnumerateArray())
+                    if (doc.RootElement.TryGetProperty("data", out var data) && data.ValueKind == JsonValueKind.Array)
                     {
-                        if (element.TryGetProperty("id", out var idProp))
+                        foreach (var element in data.EnumerateArray())
                         {
-                            var id = idProp.GetString();
-                             // Filter for whisper models generally, but allow others if user wants custom
-                            if (!string.IsNullOrEmpty(id))
+                            if (element.TryGetProperty("id", out var idProp))
                             {
-                                models.Add(id);
+                                var id = idProp.GetString();
+                                // Filter for whisper models generally, but allow others if user wants custom
+                                if (!string.IsNullOrEmpty(id))
+                                {
+                                    models.Add(id);
+                                }
                             }
                         }
                     }
