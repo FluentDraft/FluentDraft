@@ -160,56 +160,172 @@
         <Grid Grid.Row="1">
             <TabControl Background="Transparent" BorderThickness="0" TabStripPlacement="Left" Margin="0,20,0,0">
                 
-                <TabItem Header="General">
+                <!-- 1. Speech Tab -->
+                <TabItem Header="Speech">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="20">
-                            <TextBlock Text="Appearance &amp; Behavior" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,15"/>
+                            <TextBlock Text="Speech Setup" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <TextBlock Text="Configure how FluentDraft listens to you." Foreground="#888" FontSize="12" Margin="0,0,0,20"/>
                             
-                            <CheckBox IsChecked="{Binding IsAlwaysOnTop}" Content="Always on Top" Foreground="White" Margin="0,0,0,15"/>
-                            <CheckBox IsChecked="{Binding PlaySoundOnRecord}" Content="Play Sound Effects" Foreground="White" Margin="0,0,0,15"/>
-                            <CheckBox IsChecked="{Binding PauseMediaOnRecording}" Content="Pause Media on Record" Foreground="White" Margin="0,0,0,15"/>
-                            <CheckBox IsChecked="{Binding CloseToTray}" Content="Minimize to Tray on Close" Foreground="White" Margin="0,0,0,15"/>
-                            
-                            <TextBlock Text="Text Injection Method" Foreground="#007AFF" FontWeight="Bold" Margin="0,10,0,10"/>
-                            <RadioButton GroupName="InjectionMode" Content="Type (Simulate Keystrokes)" Foreground="White" Margin="0,0,0,5"
-                                         IsChecked="{Binding TextInjectionMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=0}"/>
-                            <RadioButton GroupName="InjectionMode" Content="Paste (Clipboard Injection)" Foreground="White" Margin="0,0,0,15"
-                                         IsChecked="{Binding TextInjectionMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=1}"/>
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
-
-                <TabItem Header="Audio">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="20">
-                            <TextBlock Text="Input Device" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,15"/>
-                            <TextBlock Text="Microphone" Foreground="#888" Margin="0,0,0,5"/>
+                            <!-- Microphone -->
+                            <TextBlock Text="Microphone" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <TextBlock Text="Select the input device to record from." Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
                             <ComboBox ItemsSource="{Binding AudioDevices}" 
                                       DisplayMemberPath="ProductName" 
                                       SelectedValuePath="DeviceNumber"
                                       SelectedValue="{Binding SelectedAudioDevice}"
                                       Margin="0,0,0,20"/>
-                            
-                            <TextBlock Text="Hotkeys" Foreground="#007AFF" FontWeight="Bold" Margin="0,20,0,15"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+
+                            <!-- Hotkey -->
+                            <TextBlock Text="Hotkey" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <TextBlock Text="Press this key combination to start recording." Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                                 <Border Background="#333" CornerRadius="4" Padding="8" MinWidth="100">
                                     <TextBlock Text="{Binding HotkeyDisplay}" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
                                 </Border>
-                                <Button Content="Set" Margin="10,0,0,0" Padding="10,5" 
+                                <Button Content="Set" Margin="10,0,0,0" Padding="15,5" 
                                         Command="{Binding StartRecordingHotkeyCommand}"
-                                        Background="#444" Foreground="White" BorderThickness="0"/>
+                                        Background="#444" Foreground="White" BorderThickness="0" Cursor="Hand"/>
                             </StackPanel>
 
-                            <TextBlock Text="Behavior" Foreground="#007AFF" FontWeight="Bold" Margin="0,20,0,15"/>
-                            <RadioButton GroupName="Activation" Content="Toggle (Tap to Start/Stop)" Foreground="White" Margin="0,0,0,10"
-                                            IsChecked="{Binding ActivationMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=0}"/>
-                            <RadioButton GroupName="Activation" Content="Hold (Push to Talk)" Foreground="White" Margin="0,0,0,10"
-                                            IsChecked="{Binding ActivationMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=1}"/>
+                            <!-- Activation -->
+                            <TextBlock Text="Recording Mode" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <StackPanel Margin="0,0,0,20">
+                                <RadioButton GroupName="Activation" Content="Toggle (Tap to Start/Stop)" Foreground="White" Margin="0,0,0,5"
+                                             IsChecked="{Binding ActivationMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=0}"/>
+                                <TextBlock Text="Press once to start, press again to stop." Foreground="#666" FontSize="11" Margin="20,0,0,10"/>
+                                
+                                <RadioButton GroupName="Activation" Content="Hold (Push to Talk)" Foreground="White" Margin="0,0,0,5"
+                                             IsChecked="{Binding ActivationMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=1}"/>
+                                <TextBlock Text="Hold the key down while speaking." Foreground="#666" FontSize="11" Margin="20,0,0,0"/>
+                            </StackPanel>
+
+                            <!-- Transcription Model -->
+                            <TextBlock Text="Transcription Engine" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <TextBlock Text="The AI model that converts your speech to text." Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
+                            
+                            <TextBlock Text="Provider" Foreground="#888" Margin="0,5,0,2"/>
+                            <ComboBox ItemsSource="{Binding AvailableTranscriptionProfiles}" 
+                                      SelectedItem="{Binding SelectedTranscriptionProfile, Mode=TwoWay}"
+                                      DisplayMemberPath="Name"
+                                      Margin="0,0,0,10"/>
+
+                            <TextBlock Text="Model" Foreground="#888" Margin="0,0,0,2"/>
+                            <Grid Margin="0,0,0,20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox Grid.Column="0" IsEditable="True"
+                                          ItemsSource="{Binding SelectedTranscriptionProfile.TranscriptionModels}"
+                                          Text="{Binding SelectedTranscriptionProfile.TranscriptionModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Margin="0,0,5,0"/>
+                                <Button Grid.Column="1" Command="{Binding FetchModelsCommand}" CommandParameter="{Binding SelectedTranscriptionProfile}"
+                                        Content="↻" Width="30" Background="#444" Foreground="White" BorderThickness="0" ToolTip="Fetch Models from Provider"/>
+                            </Grid>
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
+
+                <!-- 2. Refinement Tab -->
+                <TabItem Header="Refinement">
+                        <Grid Margin="20,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left: List -->
+                        <Grid Grid.Column="0" Margin="0,20,20,20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                                <TextBlock Text="AI Refinement" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <CheckBox IsChecked="{Binding IsPostProcessingEnabled}" Content="Enable" Foreground="White" Margin="0,0,0,5"/>
+                            </StackPanel>
+                            
+                            <ListBox Grid.Row="1" ItemsSource="{Binding RefinementPresets}" SelectedItem="{Binding SelectedEditingPreset}" 
+                                     Background="#202020" BorderThickness="0" Foreground="White" Margin="0,0,0,10">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" Padding="5"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <Button Grid.Row="2" Command="{Binding AddPresetCommand}" Content="+ Add Preset" 
+                                    Background="#333" Foreground="White" BorderThickness="0" Padding="10,5" Cursor="Hand"/>
+                        </Grid>
+
+                        <!-- Right: Details Form -->
+                        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                            <StackPanel Visibility="{Binding SelectedEditingPreset, Converter={StaticResource NullToVis}}" Margin="0,20,20,20">
+                                <TextBlock Text="Edit Preset" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock Text="Configure how the AI transforms your text." Foreground="#888" FontSize="12" Margin="0,0,0,15"/>
+
+                                <TextBlock Text="Preset Name" Foreground="#888" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding SelectedEditingPreset.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+                                <TextBlock Text="Provider Profile" Foreground="#888" Margin="0,0,0,5"/>
+                                <ComboBox ItemsSource="{Binding AvailableRefinementProfiles}" 
+                                          SelectedValue="{Binding SelectedEditingPreset.ProfileId, Mode=TwoWay}"
+                                          SelectedValuePath="Id"
+                                          DisplayMemberPath="Name"
+                                          Margin="0,0,0,15"/>
+
+                                <TextBlock Text="Model" Foreground="#888" Margin="0,0,0,5"/>
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ComboBox Grid.Column="0" IsEditable="True"
+                                              ItemsSource="{Binding SelectedEditingPreset.AvailableModels}"
+                                              Text="{Binding SelectedEditingPreset.Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                              Margin="0,0,5,0"/>
+                                    <Button Grid.Column="1" Command="{Binding FetchPresetModelsCommand}" CommandParameter="{Binding SelectedEditingPreset}"
+                                            Content="↻" Width="30" Background="#444" Foreground="White" BorderThickness="0" ToolTip="Fetch Models"/>
+                                </Grid>
+
+                                <TextBlock Text="System Prompt" Foreground="#888" Margin="0,0,0,5"/>
+                                <TextBlock Text="Instructions for the AI (e.g. 'Fix grammar', 'Translate to Spanish')." Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding SelectedEditingPreset.SystemPrompt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                         Height="100" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,15"/>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <Button Command="{Binding RemovePresetCommand}" CommandParameter="{Binding SelectedEditingPreset}"
+                                            Content="Delete" Background="#FF453A" Foreground="White" Padding="15,6" BorderThickness="0"
+                                            HorizontalAlignment="Left" Margin="0,0,10,0"/>
+                                    
+                                    <Button Command="{Binding ResetPresetCommand}" CommandParameter="{Binding SelectedEditingPreset}"
+                                            Content="Reset Default" Background="#333" Foreground="#DDD" Padding="15,6" BorderThickness="0"
+                                            HorizontalAlignment="Left"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                         
+                        <TextBlock Grid.Column="1" Text="Select or add a preset to edit." Foreground="#666" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedEditingPreset}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </TabItem>
                 
-                <TabItem Header="Providers">
+                <!-- 3. Services Tab -->
+                <TabItem Header="Services">
                     <Grid Margin="20,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="180"/>
@@ -217,13 +333,19 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- List Actions -->
-                        <Grid Grid.Column="0" Margin="0,0,20,0">
+                        <Grid Grid.Column="0" Margin="0,20,20,20">
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+                            
+                            <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                                <TextBlock Text="Providers" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock Text="Manage API connections." Foreground="#888" FontSize="11" TextWrapping="Wrap"/>
+                            </StackPanel>
 
-                            <ListBox ItemsSource="{Binding Providers}" SelectedItem="{Binding SelectedEditingProvider}" 
+                            <ListBox Grid.Row="1" ItemsSource="{Binding Providers}" SelectedItem="{Binding SelectedEditingProvider}" 
                                      Background="#202020" BorderThickness="0" Foreground="White" Margin="0,0,0,10">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -241,14 +363,15 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <Button Grid.Row="1" Command="{Binding AddProviderCommand}" Content="+ Add Provider" 
+                            <Button Grid.Row="2" Command="{Binding AddProviderCommand}" Content="+ Add Provider" 
                                     Background="#333" Foreground="White" BorderThickness="0" Padding="10,5" Cursor="Hand"/>
                         </Grid>
 
                         <!-- Details Form -->
                         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                            <StackPanel Visibility="{Binding SelectedEditingProvider, Converter={StaticResource NullToVis}}">
-                                <TextBlock Text="Edit Provider" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,15"/>
+                            <StackPanel Visibility="{Binding SelectedEditingProvider, Converter={StaticResource NullToVis}}" Margin="0,20,20,20">
+                                <TextBlock Text="Edit Provider" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock Text="Configure connection details." Foreground="#888" FontSize="12" Margin="0,0,0,15"/>
 
                                 <TextBlock Text="Name" Foreground="#888" Margin="0,0,0,5"/>
                                 <TextBox Text="{Binding SelectedEditingProvider.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
@@ -294,11 +417,9 @@
                                     </Button>
                                 </Grid> 
 
-                                <!-- Model removed from here -->
-
                                 <TextBlock Text="Capabilities" Foreground="#007AFF" FontWeight="Bold" Margin="0,10,0,10"/>
                                 <CheckBox IsChecked="{Binding SelectedEditingProvider.IsTranscriptionEnabled, Mode=TwoWay}" Content="Available for Transcription" Foreground="White" Margin="0,0,0,10"/>
-                                <CheckBox IsChecked="{Binding SelectedEditingProvider.IsRefinementEnabled, Mode=TwoWay}" Content="Available for Post-Processing" Foreground="White" Margin="0,0,0,15"/>
+                                <CheckBox IsChecked="{Binding SelectedEditingProvider.IsRefinementEnabled, Mode=TwoWay}" Content="Available for Post-Processing (Refinement)" Foreground="White" Margin="0,0,0,15"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                                     <Button Command="{Binding TestProviderCommand}" CommandParameter="{Binding SelectedEditingProvider}"
@@ -310,7 +431,7 @@
                             </StackPanel>
                         </ScrollViewer>
                          
-                        <TextBlock Grid.Column="1" Text="Select or add a provider to edit details." Foreground="#666" 
+                        <TextBlock Grid.Column="1" Text="Select or add a provider to edit." Foreground="#666" 
                                    HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
@@ -326,167 +447,35 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Transcription">
+                <!-- 4. System Tab -->
+                <TabItem Header="System">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="20">
-                            <TextBlock Text="Transcription Profile" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,15"/>
+                            <TextBlock Text="System Settings" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <TextBlock Text="Customize application behavior." Foreground="#888" FontSize="12" Margin="0,0,0,20"/>
+
+                            <TextBlock Text="Window &amp; Tray" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <CheckBox IsChecked="{Binding IsAlwaysOnTop}" Content="Always on Top" Foreground="White" Margin="0,0,0,10"/>
+                            <TextBlock Text="Keep the floating widget above other windows." Foreground="#666" FontSize="11" Margin="24,0,0,10"/>
                             
-                            <TextBlock Text="Select Provider Profile" Foreground="#888" Margin="0,0,0,5"/>
-                            <ComboBox ItemsSource="{Binding AvailableTranscriptionProfiles}" 
-                                      SelectedItem="{Binding SelectedTranscriptionProfile, Mode=TwoWay}"
-                                      DisplayMemberPath="Name"
-                                      Margin="0,0,0,15"/>
-
-                            <TextBlock Text="Model" Foreground="#888" Margin="0,0,0,5"/>
-                            <Grid Margin="0,0,0,15">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <ComboBox Grid.Column="0" IsEditable="True"
-                                          ItemsSource="{Binding SelectedTranscriptionProfile.TranscriptionModels}"
-                                          Text="{Binding SelectedTranscriptionProfile.TranscriptionModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          Margin="0,0,5,0"/>
-                                <Button Grid.Column="1" Command="{Binding FetchModelsCommand}" CommandParameter="{Binding SelectedTranscriptionProfile}"
-                                        Content="↻" Width="30" Background="#444" Foreground="White" BorderThickness="0" ToolTip="Fetch Models from Provider"/>
-                            </Grid>
+                            <CheckBox IsChecked="{Binding CloseToTray}" Content="Minimize to Tray on Close" Foreground="White" Margin="0,0,0,10"/>
+                            <TextBlock Text="Keep running in background when closed." Foreground="#666" FontSize="11" Margin="24,0,0,20"/>
                             
-                            <TextBlock Text="If your desired provider is not listed, make sure it is enabled for 'Transcription' in the Providers tab." 
-                                       Foreground="#666" FontSize="11" TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
-                
-                <TabItem Header="Refinement">
-                    <Grid Margin="20,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                            <TextBlock Text="Audio Feedback" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <CheckBox IsChecked="{Binding PlaySoundOnRecord}" Content="Play Sound Effects" Foreground="White" Margin="0,0,0,10"/>
+                            <CheckBox IsChecked="{Binding PauseMediaOnRecording}" Content="Pause Media on Record" Foreground="White" Margin="0,0,0,20"/>
 
-                        <!-- Left: Presets List -->
-                        <Grid Grid.Column="0" Margin="0,0,20,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <CheckBox Grid.Row="0" IsChecked="{Binding IsPostProcessingEnabled}" Content="Enable AI Refinement" Foreground="White" Margin="0,0,0,15"/>
+                            <TextBlock Text="Output Method" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <RadioButton GroupName="InjectionModeSystem" Content="Type (Simulate Keystrokes)" Foreground="White" Margin="0,0,0,5"
+                                         IsChecked="{Binding TextInjectionMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=0}"/>
+                            <TextBlock Text="Simulates typing each character. Safer for some apps." Foreground="#666" FontSize="11" Margin="24,0,0,10"/>
                             
-                            <ListBox Grid.Row="1" ItemsSource="{Binding RefinementPresets}" SelectedItem="{Binding SelectedEditingPreset}" 
-                                     Background="#202020" BorderThickness="0" Foreground="White" Margin="0,0,0,10">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" Padding="5"/>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                            <RadioButton GroupName="InjectionModeSystem" Content="Paste (Clipboard Injection)" Foreground="White" Margin="0,0,0,5"
+                                         IsChecked="{Binding TextInjectionMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=1}"/>
+                            <TextBlock Text="Pastes text instantly. Faster." Foreground="#666" FontSize="11" Margin="24,0,0,20"/>
 
-                            <Button Grid.Row="2" Command="{Binding AddPresetCommand}" Content="+ Add Preset" 
-                                    Background="#333" Foreground="White" BorderThickness="0" Padding="10,5" Cursor="Hand"/>
-                        </Grid>
-
-                        <!-- Right: Details Form -->
-                        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                            <StackPanel Visibility="{Binding SelectedEditingPreset, Converter={StaticResource NullToVis}}">
-                                <TextBlock Text="Edit Preset" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,15"/>
-
-                                <TextBlock Text="Preset Name" Foreground="#888" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding SelectedEditingPreset.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
-
-                                <TextBlock Text="Provider Profile" Foreground="#888" Margin="0,0,0,5"/>
-                                <ComboBox ItemsSource="{Binding AvailableRefinementProfiles}" 
-                                          SelectedValue="{Binding SelectedEditingPreset.ProfileId, Mode=TwoWay}"
-                                          SelectedValuePath="Id"
-                                          DisplayMemberPath="Name"
-                                          Margin="0,0,0,15"/>
-
-                                <TextBlock Text="Model" Foreground="#888" Margin="0,0,0,5"/>
-                                <Grid Margin="0,0,0,15">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <ComboBox Grid.Column="0" IsEditable="True"
-                                              ItemsSource="{Binding SelectedEditingPreset.AvailableModels}"
-                                              Text="{Binding SelectedEditingPreset.Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                              Margin="0,0,5,0"
-                                              ToolTip="Select from available models or type custom model name"/>
-                                    <Button Grid.Column="1" Command="{Binding FetchPresetModelsCommand}" CommandParameter="{Binding SelectedEditingPreset}"
-                                            Content="↻" Width="30" Background="#444" Foreground="White" BorderThickness="0" ToolTip="Fetch Models from Provider"/>
-                                </Grid>
-
-                                <TextBlock Text="System Prompt" Foreground="#888" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding SelectedEditingPreset.SystemPrompt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                         Height="120" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,15"/>
-
-                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                    <Button Command="{Binding RemovePresetCommand}" CommandParameter="{Binding SelectedEditingPreset}"
-                                            Content="Delete Preset" Background="#FF453A" Foreground="White" Padding="15,6" BorderThickness="0"
-                                            HorizontalAlignment="Left" Margin="0,0,10,0"/>
-                                    
-                                    <Button Command="{Binding ResetPresetCommand}" CommandParameter="{Binding SelectedEditingPreset}"
-                                            Content="Reset to Default" Background="#333" Foreground="#DDD" Padding="15,6" BorderThickness="0"
-                                            HorizontalAlignment="Left"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </ScrollViewer>
-                         
-                        <TextBlock Grid.Column="1" Text="Select or add a preset to edit." Foreground="#666" 
-                                   HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedEditingPreset}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </Grid>
-                </TabItem>
-
-                <TabItem Header="About">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="20">
-                            <!-- App Icon and Name -->
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
-                                <Image Source="/Icons/app_icon.png" Width="64" Height="64" Margin="0,0,15,0"/>
-                                <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="FluentDraft" FontSize="24" FontWeight="Bold" Foreground="White"/>
-                                    <TextBlock Text="{Binding AppVersion, StringFormat='Version {0}'}" Foreground="#888" FontSize="13"/>
-                                </StackPanel>
-                            </StackPanel>
-
-                            <!-- Description -->
-                            <TextBlock Text="Description" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
-                            <TextBlock Text="Global Voice Typing for Windows powered by AI. Record your voice with a hotkey and get instant transcription inserted anywhere." 
-                                       Foreground="#CCC" TextWrapping="Wrap" Margin="0,0,0,25" LineHeight="22"/>
-
-                            <!-- Links -->
-                            <TextBlock Text="Links" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <TextBlock Text="GitHub:" Foreground="#888" Width="100"/>
-                                <TextBlock>
-                                    <Hyperlink NavigateUri="https://github.com/FluentDraft/FluentDraft" RequestNavigate="Hyperlink_RequestNavigate" Foreground="#007AFF">
-                                        github.com/FluentDraft/FluentDraft
-                                    </Hyperlink>
-                                </TextBlock>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
-                                <TextBlock Text="License:" Foreground="#888" Width="100"/>
-                                <TextBlock Text="MIT License" Foreground="#CCC"/>
-                            </StackPanel>
-
-
-
-                            <!-- Updates -->
-                            <TextBlock Text="Updates" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
-                            <StackPanel Margin="0,0,0,25">
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Updates" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                     <Button Command="{Binding CheckForUpdatesCommand}" 
                                             Content="{Binding UpdateStatus}"
                                             IsEnabled="{Binding IsCheckingForUpdates, Converter={StaticResource InverseBoolConverter}}"
@@ -525,22 +514,58 @@
                                         </Button.Resources>
                                     </Button>
                                 </StackPanel>
+                            
+                            <!-- Download Progress -->
+                            <Grid Visibility="{Binding IsCheckingForUpdates, Converter={StaticResource BoolToVis}}">
+                                <ProgressBar Height="4" Background="#333" Foreground="#007AFF" 
+                                             Value="{Binding UpdateDownloadProgress}" Maximum="100" BorderThickness="0">
+                                    <ProgressBar.Template>
+                                        <ControlTemplate TargetType="ProgressBar">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="2">
+                                                <Grid x:Name="PART_Track">
+                                                    <Border x:Name="PART_Indicator" Background="{TemplateBinding Foreground}" HorizontalAlignment="Left" CornerRadius="2"/>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </ProgressBar.Template>
+                                </ProgressBar>
+                            </Grid>
 
-                                <!-- Download Progress -->
-                                <Grid Visibility="{Binding IsCheckingForUpdates, Converter={StaticResource BoolToVis}}">
-                                    <ProgressBar Height="4" Background="#333" Foreground="#007AFF" 
-                                                 Value="{Binding UpdateDownloadProgress}" Maximum="100" BorderThickness="0">
-                                        <ProgressBar.Template>
-                                            <ControlTemplate TargetType="ProgressBar">
-                                                <Border Background="{TemplateBinding Background}" CornerRadius="2">
-                                                    <Grid x:Name="PART_Track">
-                                                        <Border x:Name="PART_Indicator" Background="{TemplateBinding Foreground}" HorizontalAlignment="Left" CornerRadius="2"/>
-                                                    </Grid>
-                                                </Border>
-                                            </ControlTemplate>
-                                        </ProgressBar.Template>
-                                    </ProgressBar>
-                                </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- 5. About Tab -->
+                <TabItem Header="About">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="20">
+                            <!-- App Icon and Name -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
+                                <Image Source="/Icons/app_icon.png" Width="64" Height="64" Margin="0,0,15,0"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="FluentDraft" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                                    <TextBlock Text="{Binding AppVersion, StringFormat='Version {0}'}" Foreground="#888" FontSize="13"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Description -->
+                            <TextBlock Text="About Application" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <TextBlock Text="Global Voice Typing for Windows powered by AI. Record your voice with a hotkey and get instant transcription inserted anywhere." 
+                                       Foreground="#CCC" TextWrapping="Wrap" Margin="0,0,0,25" LineHeight="22"/>
+
+                            <!-- Links -->
+                            <TextBlock Text="Resources" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <TextBlock Text="GitHub:" Foreground="#888" Width="100"/>
+                                <TextBlock>
+                                    <Hyperlink NavigateUri="https://github.com/FluentDraft/FluentDraft" RequestNavigate="Hyperlink_RequestNavigate" Foreground="#007AFF">
+                                        github.com/FluentDraft/FluentDraft
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
+                                <TextBlock Text="License:" Foreground="#888" Width="100"/>
+                                <TextBlock Text="MIT License" Foreground="#CCC"/>
                             </StackPanel>
 
                             <!-- Copyright -->
