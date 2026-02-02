@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.5.0] - 2026-02-03
+
+### ✨ What's New
+- **Multi-Language Support**: FluentDraft is now available in **English, Russian, German, Spanish, French, and Italian**! The interface language can be changed instantly in Settings.
+- **Debug Mode**: Added a new troubleshooting option in Settings > System. When enabled, the app logs detailed information to a file, making it easier to diagnose issues.
+
+### 🐛 Bug Fixes
+- Fixed a startup crash caused by incorrect resource loading.
+- Resolved an issue where some buttons or labels appeared with blank text.
+- Fixed a bug where changing the language setting didn't update the UI immediately.
+
+### ⚡ Improvements
+- Optimized resource handling for faster application startup.
+- Improved Settings window layout for better localization support.
+
 ## [1.4.0] - 2026-02-02
 
 ### ✨ What's New
