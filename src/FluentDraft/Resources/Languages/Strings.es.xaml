@@ -69,6 +69,8 @@
     <system:String x:Key="S_System_Window">Ventana</system:String>
     <system:String x:Key="S_System_TopMost">Siempre visible</system:String>
     <system:String x:Key="S_System_Tray">Minimizar a la bandeja</system:String>
+    <system:String x:Key="S_System_DebugMode">Modo de depuración</system:String>
+    <system:String x:Key="S_System_DebugDesc">Guardar registros detallados para solucionar problemas.</system:String>
     <system:String x:Key="S_System_Audio">Audio</system:String>
     <system:String x:Key="S_System_Sounds">Reproducir sonidos</system:String>
     <system:String x:Key="S_System_PauseMedia">Pausar medios al grabar</system:String>

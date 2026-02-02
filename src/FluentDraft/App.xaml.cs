@@ -137,6 +137,13 @@ namespace FluentDraft
 
                 var settings = settingsService.LoadSettings();
 
+                // Initialize Logger Debug Mode
+                var logger = ServiceProvider.GetRequiredService<ILoggingService>();
+                if (logger is FluentDraft.Services.Implementations.FileLogger fileLogger)
+                {
+                    fileLogger.SetDebugMode(settings.IsDebugModeEnabled);
+                }
+
                 // Check for updates in background
                 Task.Run(async () => 
                 {

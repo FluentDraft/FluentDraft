@@ -68,7 +68,9 @@
     <system:String x:Key="S_System_Lang">Langue (Language)</system:String>
     <system:String x:Key="S_System_Window">Fenêtre</system:String>
     <system:String x:Key="S_System_TopMost">Toujours au premier plan</system:String>
-    <system:String x:Key="S_System_Tray">Minimiser dans la barre système</system:String>
+    <system:String x:Key="S_System_Tray">Réduire dans la barre d'état</system:String>
+    <system:String x:Key="S_System_DebugMode">Mode débogage</system:String>
+    <system:String x:Key="S_System_DebugDesc">Enregistrer des journaux détaillés pour le dépannage.</system:String>
     <system:String x:Key="S_System_Audio">Audio</system:String>
     <system:String x:Key="S_System_Sounds">Effets sonores</system:String>
     <system:String x:Key="S_System_PauseMedia">Mettre en pause les médias</system:String>

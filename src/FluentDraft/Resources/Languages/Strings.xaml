@@ -69,6 +69,8 @@
     <system:String x:Key="S_System_Window">Window</system:String>
     <system:String x:Key="S_System_TopMost">Always on Top</system:String>
     <system:String x:Key="S_System_Tray">Minimize to Tray</system:String>
+    <system:String x:Key="S_System_DebugMode">Debug Mode</system:String>
+    <system:String x:Key="S_System_DebugDesc">Save detailed logs to file for troubleshooting.</system:String>
     <system:String x:Key="S_System_Audio">Audio</system:String>
     <system:String x:Key="S_System_Sounds">Play sound effects</system:String>
     <system:String x:Key="S_System_PauseMedia">Pause media while recording</system:String>

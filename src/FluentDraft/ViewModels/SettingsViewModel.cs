@@ -113,6 +113,19 @@ namespace FluentDraft.ViewModels
         [ObservableProperty]
         private int _maxRecordingSeconds = 120;
 
+        [ObservableProperty]
+        private bool _isDebugModeEnabled = false;
+
+        partial void OnIsDebugModeEnabledChanged(bool value)
+        {
+             // Update Logger immediately
+             if (_logger is FluentDraft.Services.Implementations.FileLogger fileLogger)
+             {
+                 fileLogger.SetDebugMode(value);
+             }
+             SaveSettings();
+        }
+
         // Update Properties
         [ObservableProperty]
         private string _updateStatus = "Check for updates";
@@ -476,6 +489,13 @@ namespace FluentDraft.ViewModels
             TextInjectionMode = settings.TextInjectionMode;
             SelectedAudioDevice = settings.SelectedMicrophone;
             MaxRecordingSeconds = settings.MaxRecordingSeconds;
+            IsDebugModeEnabled = settings.IsDebugModeEnabled;
+
+            // Ensure Logger is synced with loaded setting
+            if (_logger is FluentDraft.Services.Implementations.FileLogger fileLogger)
+            {
+                fileLogger.SetDebugMode(IsDebugModeEnabled);
+            }
 
             _currentHotkeyCodes = settings.HotkeyCodes ?? new List<int> { 0x14 };
             IsHotkeySuppressionEnabled = settings.IsHotkeySuppressionEnabled;
@@ -524,7 +544,8 @@ namespace FluentDraft.ViewModels
                 PauseMediaOnRecording = PauseMediaOnRecording,
                 TextInjectionMode = TextInjectionMode,
                 SelectedMicrophone = SelectedAudioDevice,
-                MaxRecordingSeconds = MaxRecordingSeconds
+                MaxRecordingSeconds = MaxRecordingSeconds,
+                IsDebugModeEnabled = IsDebugModeEnabled
             };
             _settingsService.SaveSettings(settings);
             

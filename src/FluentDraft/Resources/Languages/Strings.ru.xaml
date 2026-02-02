@@ -69,6 +69,8 @@
     <system:String x:Key="S_System_Window">Окно</system:String>
     <system:String x:Key="S_System_TopMost">Поверх всех окон</system:String>
     <system:String x:Key="S_System_Tray">Сворачивать в трей</system:String>
+    <system:String x:Key="S_System_DebugMode">Режим отладки</system:String>
+    <system:String x:Key="S_System_DebugDesc">Сохранять подробные логи в файл для диагностики.</system:String>
     <system:String x:Key="S_System_Audio">Звук</system:String>
     <system:String x:Key="S_System_Sounds">Звуковые эффекты</system:String>
     <system:String x:Key="S_System_PauseMedia">Пауза медиа при записи</system:String>

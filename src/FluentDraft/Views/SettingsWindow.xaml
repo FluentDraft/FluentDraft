@@ -471,6 +471,9 @@
                             
                             <CheckBox IsChecked="{Binding CloseToTray}" Content="{DynamicResource S_System_Tray}" Foreground="White" Margin="0,0,0,10"/>
                             <TextBlock Text="Keep running in background when closed." Foreground="#666" FontSize="11" Margin="24,0,0,20"/>
+
+                            <CheckBox IsChecked="{Binding IsDebugModeEnabled}" Content="{DynamicResource S_System_DebugMode}" Foreground="White" Margin="0,0,0,10"/>
+                            <TextBlock Text="{DynamicResource S_System_DebugDesc}" Foreground="#666" FontSize="11" Margin="24,0,0,20"/>
                             
                             <TextBlock Text="{DynamicResource S_System_Audio}" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
                             <CheckBox IsChecked="{Binding PlaySoundOnRecord}" Content="{DynamicResource S_System_Sounds}" Foreground="White" Margin="0,0,0,10"/>

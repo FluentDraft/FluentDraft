@@ -10,6 +10,7 @@ namespace FluentDraft.Services.Implementations
         private readonly string _logDir;
         private readonly string _logFile;
         private readonly StringBuilder _inMemoryLogs = new StringBuilder();
+        private bool _isDebugModeEnabled = false;
 
         public event Action<string>? OnLogAdded;
 
@@ -25,6 +26,12 @@ namespace FluentDraft.Services.Implementations
 
             _logFile = Path.Combine(_logDir, $"log_{DateTime.Now:yyyyMMdd}.txt");
             LogInfo("Logger initialized.");
+        }
+
+        public void SetDebugMode(bool enabled)
+        {
+            _isDebugModeEnabled = enabled;
+            if (enabled) LogInfo("Debug Mode ENABLED.");
         }
 
         public void LogInfo(string message) => Log("INFO", message);
@@ -44,13 +51,20 @@ namespace FluentDraft.Services.Implementations
             _inMemoryLogs.AppendLine(formattedMessage);
             OnLogAdded?.Invoke(formattedMessage);
 
-            try
+            // In Debug Mode: Write ALL logs to file
+            // Normal Mode: Only write ERROR calls to file
+            bool shouldWriteToFile = _isDebugModeEnabled || level == "ERROR";
+
+            if (shouldWriteToFile)
             {
-                File.AppendAllLines(_logFile, new[] { formattedMessage });
-            }
-            catch
-            {
-                // If file is locked, we just skip writing to disk but keep in memory
+                try
+                {
+                    File.AppendAllLines(_logFile, new[] { formattedMessage });
+                }
+                catch
+                {
+                    // If file is locked, we just skip writing to disk but keep in memory
+                }
             }
         }
     }
