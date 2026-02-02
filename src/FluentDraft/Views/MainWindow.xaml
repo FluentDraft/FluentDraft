@@ -206,7 +206,7 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" BorderThickness="0" Cursor="Hand"
                                   Visibility="{Binding LastTranscription, Converter={StaticResource RecordingColorConverter}, ConverterParameter=HasTextVis}">
                          <ScrollViewer.InputBindings>
-                             <MouseBinding MouseAction="LeftClick" Command="{Binding CopyLastTranscriptionCommand}"/>
+                             <MouseBinding MouseAction="LeftClick" Command="{Binding ProcessTextActionCommand}"/>
                          </ScrollViewer.InputBindings>
                          <TextBlock Text="{Binding LastTranscription}" 
                                    TextWrapping="Wrap" Foreground="White" FontSize="14" 
@@ -347,6 +347,21 @@
                                       Stretch="Uniform"
                                       VerticalAlignment="Center" Margin="2,0"/>
                             </Button>
+
+                            <!-- Auto-Paste Toggle -->
+                             <Ellipse Width="6" Height="6" Fill="{Binding IsAutoInsertEnabled, Converter={StaticResource RecordingColorConverter}, ConverterParameter=StateColor}" Margin="15,0,6,0"/>
+                             <ToggleButton IsChecked="{Binding IsAutoInsertEnabled}" 
+                                           Content="Auto-Paste" 
+                                           FontSize="12" 
+                                           Foreground="{Binding IsAutoInsertEnabled, Converter={StaticResource RecordingColorConverter}, ConverterParameter=StateBrush}"
+                                           BorderThickness="0" Background="Transparent"
+                                           Cursor="Hand">
+                                 <ToggleButton.Template>
+                                     <ControlTemplate TargetType="ToggleButton">
+                                         <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"/>
+                                     </ControlTemplate>
+                                 </ToggleButton.Template>
+                             </ToggleButton>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">

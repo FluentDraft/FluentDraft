@@ -8,5 +8,8 @@ namespace FluentDraft.Services.Interfaces
         Task ResumeMediaAsync();
         Task ToggleMicrophoneMuteAsync(); // Retain just in case
         Task UnmuteSystemAudioAsync();
+
+        System.IntPtr GetForegroundWindowHandle();
+        bool SetForegroundWindow(System.IntPtr handle);
     }
 }

@@ -32,6 +32,7 @@ namespace FluentDraft.Services.Interfaces
         public bool PlaySoundOnRecord { get; set; } = true;
         public int SelectedMicrophone { get; set; } = 0; // Default to first available
         public int TextInjectionMode { get; set; } = 1; // 0 = Type, 1 = Paste
+        public bool IsAutoInsertEnabled { get; set; } = true;
         public bool CloseToTray { get; set; } = true;
         public int MaxRecordingSeconds { get; set; } = 120; // Default 2 minutes
         public string? ChatSessionId { get; set; } // Generated User ID for session tracking

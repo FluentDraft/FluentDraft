@@ -142,6 +142,11 @@ namespace FluentDraft.ViewModels
         [ObservableProperty]
         private string _instructionText = "Loading...";
 
+        [ObservableProperty]
+        private bool _isAutoInsertEnabled = true;
+
+        private IntPtr _targetWindowHandle = IntPtr.Zero;
+
         private string _chatSessionId = ""; // Current User/Session ID
 
         public RelayCommand ResetChatSessionCommand { get; }
@@ -207,6 +212,10 @@ namespace FluentDraft.ViewModels
         public RelayCommand SelectAllHistoryCommand { get; }
         public RelayCommand DeselectAllHistoryCommand { get; }
         public RelayCommand CopySelectedHistoryCommand { get; }
+        
+        public RelayCommand ManualInsertCommand { get; }
+        public RelayCommand ProcessTextActionCommand { get; }
+
 
         public MainViewModel(
             IAudioRecorder audioRecorder,
@@ -272,6 +281,13 @@ namespace FluentDraft.ViewModels
 
             UpdateNowCommand = new RelayCommand(ExecuteUpdateNow);
             DismissUpdateCommand = new RelayCommand(DismissUpdate);
+
+            ManualInsertCommand = new RelayCommand(ExecuteManualInsert);
+            ProcessTextActionCommand = new RelayCommand(() => 
+            {
+                if (IsAutoInsertEnabled) CopyLastTranscription();
+                else ExecuteManualInsert();
+            });
 
             LoadSettings();
             InitializeHistory();
@@ -505,6 +521,8 @@ namespace FluentDraft.ViewModels
                     _chatSessionId = Guid.NewGuid().ToString();
                 }
 
+                IsAutoInsertEnabled = settings.IsAutoInsertEnabled;
+
                 _currentHotkeyCodes = settings.HotkeyCodes ?? new List<int> { 0x14 };
                 UpdateHotkeyDisplay();
                 _hotkeyManager.SetMonitoredKeys(_currentHotkeyCodes);
@@ -540,7 +558,9 @@ namespace FluentDraft.ViewModels
              settings.PlaySoundOnRecord = PlaySoundOnRecord;
              settings.PauseMediaOnRecording = PauseMediaOnRecording;
              settings.TextInjectionMode = TextInjectionMode;
+             settings.TextInjectionMode = TextInjectionMode;
              settings.SelectedMicrophone = SelectedAudioDevice;
+             settings.IsAutoInsertEnabled = IsAutoInsertEnabled;
              
              _settingsService.SaveSettings(settings);
 
@@ -642,6 +662,9 @@ namespace FluentDraft.ViewModels
             LastTranscription = "";
             _recordingStartTime = DateTime.Now;
             _recordingTimer?.Start();
+            
+            _targetWindowHandle = _systemControl.GetForegroundWindowHandle();
+            _logger.LogInfo($"Captured target window handle: {_targetWindowHandle}");
 
             IsProcessing = true;
 
@@ -750,8 +773,15 @@ namespace FluentDraft.ViewModels
                 var processingElapsed = DateTime.Now - _processingStartTime;
                 ProcessingTimeDisplay = $"{processingElapsed.TotalSeconds:F1}s".Replace(".", ",");
 
-                await _inputInjector.TypeTextAsync(text, TextInjectionMode == 1);
-                _logger.LogInfo("Text injected.");
+                if (IsAutoInsertEnabled)
+                {
+                    await _inputInjector.TypeTextAsync(text, TextInjectionMode == 1);
+                    _logger.LogInfo("Text injected automatically.");
+                }
+                else
+                {
+                    _logger.LogInfo("Auto-insert disabled. Waiting for user action.");
+                }
 
                 _ = Task.Delay(3000).ContinueWith(_ => 
                 {
@@ -799,6 +829,32 @@ namespace FluentDraft.ViewModels
             HistoryItems.Clear();
              HasSelectedItems = false;
         }
+
+        private async void ExecuteManualInsert()
+        {
+            if (string.IsNullOrEmpty(LastTranscription)) return;
+
+            if (_targetWindowHandle != IntPtr.Zero)
+            {
+                _systemControl.SetForegroundWindow(_targetWindowHandle);
+                await Task.Delay(100); // Wait for focus switch
+                await _inputInjector.TypeTextAsync(LastTranscription, TextInjectionMode == 1);
+                _logger.LogInfo("Text injected manually.");
+            }
+            else
+            {
+                 // Fallback if handle invalid? Maybe just copy?
+                 // Or try to inject anyway (might go to self if active)
+                 // But wait, if user clicked, self IS active.
+                 // So we must have a handle.
+                 
+                System.Windows.MessageBox.Show("Target window lost. Copied to clipboard instead.");
+                CopyLastTranscription();
+            }
+        }
+        
+        partial void OnIsAutoInsertEnabledChanged(bool value) => SaveSettings();
+
         private void CopyHistoryItem(TranscriptionItem item)
         {
             if(!string.IsNullOrEmpty(item.Text)) System.Windows.Clipboard.SetText(item.Text);

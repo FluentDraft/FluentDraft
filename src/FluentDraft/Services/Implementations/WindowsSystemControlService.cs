@@ -4,6 +4,7 @@ using WindowsInput;
 
 using FluentDraft.Services.Interfaces;
 using Windows.Media.Control;
+using System.Runtime.InteropServices;
 
 namespace FluentDraft.Services.Implementations
 {
@@ -74,5 +75,26 @@ namespace FluentDraft.Services.Implementations
             _inputSimulator.Keyboard.KeyPress(VirtualKeyCode.VOLUME_MUTE);
             return Task.CompletedTask;
         }
+
+        public IntPtr GetForegroundWindowHandle()
+        {
+            return GetForegroundWindow();
+        }
+
+        public bool SetForegroundWindow(IntPtr handle)
+        {
+            if (handle == IntPtr.Zero) return false;
+            // Often needed if we are not the active window trying to set another
+            // But if we are the active window (user clicked us), we should be able to set it.
+            // Sometimes AttachThreadInput is needed, but let's try simple way first.
+            return SetForegroundWindowImport(handle);
+        }
+
+        [DllImport("user32.dll", EntryPoint = "GetForegroundWindow")]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", EntryPoint = "SetForegroundWindow")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetForegroundWindowImport(IntPtr hWnd);
     }
 }
