@@ -445,16 +445,7 @@
                                 <TextBlock Text="MIT License" Foreground="#CCC"/>
                             </StackPanel>
 
-                            <!-- System Info -->
-                            <TextBlock Text="System Information" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <TextBlock Text=".NET Runtime:" Foreground="#888" Width="100"/>
-                                <TextBlock Text="{Binding DotNetVersion}" Foreground="#CCC"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
-                                <TextBlock Text="OS:" Foreground="#888" Width="100"/>
-                                <TextBlock Text="{Binding OsVersion}" Foreground="#CCC"/>
-                            </StackPanel>
+
 
                             <!-- Updates -->
                             <TextBlock Text="Updates" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
