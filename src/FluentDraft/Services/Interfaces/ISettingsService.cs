@@ -26,6 +26,7 @@ namespace FluentDraft.Services.Interfaces
         public string PostProcessingPrompt { get; set; } = "You are a text refinement assistant. Your goal is to correct grammar, add punctuation, and improve clarity of the text provided within [INPUT_TEXT] tags. Maintain the original meaning and tone. Output ONLY the refined text itself, without any tags or additional comments."; // Legacy, kept for migration
         
         // General Settings
+        public string LanguageCode { get; set; } = "en";
         public bool IsAlwaysOnTop { get; set; } = false;
         public List<int> HotkeyCodes { get; set; } = new List<int> { 0x14 }; // Default to CapsLock
         public bool IsHotkeySuppressionEnabled { get; set; } = false;

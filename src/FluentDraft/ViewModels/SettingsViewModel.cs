@@ -24,6 +24,7 @@ namespace FluentDraft.ViewModels
         private readonly GlobalHotkeyManager _hotkeyManager;
         private readonly ILoggingService _logger;
         private readonly IUpdateService _updateService;
+        private readonly ILocalizationService _localizationService;
 
         // Providers
         [ObservableProperty]
@@ -129,6 +130,21 @@ namespace FluentDraft.ViewModels
 
         // About Properties
         public string AppVersion => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
+        public ILocalizationService LocalizationService => _localizationService;
+
+        public string SelectedLanguage
+        {
+            get => _localizationService.CurrentLanguageCode;
+            set
+            {
+                if (_localizationService.CurrentLanguageCode != value)
+                {
+                    _localizationService.SetLanguage(value);
+                    OnPropertyChanged();
+                    SaveSettings(); // Persist immediately
+                }
+            }
+        }
 
         
         public ObservableCollection<string> AvailableProviderTypes { get; } = new() { "Groq", "OpenAI", "Custom" };
@@ -149,7 +165,8 @@ namespace FluentDraft.ViewModels
             AudioDeviceService audioDeviceService,
             GlobalHotkeyManager hotkeyManager,
             ILoggingService logger,
-            IUpdateService updateService)
+            IUpdateService updateService,
+            ILocalizationService localizationService)
         {
             _settingsService = settingsService;
             _transcriptionService = transcriptionService;
@@ -157,6 +174,7 @@ namespace FluentDraft.ViewModels
             _hotkeyManager = hotkeyManager;
             _logger = logger;
             _updateService = updateService;
+            _localizationService = localizationService;
 
             LoadAudioDevices();
 

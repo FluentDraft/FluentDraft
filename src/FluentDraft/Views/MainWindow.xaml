@@ -380,8 +380,8 @@
                              </Button>
 
                              <!-- History Button -->
-                             <Button Command="{Binding ToggleHistoryCommand}" Style="{StaticResource IconButtonStyle}" Margin="0,0,10,0" ToolTip="History">
-                                 <TextBlock Text="Recent" Foreground="{Binding IsHistoryVisible, Converter={StaticResource RecordingColorConverter}, ConverterParameter=StateBrush}" FontSize="11" VerticalAlignment="Center"/>
+                             <Button Command="{Binding ToggleHistoryCommand}" Style="{StaticResource IconButtonStyle}" Margin="0,0,10,0" ToolTip="{DynamicResource S_Main_History}">
+                                 <TextBlock Text="{DynamicResource S_Main_Recent}" Foreground="{Binding IsHistoryVisible, Converter={StaticResource RecordingColorConverter}, ConverterParameter=StateBrush}" FontSize="11" VerticalAlignment="Center"/>
                              </Button>
 
                             <!-- Settings Button -->
@@ -393,7 +393,7 @@
                             <StackPanel Orientation="Horizontal" Visibility="{Binding UiState, Converter={StaticResource RecordingColorConverter}, ConverterParameter=ListeningVis}">
                                 <Button Command="{Binding CancelCommand}" Style="{StaticResource IconButtonStyle}">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Stop" Foreground="#AAA" FontSize="12" Margin="0,0,5,0"/>
+                                        <TextBlock Text="{DynamicResource S_Btn_Stop}" Foreground="#AAA" FontSize="12" Margin="0,0,5,0"/>
                                         <Border CornerRadius="3" Background="#333" Padding="4,1">
                                            <TextBlock Text="Esc" Foreground="#888" FontSize="10"/>
                                         </Border>
@@ -422,19 +422,19 @@
                         <!-- Header -->
                         <Grid Margin="15,0,15,5">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="History" Foreground="#AAA" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                <TextBlock Text="{DynamicResource S_Main_History}" Foreground="#AAA" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,15,0"/>
                                 
                                 <!-- Selection Toolbar -->
-                                <Button Command="{Binding SelectAllHistoryCommand}" Content="Select All" ToolTip="Select All"
+                                <Button Command="{Binding SelectAllHistoryCommand}" Content="{DynamicResource S_Main_SelectAll}" ToolTip="{DynamicResource S_Main_SelectAll}"
                                         Foreground="#007AFF" Background="Transparent" BorderThickness="0" Cursor="Hand" FontSize="11" Margin="0,0,10,0"/>
-                                <Button Command="{Binding DeselectAllHistoryCommand}" Content="Clear Selection" ToolTip="Deselect All"
+                                <Button Command="{Binding DeselectAllHistoryCommand}" Content="{DynamicResource S_Main_ClearSel}" ToolTip="{DynamicResource S_Main_ClearSel}"
                                         Foreground="#666" Background="Transparent" BorderThickness="0" Cursor="Hand" FontSize="11" Margin="0,0,10,0"/>
-                                <Button Command="{Binding CopySelectedHistoryCommand}" Content="Copy Selected" ToolTip="Copy Checked Items"
+                                <Button Command="{Binding CopySelectedHistoryCommand}" Content="{DynamicResource S_Main_CopySel}" ToolTip="{DynamicResource S_Main_CopySel}"
                                         Visibility="{Binding HasSelectedItems, Converter={StaticResource BoolToVis}}"
                                         Foreground="#4CD964" Background="Transparent" BorderThickness="0" Cursor="Hand" FontSize="11"/>
                             </StackPanel>
 
-                            <Button Command="{Binding ClearHistoryCommand}" Content="Clear History" HorizontalAlignment="Right"
+                            <Button Command="{Binding ClearHistoryCommand}" Content="{DynamicResource S_Main_ClearHist}" HorizontalAlignment="Right"
                                     Foreground="#FF453A" Background="Transparent" BorderThickness="0" Cursor="Hand" FontSize="11"/>
                         </Grid>
 

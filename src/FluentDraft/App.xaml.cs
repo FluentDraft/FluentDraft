@@ -77,6 +77,7 @@ namespace FluentDraft
             services.AddSingleton<AudioDeviceService>();
             services.AddSingleton<IAudioRecorder, NAudioRecorder>();
             services.AddSingleton<IInputInjector, WindowsInputInjector>();
+            services.AddSingleton<ILocalizationService, LocalizationService>();
             
             // Transcription Providers
             services.AddSingleton<ITranscriptionService, OpenAiCompatibleTranscriptionService>();
@@ -127,10 +128,13 @@ namespace FluentDraft
             }
 
             base.OnStartup(e);
-                File.AppendAllText("startup_log.txt", $"{DateTime.Now}: OnStartup Started\n");
             try 
             {
                 var settingsService = ServiceProvider.GetRequiredService<ISettingsService>();
+                
+                // Initialize LocalizationService to ensure resources are loaded
+                ServiceProvider.GetRequiredService<ILocalizationService>();
+
                 var settings = settingsService.LoadSettings();
 
                 // Check for updates in background
@@ -156,7 +160,7 @@ namespace FluentDraft
                     }
                     catch (Exception ex)
                     {
-                        File.AppendAllText("startup_log.txt", $"{DateTime.Now}: Auto-update check failed: {ex.Message}\n");
+                        // Silently fail update check or log to ILoggingService if needed
                     }
                 });
 
@@ -165,7 +169,6 @@ namespace FluentDraft
                 
                 if (hasValidProviders && !settings.IsSetupCompleted)
                 {
-                    File.AppendAllText("startup_log.txt", $"{DateTime.Now}: Auto-fixing IsSetupCompleted flag (providers exist)\n");
                     settings.IsSetupCompleted = true;
                     // We'll save after verifying ChatSessionId below, just once.
                 }
@@ -176,23 +179,17 @@ namespace FluentDraft
                     settings.ChatSessionId = Guid.NewGuid().ToString();
                     settingsService.SaveSettings(settings); // Save immediately
                 }
-                else if (settings.IsSetupCompleted) // Only save if we modified setup flag and didn't save above
+                else if (settings.IsSetupCompleted) 
                 {
-                     // If we changed IsSetupCompleted (dirty check? simplified here)
-                     // Actually better just save if we touched anything.
-                     // The logic was: if (hasValidProviders && !settings.IsSetupCompleted) -> save
-                     // We split the save. Let's consolidate.
                      if (hasValidProviders) settingsService.SaveSettings(settings);
                 }
 
                 // Only show wizard if BOTH: flag is false AND no valid providers exist
                 if (!settings.IsSetupCompleted && !hasValidProviders)
                 {
-                    File.AppendAllText("startup_log.txt", $"{DateTime.Now}: Launching Setup Wizard\n");
                     var wizard = ServiceProvider.GetRequiredService<SetupWizardWindow>();
                     if (wizard.ShowDialog() == true)
                     {
-                        File.AppendAllText("startup_log.txt", $"{DateTime.Now}: Wizard Completed. Launching Main\n");
                         var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
                         Application.Current.MainWindow = mainWindow;
                         mainWindow.Show();
@@ -200,13 +197,11 @@ namespace FluentDraft
                     }
                     else
                     {
-                        File.AppendAllText("startup_log.txt", $"{DateTime.Now}: Wizard Cancelled. Shutdown.\n");
                         Shutdown();
                     }
                 }
                 else
                 {
-                    File.AppendAllText("startup_log.txt", $"{DateTime.Now}: Launching MainWindow\n");
                     var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
                     Application.Current.MainWindow = mainWindow;
                     mainWindow.Show();
@@ -216,7 +211,6 @@ namespace FluentDraft
             }
             catch (Exception ex)
             {
-                File.AppendAllText("startup_log.txt", $"{DateTime.Now}: OnStartup Error: {ex}\n");
                 MessageBox.Show($"Startup Error: {ex}");
             }
         }

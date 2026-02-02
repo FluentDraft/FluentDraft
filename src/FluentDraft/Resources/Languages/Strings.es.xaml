@@ -1,0 +1,133 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- General -->
+    <system:String x:Key="S_App_Title">FluentDraft</system:String>
+    <system:String x:Key="S_Btn_Cancel">Cancelar</system:String>
+    <system:String x:Key="S_Btn_Close">Cerrar</system:String>
+    <system:String x:Key="S_Btn_Save">Guardar</system:String>
+    <system:String x:Key="S_Btn_Apply">Aplicar</system:String>
+    <system:String x:Key="S_Btn_Update">Actualizar</system:String>
+    <system:String x:Key="S_Btn_Restart">Reiniciar</system:String>
+    <system:String x:Key="S_Btn_Stop">Parar</system:String>
+    
+    <!-- Tabs -->
+    <system:String x:Key="S_Tab_Speech">Voz</system:String>
+    <system:String x:Key="S_Tab_Refinement">Procesamiento</system:String>
+    <system:String x:Key="S_Tab_Services">Servicios</system:String>
+    <system:String x:Key="S_Tab_System">Sistema</system:String>
+    <system:String x:Key="S_Tab_About">Acerca de</system:String>
+
+    <!-- Speech -->
+    <system:String x:Key="S_Speech_Microphone">Micrófono</system:String>
+    <system:String x:Key="S_Speech_InputDevice">Dispositivo de entrada</system:String>
+    <system:String x:Key="S_Speech_Hotkey">Atajo de teclado</system:String>
+    <system:String x:Key="S_Speech_PressKey">Presione la combinación para grabar.</system:String>
+    <system:String x:Key="S_Speech_Set">Asignar</system:String>
+    <system:String x:Key="S_Speech_BlockKey">Bloquear tecla original</system:String>
+    <system:String x:Key="S_Speech_BlockKeyDesc">Evita que la tecla funcione en otras apps (ej. Caps Lock).</system:String>
+    <system:String x:Key="S_Speech_RecMode">Modo de grabación</system:String>
+    <system:String x:Key="S_Speech_PushToTalk">Mantener para hablar</system:String>
+    <system:String x:Key="S_Speech_TapToTalk">Alternar (Inicio/Fin)</system:String>
+    <system:String x:Key="S_Speech_TransEngine">Motor de Transcripción</system:String>
+    <system:String x:Key="S_Speech_Provider">Proveedor</system:String>
+    <system:String x:Key="S_Speech_Model">Modelo</system:String>
+    <system:String x:Key="S_Speech_TimeLimit">Límite de tiempo</system:String>
+
+    <!-- Refinement -->
+    <system:String x:Key="S_Refine_Enable">Activar refinamiento IA</system:String>
+    <system:String x:Key="S_Refine_Desc">Mejora automáticamente la claridad y gramática del texto.</system:String>
+    <system:String x:Key="S_Refine_Preset">Preajuste</system:String>
+    <system:String x:Key="S_Refine_EditInfo">Editar preajuste seleccionado</system:String>
+    <system:String x:Key="S_Refine_Name">Nombre</system:String>
+    <system:String x:Key="S_Refine_Prompt">Prompt del sistema</system:String>
+    <system:String x:Key="S_Refine_Model">Modelo</system:String>
+    <system:String x:Key="S_Refine_Btn_Add">Añadir</system:String>
+    <system:String x:Key="S_Refine_Btn_Delete">Borrar</system:String>
+    <system:String x:Key="S_Refine_Btn_Reset">Restablecer</system:String>
+
+    <!-- Services -->
+    <system:String x:Key="S_Services_Manage">Gestionar Provedores</system:String>
+    <system:String x:Key="S_Services_Desc">Configurar OpenAI, Groq o servicios compatibles.</system:String>
+    <system:String x:Key="S_Services_List">Proveedores configurados</system:String>
+    <system:String x:Key="S_Services_Add">Añadir proveedor</system:String>
+    <system:String x:Key="S_Services_Name">Nombre</system:String>
+    <system:String x:Key="S_Services_Type">Tipo</system:String>
+    <system:String x:Key="S_Services_Endpoint">URL Base</system:String>
+    <system:String x:Key="S_Services_ApiKey">Clave API</system:String>
+    <system:String x:Key="S_Services_Paste">Pegar</system:String>
+    <system:String x:Key="S_Services_GetKey">Obtener clave →</system:String>
+    <system:String x:Key="S_Services_Capabilities">Capacidades</system:String>
+    <system:String x:Key="S_Services_Cap_Trans">Transcripción</system:String>
+    <system:String x:Key="S_Services_Cap_Refine">Refinamiento (LLM)</system:String>
+    <system:String x:Key="S_Services_Test">Probar conexión</system:String>
+    <system:String x:Key="S_Services_Delete">Eliminar</system:String>
+
+    <!-- System -->
+    <system:String x:Key="S_System_Lang">Idioma (Language)</system:String>
+    <system:String x:Key="S_System_Window">Ventana</system:String>
+    <system:String x:Key="S_System_TopMost">Siempre visible</system:String>
+    <system:String x:Key="S_System_Tray">Minimizar a la bandeja</system:String>
+    <system:String x:Key="S_System_Audio">Audio</system:String>
+    <system:String x:Key="S_System_Sounds">Reproducir sonidos</system:String>
+    <system:String x:Key="S_System_PauseMedia">Pausar medios al grabar</system:String>
+    <system:String x:Key="S_System_Output">Salida</system:String>
+    <system:String x:Key="S_System_Injection">Método de inserción</system:String>
+    <system:String x:Key="S_System_InjectType">Escribir (Typing)</system:String>
+    <system:String x:Key="S_System_InjectPaste">Pegar (Paste)</system:String>
+    <system:String x:Key="S_System_Updates">Actualizaciones</system:String>
+    <system:String x:Key="S_System_CheckUpdate">Buscar actualizaciones</system:String>
+    <system:String x:Key="S_System_NoUpdates">Tienes la última versión.</system:String>
+
+    <!-- About -->
+    <system:String x:Key="S_About_Version">Versión</system:String>
+    <system:String x:Key="S_About_Desc">Escritura por voz global para Windows con IA.</system:String>
+    <system:String x:Key="S_About_Repo">Repositorio GitHub</system:String>
+    <system:String x:Key="S_About_Issues">Reportar problema</system:String>
+    <system:String x:Key="S_About_License">Licencia</system:String>
+    
+    <!-- Main -->
+    <system:String x:Key="S_Main_Hint_Cancel">'Stock' o Esc para cancelar</system:String>
+    <system:String x:Key="S_Main_Status_Ready">Listo</system:String>
+    <system:String x:Key="S_Main_Status_Listening">Escuchando...</system:String>
+    <system:String x:Key="S_Main_Status_Processing">Procesando...</system:String>
+
+    <!-- Missing Keys -->
+    <system:String x:Key="S_Btn_Wizard">Ejecutar asistente de configuración</system:String>
+    <system:String x:Key="S_Btn_SaveClose">Guardar y Cerrar</system:String>
+    <system:String x:Key="S_About_Resources">Recursos</system:String>
+    <system:String x:Key="S_About_Copyright">Derechos de autor © 2026 FluentDraft Contributors</system:String>
+
+    <!-- History Panel -->
+    <system:String x:Key="S_Main_Recent">Reciente</system:String>
+    <system:String x:Key="S_Main_History">Historial</system:String>
+    <system:String x:Key="S_Main_SelectAll">Seleccionar todo</system:String>
+    <system:String x:Key="S_Main_ClearSel">Limpiar selección</system:String>
+    <system:String x:Key="S_Main_CopySel">Copiar seleccionado</system:String>
+    <system:String x:Key="S_Main_ClearHist">Borrar historial</system:String>
+
+    <!-- Setup Wizard -->
+    <system:String x:Key="S_Wiz_Title">Bienvenido a FluentDraft</system:String>
+    <system:String x:Key="S_Wiz_Step1">1. Conectar proveedor de IA</system:String>
+    <system:String x:Key="S_Wiz_SelectProvider">Seleccionar proveedor</system:String>
+    <system:String x:Key="S_Wiz_Btn_Connect">Conectar</system:String>
+    <system:String x:Key="S_Wiz_Btn_Connecting">Conectando...</system:String>
+    <system:String x:Key="S_Wiz_Step2">2. Seleccionar y probar modelos</system:String>
+    <system:String x:Key="S_Wiz_TransModel">Modelo de transcripción (Voz a texto)</system:String>
+    <system:String x:Key="S_Wiz_RefineModel">Modelo de refinamiento (Formato)</system:String>
+    <system:String x:Key="S_Wiz_TestConfig">Probar configuración</system:String>
+    <system:String x:Key="S_Wiz_Btn_Record">Grabar prueba</system:String>
+    <system:String x:Key="S_Wiz_Btn_Stop">Detener grabación</system:String>
+    <system:String x:Key="S_Wiz_Step3">3. Configurar tecla de acceso rápido</system:String>
+    <system:String x:Key="S_Wiz_PressKey">Presione una tecla para dictar.</system:String>
+    <system:String x:Key="S_Wiz_Behavior">Comportamiento: Mantener para hablar (Push-to-Talk)</system:String>
+    <system:String x:Key="S_Wiz_Raw">Sin procesar (Whisper)</system:String>
+    <system:String x:Key="S_Wiz_Default">Preset predeterminado</system:String>
+    <system:String x:Key="S_Wiz_Chat">Modo Chat</system:String>
+    
+    <system:String x:Key="S_Btn_Back">Atrás</system:String>
+    <system:String x:Key="S_Btn_Next">Siguiente</system:String>
+    <system:String x:Key="S_Btn_Finish">Finalizar y Empezar</system:String>
+
+</ResourceDictionary>

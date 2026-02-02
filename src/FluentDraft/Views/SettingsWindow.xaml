@@ -161,15 +161,15 @@
             <TabControl Background="Transparent" BorderThickness="0" TabStripPlacement="Left" Margin="0,20,0,0">
                 
                 <!-- 1. Speech Tab -->
-                <TabItem Header="Speech">
+                <TabItem Header="{DynamicResource S_Tab_Speech}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="20">
                             <TextBlock Text="Speech Setup" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
                             <TextBlock Text="Configure how FluentDraft listens to you." Foreground="#888" FontSize="12" Margin="0,0,0,20"/>
                             
                             <!-- Microphone -->
-                            <TextBlock Text="Microphone" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                            <TextBlock Text="Select the input device to record from." Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource S_Speech_Microphone}" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource S_Speech_InputDevice}" Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
                             <ComboBox ItemsSource="{Binding AudioDevices}" 
                                       DisplayMemberPath="ProductName" 
                                       SelectedValuePath="DeviceNumber"
@@ -177,34 +177,34 @@
                                       Margin="0,0,0,20"/>
 
                             <!-- Hotkey -->
-                            <TextBlock Text="Hotkey" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                            <TextBlock Text="Press this key combination to start recording." Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource S_Speech_Hotkey}" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource S_Speech_PressKey}" Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                 <Border Background="#333" CornerRadius="4" Padding="8" MinWidth="100">
                                     <TextBlock Text="{Binding HotkeyDisplay}" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
                                 </Border>
-                                <Button Content="Set" Margin="10,0,0,0" Padding="15,5" 
+                                <Button Content="{DynamicResource S_Speech_Set}" Margin="10,0,0,0" Padding="15,5" 
                                         Command="{Binding StartRecordingHotkeyCommand}"
                                         Background="#444" Foreground="White" BorderThickness="0" Cursor="Hand"/>
                             </StackPanel>
                             
-                            <CheckBox IsChecked="{Binding IsHotkeySuppressionEnabled}" Content="Block original key function" Foreground="White" Margin="0,0,0,20"/>
-                            <TextBlock Text="Prevents the key from working in other apps (e.g. stops Caps Lock from toggling)." Foreground="#666" FontSize="11" Margin="24,-15,0,20" TextWrapping="Wrap"/>
+                            <CheckBox IsChecked="{Binding IsHotkeySuppressionEnabled}" Content="{DynamicResource S_Speech_BlockKey}" Foreground="White" Margin="0,0,0,20"/>
+                            <TextBlock Text="{DynamicResource S_Speech_BlockKeyDesc}" Foreground="#666" FontSize="11" Margin="24,-15,0,20" TextWrapping="Wrap"/>
 
                             <!-- Activation -->
-                            <TextBlock Text="Recording Mode" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource S_Speech_RecMode}" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
                             <StackPanel Margin="0,0,0,20">
-                                <RadioButton GroupName="Activation" Content="Toggle (Tap to Start/Stop)" Foreground="White" Margin="0,0,0,5"
+                                <RadioButton GroupName="Activation" Content="{DynamicResource S_Speech_TapToTalk}" Foreground="White" Margin="0,0,0,5"
                                              IsChecked="{Binding ActivationMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=0}"/>
                                 <TextBlock Text="Press once to start, press again to stop." Foreground="#666" FontSize="11" Margin="20,0,0,10"/>
                                 
-                                <RadioButton GroupName="Activation" Content="Hold (Push to Talk)" Foreground="White" Margin="0,0,0,5"
+                                <RadioButton GroupName="Activation" Content="{DynamicResource S_Speech_PushToTalk}" Foreground="White" Margin="0,0,0,5"
                                              IsChecked="{Binding ActivationMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=1}"/>
                                 <TextBlock Text="Hold the key down while speaking." Foreground="#666" FontSize="11" Margin="20,0,0,0"/>
                             </StackPanel>
 
                             <!-- Transcription Model -->
-                            <TextBlock Text="Transcription Engine" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource S_Speech_TransEngine}" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,5"/>
                             <TextBlock Text="The AI model that converts your speech to text." Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
                             
                             <TextBlock Text="Provider" Foreground="#888" Margin="0,5,0,2"/>
@@ -231,7 +231,7 @@
                 </TabItem>
 
                 <!-- 2. Refinement Tab -->
-                <TabItem Header="Refinement">
+                <TabItem Header="{DynamicResource S_Tab_Refinement}">
                         <Grid Margin="20,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="180"/>
@@ -247,8 +247,8 @@
                             </Grid.RowDefinitions>
 
                             <StackPanel Grid.Row="0" Margin="0,0,0,10">
-                                <TextBlock Text="AI Refinement" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
-                                <CheckBox IsChecked="{Binding IsPostProcessingEnabled}" Content="Enable" Foreground="White" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Refine_Desc}" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <CheckBox IsChecked="{Binding IsPostProcessingEnabled}" Content="{DynamicResource S_Refine_Enable}" Foreground="White" Margin="0,0,0,5"/>
                             </StackPanel>
                             
                             <ListBox Grid.Row="1" ItemsSource="{Binding RefinementPresets}" SelectedItem="{Binding SelectedEditingPreset}" 
@@ -260,27 +260,27 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <Button Grid.Row="2" Command="{Binding AddPresetCommand}" Content="+ Add Preset" 
+                            <Button Grid.Row="2" Command="{Binding AddPresetCommand}" Content="{DynamicResource S_Refine_Btn_Add}" 
                                     Background="#333" Foreground="White" BorderThickness="0" Padding="10,5" Cursor="Hand"/>
                         </Grid>
 
                         <!-- Right: Details Form -->
                         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                             <StackPanel Visibility="{Binding SelectedEditingPreset, Converter={StaticResource NullToVis}}" Margin="0,20,20,20">
-                                <TextBlock Text="Edit Preset" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
-                                <TextBlock Text="Configure how the AI transforms your text." Foreground="#888" FontSize="12" Margin="0,0,0,15"/>
+                                <TextBlock Text="{DynamicResource S_Refine_EditInfo}" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Refine_Desc}" Foreground="#888" FontSize="12" Margin="0,0,0,15"/>
 
-                                <TextBlock Text="Preset Name" Foreground="#888" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Refine_Name}" Foreground="#888" Margin="0,0,0,5"/>
                                 <TextBox Text="{Binding SelectedEditingPreset.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
 
-                                <TextBlock Text="Provider Profile" Foreground="#888" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Speech_Provider}" Foreground="#888" Margin="0,0,0,5"/>
                                 <ComboBox ItemsSource="{Binding AvailableRefinementProfiles}" 
                                           SelectedValue="{Binding SelectedEditingPreset.ProfileId, Mode=TwoWay}"
                                           SelectedValuePath="Id"
                                           DisplayMemberPath="Name"
                                           Margin="0,0,0,15"/>
 
-                                <TextBlock Text="Model" Foreground="#888" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Refine_Model}" Foreground="#888" Margin="0,0,0,5"/>
                                 <Grid Margin="0,0,0,15">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -294,18 +294,18 @@
                                             Content="↻" Width="30" Background="#444" Foreground="White" BorderThickness="0" ToolTip="Fetch Models"/>
                                 </Grid>
 
-                                <TextBlock Text="System Prompt" Foreground="#888" Margin="0,0,0,5"/>
-                                <TextBlock Text="Instructions for the AI (e.g. 'Fix grammar', 'Translate to Spanish')." Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Refine_Prompt}" Foreground="#888" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Refine_Desc}" Foreground="#666" FontSize="11" Margin="0,0,0,5"/>
                                 <TextBox Text="{Binding SelectedEditingPreset.SystemPrompt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                          Height="100" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,15"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                                     <Button Command="{Binding RemovePresetCommand}" CommandParameter="{Binding SelectedEditingPreset}"
-                                            Content="Delete" Background="#FF453A" Foreground="White" Padding="15,6" BorderThickness="0"
+                                            Content="{DynamicResource S_Refine_Btn_Delete}" Background="#FF453A" Foreground="White" Padding="15,6" BorderThickness="0"
                                             HorizontalAlignment="Left" Margin="0,0,10,0"/>
                                     
                                     <Button Command="{Binding ResetPresetCommand}" CommandParameter="{Binding SelectedEditingPreset}"
-                                            Content="Reset Default" Background="#333" Foreground="#DDD" Padding="15,6" BorderThickness="0"
+                                            Content="{DynamicResource S_Refine_Btn_Reset}" Background="#333" Foreground="#DDD" Padding="15,6" BorderThickness="0"
                                             HorizontalAlignment="Left"/>
                                 </StackPanel>
                             </StackPanel>
@@ -328,7 +328,7 @@
                 </TabItem>
                 
                 <!-- 3. Services Tab -->
-                <TabItem Header="Services">
+                <TabItem Header="{DynamicResource S_Tab_Services}">
                     <Grid Margin="20,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="180"/>
@@ -344,8 +344,8 @@
                             </Grid.RowDefinitions>
                             
                             <StackPanel Grid.Row="0" Margin="0,0,0,10">
-                                <TextBlock Text="Providers" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
-                                <TextBlock Text="Manage API connections." Foreground="#888" FontSize="11" TextWrapping="Wrap"/>
+                                <TextBlock Text="{DynamicResource S_Services_Manage}" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Services_Desc}" Foreground="#888" FontSize="11" TextWrapping="Wrap"/>
                             </StackPanel>
 
                             <ListBox Grid.Row="1" ItemsSource="{Binding Providers}" SelectedItem="{Binding SelectedEditingProvider}" 
@@ -366,25 +366,25 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <Button Grid.Row="2" Command="{Binding AddProviderCommand}" Content="+ Add Provider" 
+                            <Button Grid.Row="2" Command="{Binding AddProviderCommand}" Content="{DynamicResource S_Services_Add}" 
                                     Background="#333" Foreground="White" BorderThickness="0" Padding="10,5" Cursor="Hand"/>
                         </Grid>
 
                         <!-- Details Form -->
                         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                             <StackPanel Visibility="{Binding SelectedEditingProvider, Converter={StaticResource NullToVis}}" Margin="0,20,20,20">
-                                <TextBlock Text="Edit Provider" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
-                                <TextBlock Text="Configure connection details." Foreground="#888" FontSize="12" Margin="0,0,0,15"/>
+                                <TextBlock Text="{DynamicResource S_Services_Manage}" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Services_Desc}" Foreground="#888" FontSize="12" Margin="0,0,0,15"/>
 
-                                <TextBlock Text="Name" Foreground="#888" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Services_Name}" Foreground="#888" Margin="0,0,0,5"/>
                                 <TextBox Text="{Binding SelectedEditingProvider.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
 
-                                <TextBlock Text="Type" Foreground="#888" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Services_Type}" Foreground="#888" Margin="0,0,0,5"/>
                                 <ComboBox ItemsSource="{Binding AvailableProviderTypes}" 
                                           SelectedItem="{Binding SelectedEditingProvider.Type, Mode=TwoWay}"
                                           Margin="0,0,0,15"/>
 
-                                <TextBlock Text="Base URL" Foreground="#888" Margin="0,0,0,5"/>
+                                <TextBlock Text="{DynamicResource S_Services_Endpoint}" Foreground="#888" Margin="0,0,0,5"/>
                                 <TextBox Text="{Binding SelectedEditingProvider.BaseUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"
                                          ToolTip="E.g. https://api.openai.com/v1"/>
 
@@ -393,9 +393,9 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="API Key" Foreground="#888"/>
+                                    <TextBlock Text="{DynamicResource S_Services_ApiKey}" Foreground="#888"/>
                                     <Button Command="{Binding OpenApiKeyUrlCommand}" CommandParameter="{Binding SelectedEditingProvider}"
-                                            Content="Get your API key →" Foreground="#007AFF" Background="Transparent" BorderThickness="0" 
+                                            Content="{DynamicResource S_Services_GetKey}" Foreground="#007AFF" Background="Transparent" BorderThickness="0" 
                                             FontSize="11" Cursor="Hand" HorizontalAlignment="Right"
                                             Visibility="{Binding IsApiKeyUrlSupported, Converter={StaticResource BoolToVis}}"/>
                                 </Grid>
@@ -411,7 +411,7 @@
                                                  VerticalContentAlignment="Center"/>
                                                  
                                     <Button Grid.Column="1" Command="{Binding PasteApiKeyCommand}" CommandParameter="{Binding SelectedEditingProvider}"
-                                            Content="Paste" Margin="10,0,0,0" Padding="12,5" Background="#333" Foreground="White" BorderThickness="0" Cursor="Hand">
+                                            Content="{DynamicResource S_Services_Paste}" Margin="10,0,0,0" Padding="12,5" Background="#333" Foreground="White" BorderThickness="0" Cursor="Hand">
                                         <Button.Resources>
                                             <Style TargetType="Border">
                                                 <Setter Property="CornerRadius" Value="4"/>
@@ -420,16 +420,16 @@
                                     </Button>
                                 </Grid> 
 
-                                <TextBlock Text="Capabilities" Foreground="#007AFF" FontWeight="Bold" Margin="0,10,0,10"/>
-                                <CheckBox IsChecked="{Binding SelectedEditingProvider.IsTranscriptionEnabled, Mode=TwoWay}" Content="Available for Transcription" Foreground="White" Margin="0,0,0,10"/>
-                                <CheckBox IsChecked="{Binding SelectedEditingProvider.IsRefinementEnabled, Mode=TwoWay}" Content="Available for Post-Processing (Refinement)" Foreground="White" Margin="0,0,0,15"/>
+                                <TextBlock Text="{DynamicResource S_Services_Capabilities}" Foreground="#007AFF" FontWeight="Bold" Margin="0,10,0,10"/>
+                                <CheckBox IsChecked="{Binding SelectedEditingProvider.IsTranscriptionEnabled, Mode=TwoWay}" Content="{DynamicResource S_Services_Cap_Trans}" Foreground="White" Margin="0,0,0,10"/>
+                                <CheckBox IsChecked="{Binding SelectedEditingProvider.IsRefinementEnabled, Mode=TwoWay}" Content="{DynamicResource S_Services_Cap_Refine}" Foreground="White" Margin="0,0,0,15"/>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                                     <Button Command="{Binding TestProviderCommand}" CommandParameter="{Binding SelectedEditingProvider}"
-                                            Content="Test Connection" Background="#444" Foreground="White" Padding="15,6" BorderThickness="0" Margin="0,0,10,0"/>
+                                            Content="{DynamicResource S_Services_Test}" Background="#444" Foreground="White" Padding="15,6" BorderThickness="0" Margin="0,0,10,0"/>
                                     
                                     <Button Command="{Binding RemoveProviderCommand}" CommandParameter="{Binding SelectedEditingProvider}"
-                                            Content="Delete" Background="#FF453A" Foreground="White" Padding="15,6" BorderThickness="0"/>
+                                            Content="{DynamicResource S_Services_Delete}" Background="#FF453A" Foreground="White" Padding="15,6" BorderThickness="0"/>
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
@@ -451,33 +451,41 @@
                 </TabItem>
 
                 <!-- 4. System Tab -->
-                <TabItem Header="System">
+                <TabItem Header="{DynamicResource S_Tab_System}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="20">
-                            <TextBlock Text="System Settings" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
-                            <TextBlock Text="Customize application behavior." Foreground="#888" FontSize="12" Margin="0,0,0,20"/>
+                            <TextBlock Text="{DynamicResource S_Tab_System}" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <TextBlock Text="{DynamicResource S_Services_Desc}" Foreground="#888" FontSize="12" Margin="0,0,0,20"/>
 
-                            <TextBlock Text="Window &amp; Tray" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                            <CheckBox IsChecked="{Binding IsAlwaysOnTop}" Content="Always on Top" Foreground="White" Margin="0,0,0,10"/>
+                            <!-- Language -->
+                            <TextBlock Text="{DynamicResource S_System_Lang}" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <ComboBox ItemsSource="{Binding LocalizationService.AvailableLanguages}" 
+                                      SelectedValue="{Binding SelectedLanguage}"
+                                      SelectedValuePath="Code"
+                                      DisplayMemberPath="Name"
+                                      Margin="0,0,0,20"/>
+
+                            <TextBlock Text="{DynamicResource S_System_Window}" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <CheckBox IsChecked="{Binding IsAlwaysOnTop}" Content="{DynamicResource S_System_TopMost}" Foreground="White" Margin="0,0,0,10"/>
                             <TextBlock Text="Keep the floating widget above other windows." Foreground="#666" FontSize="11" Margin="24,0,0,10"/>
                             
-                            <CheckBox IsChecked="{Binding CloseToTray}" Content="Minimize to Tray on Close" Foreground="White" Margin="0,0,0,10"/>
+                            <CheckBox IsChecked="{Binding CloseToTray}" Content="{DynamicResource S_System_Tray}" Foreground="White" Margin="0,0,0,10"/>
                             <TextBlock Text="Keep running in background when closed." Foreground="#666" FontSize="11" Margin="24,0,0,20"/>
                             
-                            <TextBlock Text="Audio Feedback" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                            <CheckBox IsChecked="{Binding PlaySoundOnRecord}" Content="Play Sound Effects" Foreground="White" Margin="0,0,0,10"/>
-                            <CheckBox IsChecked="{Binding PauseMediaOnRecording}" Content="Pause Media on Record" Foreground="White" Margin="0,0,0,20"/>
+                            <TextBlock Text="{DynamicResource S_System_Audio}" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <CheckBox IsChecked="{Binding PlaySoundOnRecord}" Content="{DynamicResource S_System_Sounds}" Foreground="White" Margin="0,0,0,10"/>
+                            <CheckBox IsChecked="{Binding PauseMediaOnRecording}" Content="{DynamicResource S_System_PauseMedia}" Foreground="White" Margin="0,0,0,20"/>
 
-                            <TextBlock Text="Output Method" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                            <RadioButton GroupName="InjectionModeSystem" Content="Type (Simulate Keystrokes)" Foreground="White" Margin="0,0,0,5"
+                            <TextBlock Text="{DynamicResource S_System_Output}" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <RadioButton GroupName="InjectionModeSystem" Content="{DynamicResource S_System_InjectType}" Foreground="White" Margin="0,0,0,5"
                                          IsChecked="{Binding TextInjectionMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=0}"/>
                             <TextBlock Text="Simulates typing each character. Safer for some apps." Foreground="#666" FontSize="11" Margin="24,0,0,10"/>
                             
-                            <RadioButton GroupName="InjectionModeSystem" Content="Paste (Clipboard Injection)" Foreground="White" Margin="0,0,0,5"
+                            <RadioButton GroupName="InjectionModeSystem" Content="{DynamicResource S_System_InjectPaste}" Foreground="White" Margin="0,0,0,5"
                                          IsChecked="{Binding TextInjectionMode, Converter={StaticResource IntToBoolConverter}, ConverterParameter=1}"/>
                             <TextBlock Text="Pastes text instantly. Faster." Foreground="#666" FontSize="11" Margin="24,0,0,20"/>
 
-                            <TextBlock Text="Updates" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <TextBlock Text="{DynamicResource S_System_Updates}" Foreground="#DDD" FontWeight="SemiBold" Margin="0,0,0,10"/>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                     <Button Command="{Binding CheckForUpdatesCommand}" 
                                             Content="{Binding UpdateStatus}"
@@ -539,27 +547,27 @@
                 </TabItem>
 
                 <!-- 5. About Tab -->
-                <TabItem Header="About">
+                <TabItem Header="{DynamicResource S_Tab_About}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="20">
                             <!-- App Icon and Name -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
                                 <Image Source="/Icons/app_icon.png" Width="64" Height="64" Margin="0,0,15,0"/>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="FluentDraft" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                                    <TextBlock Text="{DynamicResource S_App_Title}" FontSize="24" FontWeight="Bold" Foreground="White"/>
                                     <TextBlock Text="{Binding AppVersion, StringFormat='Version {0}'}" Foreground="#888" FontSize="13"/>
                                 </StackPanel>
                             </StackPanel>
 
                             <!-- Description -->
-                            <TextBlock Text="About Application" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
-                            <TextBlock Text="Global Voice Typing for Windows powered by AI. Record your voice with a hotkey and get instant transcription inserted anywhere." 
+                            <TextBlock Text="{DynamicResource S_Tab_About}" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <TextBlock Text="{DynamicResource S_About_Desc}" 
                                        Foreground="#CCC" TextWrapping="Wrap" Margin="0,0,0,25" LineHeight="22"/>
 
                             <!-- Links -->
-                            <TextBlock Text="Resources" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <TextBlock Text="{DynamicResource S_About_Resources}" Foreground="#007AFF" FontWeight="Bold" Margin="0,0,0,10"/>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <TextBlock Text="GitHub:" Foreground="#888" Width="100"/>
+                                <TextBlock Foreground="#888" Width="100"><Run Text="{DynamicResource S_About_Repo}"/>:</TextBlock>
                                 <TextBlock>
                                     <Hyperlink NavigateUri="https://github.com/FluentDraft/FluentDraft" RequestNavigate="Hyperlink_RequestNavigate" Foreground="#007AFF">
                                         github.com/FluentDraft/FluentDraft
@@ -567,12 +575,12 @@
                                 </TextBlock>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,25">
-                                <TextBlock Text="License:" Foreground="#888" Width="100"/>
+                                <TextBlock Foreground="#888" Width="100"><Run Text="{DynamicResource S_About_License}"/>:</TextBlock>
                                 <TextBlock Text="MIT License" Foreground="#CCC"/>
                             </StackPanel>
 
                             <!-- Copyright -->
-                            <TextBlock Text="Copyright © 2026 FluentDraft Contributors" Foreground="#666" FontSize="11"/>
+                            <TextBlock Text="{DynamicResource S_About_Copyright}" Foreground="#666" FontSize="11"/>
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
@@ -584,11 +592,11 @@
         <Border Grid.Row="2" Background="#202020" BorderBrush="#333" BorderThickness="0,1,0,0" Padding="20,0" CornerRadius="0,0,8,8">
             <Grid>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,15,0,0">
-                     <Button Content="⚙ Run Setup Wizard" Click="RunWizard_Click" Background="Transparent" Foreground="#666" BorderThickness="0" Cursor="Hand" ToolTip="Re-run the initial configuration wizard"/>
+                     <Button Content="{DynamicResource S_Btn_Wizard}" Click="RunWizard_Click" Background="Transparent" Foreground="#666" BorderThickness="0" Cursor="Hand" ToolTip="Re-run the initial configuration wizard"/>
                  </StackPanel>
 
                  <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                    <Button Content="Save &amp; Close" Click="CloseButton_Click" Padding="20,8" Background="#007AFF" BorderThickness="0" Foreground="White" FontWeight="Bold" Cursor="Hand">
+                    <Button Content="{DynamicResource S_Btn_SaveClose}" Click="CloseButton_Click" Padding="20,8" Background="#007AFF" BorderThickness="0" Foreground="White" FontWeight="Bold" Cursor="Hand">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="4"/>

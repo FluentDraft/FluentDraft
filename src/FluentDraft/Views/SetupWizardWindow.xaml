@@ -150,7 +150,7 @@
 
         <!-- Header -->
         <Border Background="#202020" Padding="30,20">
-            <TextBlock Text="Welcome to FluentDraft" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+            <TextBlock Text="{DynamicResource S_Wiz_Title}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
         </Border>
 
         <!-- Content -->
@@ -164,29 +164,29 @@
                      </Grid.RowDefinitions>
                 <!-- Step 1: Provider -->
                 <StackPanel Grid.Row="1" Visibility="{Binding CurrentStep, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=1}">
-                    <TextBlock Text="1. Connect AI Provider" FontSize="20" FontWeight="SemiBold" Foreground="#007AFF" Margin="0,0,0,20"/>
+                    <TextBlock Text="{DynamicResource S_Wiz_Step1}" FontSize="20" FontWeight="SemiBold" Foreground="#007AFF" Margin="0,0,0,20"/>
                     
-                    <TextBlock Text="Select Provider" Foreground="#888" Margin="0,0,0,5"/>
+                    <TextBlock Text="{DynamicResource S_Wiz_SelectProvider}" Foreground="#888" Margin="0,0,0,5"/>
                     <ComboBox SelectedValue="{Binding SelectedProviderType}" SelectedValuePath="Content" Margin="0,0,0,15" Padding="10" Background="#252525" Foreground="White" BorderThickness="0">
                         <ComboBoxItem Content="OpenAI"/>
                         <ComboBoxItem Content="Groq"/>
                     </ComboBox>
 
-                    <TextBlock Text="API Key" Foreground="#888" Margin="0,0,0,5"/>
+                    <TextBlock Text="{DynamicResource S_Services_ApiKey}" Foreground="#888" Margin="0,0,0,5"/>
                     <TextBox Text="{Binding ApiKey, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
 
-                    <TextBlock Text="Base URL" Foreground="#888" Margin="0,0,0,5"/>
+                    <TextBlock Text="{DynamicResource S_Services_Endpoint}" Foreground="#888" Margin="0,0,0,5"/>
                     <TextBox Text="{Binding BaseUrl, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20"/>
 
                     <Button Command="{Binding ConnectCommand}" 
                             HorizontalAlignment="Left" Background="#007AFF" FontWeight="Bold">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                <Setter Property="Content" Value="Connect"/>
+                                <Setter Property="Content" Value="{DynamicResource S_Wiz_Btn_Connect}"/>
                                 <Setter Property="IsEnabled" Value="True"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsConnecting}" Value="True">
-                                        <Setter Property="Content" Value="Connecting..."/>
+                                        <Setter Property="Content" Value="{DynamicResource S_Wiz_Btn_Connecting}"/>
                                         <Setter Property="IsEnabled" Value="False"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -200,18 +200,18 @@
 
                 <!-- Step 2: Models & Test -->
                 <StackPanel Grid.Row="1" Visibility="{Binding CurrentStep, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=2}">
-                    <TextBlock Text="2. Select &amp; Test Models" FontSize="20" FontWeight="SemiBold" Foreground="#007AFF" Margin="0,0,0,20"/>
+                    <TextBlock Text="{DynamicResource S_Wiz_Step2}" FontSize="20" FontWeight="SemiBold" Foreground="#007AFF" Margin="0,0,0,20"/>
                     
-                    <TextBlock Text="Transcription Model (Speech to Text)" Foreground="#888" Margin="0,0,0,5"/>
+                    <TextBlock Text="{DynamicResource S_Wiz_TransModel}" Foreground="#888" Margin="0,0,0,5"/>
                     <ComboBox ItemsSource="{Binding AvailableTranscriptionModels}" SelectedItem="{Binding SelectedTranscriptionModel}" Margin="0,0,0,20" Padding="10" Background="#252525" Foreground="White"/>
 
-                    <TextBlock Text="Refinement Model (Formatting &amp; Polishing)" Foreground="#888" Margin="0,0,0,5"/>
+                    <TextBlock Text="{DynamicResource S_Wiz_RefineModel}" Foreground="#888" Margin="0,0,0,5"/>
                     <ComboBox ItemsSource="{Binding AvailableRefinementModels}" SelectedItem="{Binding SelectedRefinementModel}" Margin="0,0,0,20" Padding="10" Background="#252525" Foreground="White"/>
 
                     <!-- Test Section -->
                     <Border Background="#252525" CornerRadius="8" Padding="20" Margin="0,10,0,0">
                         <StackPanel>
-                            <TextBlock Text="Test Configuration" FontWeight="Bold" Foreground="White" Margin="0,0,0,15"/>
+                            <TextBlock Text="{DynamicResource S_Wiz_TestConfig}" FontWeight="Bold" Foreground="White" Margin="0,0,0,15"/>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
                                  <Button Command="{Binding RecordTestCommand}" 
                                          Foreground="White" Padding="20,10" BorderThickness="0" FontWeight="Bold">
@@ -219,11 +219,11 @@
                                         <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsRecordingTest}" Value="True">
-                                                    <Setter Property="Content" Value="Stop Recording"/>
+                                                    <Setter Property="Content" Value="{DynamicResource S_Wiz_Btn_Stop}"/>
                                                     <Setter Property="Background" Value="#FF453A"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding IsRecordingTest}" Value="False">
-                                                    <Setter Property="Content" Value="Record Test Audio"/>
+                                                    <Setter Property="Content" Value="{DynamicResource S_Wiz_Btn_Record}"/>
                                                     <Setter Property="Background" Value="#34C759"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -244,7 +244,7 @@
                                 <Border Grid.Column="0" Background="#222" Margin="0,0,5,0" Padding="10" CornerRadius="4">
                                     <StackPanel>
                                         <DockPanel LastChildFill="False" Margin="0,0,0,5">
-                                            <TextBlock Text="Raw (Whisper)" FontWeight="Bold" Foreground="#888" DockPanel.Dock="Left"/>
+                                            <TextBlock Text="{DynamicResource S_Wiz_Raw}" FontWeight="Bold" Foreground="#888" DockPanel.Dock="Left"/>
                                             <TextBlock Text="{Binding TranscriptionTime}" Foreground="#666" FontSize="11" DockPanel.Dock="Right"/>
                                         </DockPanel>
                                         <TextBlock Text="{Binding RawTestTranscription}" TextWrapping="Wrap" Foreground="#AAA" FontSize="11"/>
@@ -255,7 +255,7 @@
                                 <Border Grid.Column="1" Background="#111" Margin="5,0,5,0" Padding="10" CornerRadius="4">
                                     <StackPanel>
                                         <DockPanel LastChildFill="False" Margin="0,0,0,5">
-                                            <TextBlock Text="Default Preset" FontWeight="Bold" Foreground="#007AFF" DockPanel.Dock="Left"/>
+                                            <TextBlock Text="{DynamicResource S_Wiz_Default}" FontWeight="Bold" Foreground="#007AFF" DockPanel.Dock="Left"/>
                                             <TextBlock Text="{Binding DefaultRefinementTime}" Foreground="#005699" FontSize="11" DockPanel.Dock="Right"/>
                                         </DockPanel>
                                         <TextBlock Text="{Binding DefaultTestRefinement}" TextWrapping="Wrap" Foreground="White" FontSize="11"/>
@@ -266,7 +266,7 @@
                                 <Border Grid.Column="2" Background="#111" Margin="5,0,0,0" Padding="10" CornerRadius="4">
                                     <StackPanel>
                                         <DockPanel LastChildFill="False" Margin="0,0,0,5">
-                                            <TextBlock Text="Chat Mode" FontWeight="Bold" Foreground="#34C759" DockPanel.Dock="Left"/>
+                                            <TextBlock Text="{DynamicResource S_Wiz_Chat}" FontWeight="Bold" Foreground="#34C759" DockPanel.Dock="Left"/>
                                             <TextBlock Text="{Binding ChatRefinementTime}" Foreground="#246939" FontSize="11" DockPanel.Dock="Right"/>
                                         </DockPanel>
                                         <TextBlock Text="{Binding ChatTestRefinement}" TextWrapping="Wrap" Foreground="White" FontStyle="Italic" FontSize="11"/>
@@ -279,14 +279,14 @@
 
                 <!-- Step 3: Hotkey -->
                 <StackPanel Grid.Row="1" Visibility="{Binding CurrentStep, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=3}">
-                    <TextBlock Text="3. Set Hotkey" FontSize="20" FontWeight="SemiBold" Foreground="#007AFF" Margin="0,0,0,20"/>
+                    <TextBlock Text="{DynamicResource S_Wiz_Step3}" FontSize="20" FontWeight="SemiBold" Foreground="#007AFF" Margin="0,0,0,20"/>
                     
-                    <TextBlock Text="Press a key to set it as your dictation hotkey." Foreground="#CCC" Margin="0,0,0,20"/>
+                    <TextBlock Text="{DynamicResource S_Wiz_PressKey}" Foreground="#CCC" Margin="0,0,0,20"/>
                     
                     <Button Command="{Binding StartHotkeyCaptureCommand}" Content="{Binding HotkeyDisplay}" 
                             FontSize="18" FontWeight="Bold" Padding="30,15" Background="#333" Foreground="White" BorderThickness="0" HorizontalAlignment="Left"/>
                             
-                    <TextBlock Text="Behavior: Hold to Dictate (Push-to-Talk)" Foreground="#888" Margin="0,20,0,0"/>
+                    <TextBlock Text="{DynamicResource S_Wiz_Behavior}" Foreground="#888" Margin="0,20,0,0"/>
                 </StackPanel>
 
 
@@ -304,11 +304,11 @@
                      <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 
-                <Button Grid.Column="0" Command="{Binding PrevStepCommand}" Content="Back" 
+                <Button Grid.Column="0" Command="{Binding PrevStepCommand}" Content="{DynamicResource S_Btn_Back}" 
                         Visibility="{Binding CurrentStep, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=1Inv}"
                         Background="Transparent" Foreground="#AAA" BorderThickness="0" FontSize="16" Cursor="Hand"/>
 
-                <Button Grid.Column="2" Command="{Binding NextStepCommand}" Content="Next" 
+                <Button Grid.Column="2" Command="{Binding NextStepCommand}" Content="{DynamicResource S_Btn_Next}" 
                         Visibility="{Binding CurrentStep, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=3Inv}"
                         IsEnabled="{Binding IsProviderValid}"
                         Background="#007AFF" Foreground="White" Padding="30,10" BorderThickness="0" FontWeight="Bold" Cursor="Hand">
@@ -319,7 +319,7 @@
                         </Button.Resources>
                 </Button>
 
-                <Button Grid.Column="2" Command="{Binding CompleteSetupCommand}" Content="Finish &amp; Start Working" 
+                <Button Grid.Column="2" Command="{Binding CompleteSetupCommand}" Content="{DynamicResource S_Btn_Finish}" 
                         Visibility="{Binding CurrentStep, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=3}"
                         Background="#34C759" Foreground="White" Padding="30,10" BorderThickness="0" FontWeight="Bold" Cursor="Hand">
                         <Button.Resources>

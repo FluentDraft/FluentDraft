@@ -1,0 +1,133 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- General -->
+    <system:String x:Key="S_App_Title">FluentDraft</system:String>
+    <system:String x:Key="S_Btn_Cancel">Отмена</system:String>
+    <system:String x:Key="S_Btn_Close">Закрыть</system:String>
+    <system:String x:Key="S_Btn_Save">Сохранить</system:String>
+    <system:String x:Key="S_Btn_Apply">Применить</system:String>
+    <system:String x:Key="S_Btn_Update">Обновить</system:String>
+    <system:String x:Key="S_Btn_Restart">Перезапуск</system:String>
+    <system:String x:Key="S_Btn_Stop">Стоп</system:String>
+    
+    <!-- Tabs -->
+    <system:String x:Key="S_Tab_Speech">Речь</system:String>
+    <system:String x:Key="S_Tab_Refinement">Обработка</system:String>
+    <system:String x:Key="S_Tab_Services">Сервисы</system:String>
+    <system:String x:Key="S_Tab_System">Система</system:String>
+    <system:String x:Key="S_Tab_About">О программе</system:String>
+
+    <!-- Speech -->
+    <system:String x:Key="S_Speech_Microphone">Микрофон</system:String>
+    <system:String x:Key="S_Speech_InputDevice">Устройство ввода</system:String>
+    <system:String x:Key="S_Speech_Hotkey">Горячая клавиша</system:String>
+    <system:String x:Key="S_Speech_PressKey">Нажмите комбинацию для начала записи.</system:String>
+    <system:String x:Key="S_Speech_Set">Задать</system:String>
+    <system:String x:Key="S_Speech_BlockKey">Блокировать функцию клавиши</system:String>
+    <system:String x:Key="S_Speech_BlockKeyDesc">Блокирует клавишу в других программах (например, Caps Lock не переключает регистр).</system:String>
+    <system:String x:Key="S_Speech_RecMode">Режим записи</system:String>
+    <system:String x:Key="S_Speech_PushToTalk">Удерживать (Hold)</system:String>
+    <system:String x:Key="S_Speech_TapToTalk">Переключатель (Toggle)</system:String>
+    <system:String x:Key="S_Speech_TransEngine">Движок транскрибации</system:String>
+    <system:String x:Key="S_Speech_Provider">Провайдер</system:String>
+    <system:String x:Key="S_Speech_Model">Модель</system:String>
+    <system:String x:Key="S_Speech_TimeLimit">Лимит записи</system:String>
+
+    <!-- Refinement -->
+    <system:String x:Key="S_Refine_Enable">Включить AI-обработку</system:String>
+    <system:String x:Key="S_Refine_Desc">Автоматически улучшать текст, исправлять ошибки и форматирование.</system:String>
+    <system:String x:Key="S_Refine_Preset">Пресет</system:String>
+    <system:String x:Key="S_Refine_EditInfo">Редактировать выбранный пресет</system:String>
+    <system:String x:Key="S_Refine_Name">Название</system:String>
+    <system:String x:Key="S_Refine_Prompt">Системный промпт</system:String>
+    <system:String x:Key="S_Refine_Model">Модель</system:String>
+    <system:String x:Key="S_Refine_Btn_Add">Добавить</system:String>
+    <system:String x:Key="S_Refine_Btn_Delete">Удалить</system:String>
+    <system:String x:Key="S_Refine_Btn_Reset">Сбросить</system:String>
+
+    <!-- Services -->
+    <system:String x:Key="S_Services_Manage">Управление провайдерами</system:String>
+    <system:String x:Key="S_Services_Desc">Настройка OpenAI, Groq или совместимых сервисов.</system:String>
+    <system:String x:Key="S_Services_List">Список провайдеров</system:String>
+    <system:String x:Key="S_Services_Add">Добавить провайдера</system:String>
+    <system:String x:Key="S_Services_Name">Имя</system:String>
+    <system:String x:Key="S_Services_Type">Тип</system:String>
+    <system:String x:Key="S_Services_Endpoint">Базовый URL</system:String>
+    <system:String x:Key="S_Services_ApiKey">API Ключ</system:String>
+    <system:String x:Key="S_Services_Paste">Вставить</system:String>
+    <system:String x:Key="S_Services_GetKey">Получить ключ →</system:String>
+    <system:String x:Key="S_Services_Capabilities">Возможности</system:String>
+    <system:String x:Key="S_Services_Cap_Trans">Транскрибация</system:String>
+    <system:String x:Key="S_Services_Cap_Refine">Обработка (LLM)</system:String>
+    <system:String x:Key="S_Services_Test">Проверить связь</system:String>
+    <system:String x:Key="S_Services_Delete">Удалить</system:String>
+
+    <!-- System -->
+    <system:String x:Key="S_System_Lang">Язык (Language)</system:String>
+    <system:String x:Key="S_System_Window">Окно</system:String>
+    <system:String x:Key="S_System_TopMost">Поверх всех окон</system:String>
+    <system:String x:Key="S_System_Tray">Сворачивать в трей</system:String>
+    <system:String x:Key="S_System_Audio">Звук</system:String>
+    <system:String x:Key="S_System_Sounds">Звуковые эффекты</system:String>
+    <system:String x:Key="S_System_PauseMedia">Пауза медиа при записи</system:String>
+    <system:String x:Key="S_System_Output">Вывод текста</system:String>
+    <system:String x:Key="S_System_Injection">Метод вставки</system:String>
+    <system:String x:Key="S_System_InjectType">Печать (Typing)</system:String>
+    <system:String x:Key="S_System_InjectPaste">Вставка (Paste)</system:String>
+    <system:String x:Key="S_System_Updates">Обновления</system:String>
+    <system:String x:Key="S_System_CheckUpdate">Проверить обновления</system:String>
+    <system:String x:Key="S_System_NoUpdates">У вас последняя версия.</system:String>
+
+    <!-- About -->
+    <system:String x:Key="S_About_Version">Версия</system:String>
+    <system:String x:Key="S_About_Desc">Глобальный голосовой ввод для Windows с AI.</system:String>
+    <system:String x:Key="S_About_Repo">GitHub Репозиторий</system:String>
+    <system:String x:Key="S_About_Issues">Сообщить о проблеме</system:String>
+    <system:String x:Key="S_About_License">Лицензия</system:String>
+    
+    <!-- Main -->
+    <system:String x:Key="S_Main_Hint_Cancel">Нажмите 'Стоп' или Esc для отмены</system:String>
+    <system:String x:Key="S_Main_Status_Ready">Готов</system:String>
+    <system:String x:Key="S_Main_Status_Listening">Слушаю...</system:String>
+    <system:String x:Key="S_Main_Status_Processing">Обработка...</system:String>
+
+    <!-- Missing Keys -->
+    <system:String x:Key="S_Btn_Wizard">Запустить мастер настройки</system:String>
+    <system:String x:Key="S_Btn_SaveClose">Сохранить и закрыть</system:String>
+    <system:String x:Key="S_About_Resources">Ресурсы</system:String>
+    <system:String x:Key="S_About_Copyright">Авторское право © 2026 FluentDraft Contributors</system:String>
+
+    <!-- History Panel -->
+    <system:String x:Key="S_Main_Recent">Недавние</system:String>
+    <system:String x:Key="S_Main_History">История</system:String>
+    <system:String x:Key="S_Main_SelectAll">Выбрать все</system:String>
+    <system:String x:Key="S_Main_ClearSel">Снять выделение</system:String>
+    <system:String x:Key="S_Main_CopySel">Копировать</system:String>
+    <system:String x:Key="S_Main_ClearHist">Очистить</system:String>
+
+    <!-- Setup Wizard -->
+    <system:String x:Key="S_Wiz_Title">Добро пожаловать в FluentDraft</system:String>
+    <system:String x:Key="S_Wiz_Step1">1. Подключение ИИ провайдера</system:String>
+    <system:String x:Key="S_Wiz_SelectProvider">Выберите провайдера</system:String>
+    <system:String x:Key="S_Wiz_Btn_Connect">Подключить</system:String>
+    <system:String x:Key="S_Wiz_Btn_Connecting">Подключение...</system:String>
+    <system:String x:Key="S_Wiz_Step2">2. Выбор и тест моделей</system:String>
+    <system:String x:Key="S_Wiz_TransModel">Модель транскрипции (Речь в текст)</system:String>
+    <system:String x:Key="S_Wiz_RefineModel">Модель улучшения (Форматирование)</system:String>
+    <system:String x:Key="S_Wiz_TestConfig">Тест конфигурации</system:String>
+    <system:String x:Key="S_Wiz_Btn_Record">Записать тест</system:String>
+    <system:String x:Key="S_Wiz_Btn_Stop">Стоп запись</system:String>
+    <system:String x:Key="S_Wiz_Step3">3. Настройка горячей клавиши</system:String>
+    <system:String x:Key="S_Wiz_PressKey">Нажмите клавишу для диктовки.</system:String>
+    <system:String x:Key="S_Wiz_Behavior">Режим: Удерживать для записи (Push-to-Talk)</system:String>
+    <system:String x:Key="S_Wiz_Raw">Сырой (Whisper)</system:String>
+    <system:String x:Key="S_Wiz_Default">Пресет по умолчанию</system:String>
+    <system:String x:Key="S_Wiz_Chat">Режим чата</system:String>
+    
+    <system:String x:Key="S_Btn_Back">Назад</system:String>
+    <system:String x:Key="S_Btn_Next">Далее</system:String>
+    <system:String x:Key="S_Btn_Finish">Готово &amp; Начать работу</system:String>
+
+</ResourceDictionary>
