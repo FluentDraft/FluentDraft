@@ -17,7 +17,7 @@ namespace FluentDraft.Services.Implementations
             _httpClient = new HttpClient();
         }
 
-        public async Task<string> ProcessTextAsync(string text, string prompt, string apiKey, string endpoint, string model)
+        public async Task<string> ProcessTextAsync(string text, string prompt, string apiKey, string endpoint, string model, string? chatSessionId = null)
         {
             if (string.IsNullOrEmpty(apiKey)) throw new ArgumentException("API Key is required for text processing");
             if (string.IsNullOrEmpty(text)) return string.Empty;
@@ -33,7 +33,8 @@ namespace FluentDraft.Services.Implementations
                     new { role = "user", content = text }
                 },
                 temperature = 0.1,
-                max_tokens = 1000
+                max_tokens = 1000,
+                user = chatSessionId // Optional user ID for session tracking
             };
 
             // Construct the full URL. If it already looks like a chat completion endpoint, use it.

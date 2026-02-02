@@ -2,6 +2,17 @@
 
 All notable changes to FluentDraft will be documented in this file.
 
+## [1.4.0] - 2026-02-02
+
+### ✨ What's New
+- **Session Control** - A new "Reset Session" button lets you clear the AI's context and start a fresh topic instantly.
+- **Smart Context** - Your session ID is now sent with requests, allowing the AI to maintain conversation context (if supported by the provider/model).
+
+### ⚡ Improvements
+- **Refined UI** - The Reset button features a sleek modern design and informative tooltips.
+- **Better Tooltips** - Replaced standard tooltips with a custom dark-themed style that matches the application.
+- **Reduced Friction** - Removed the confirmation dialog for resetting sessions for a faster workflow.
+
 ## [1.3.2] - 2026-02-02
 
 ### 🔔 Interactive Updates

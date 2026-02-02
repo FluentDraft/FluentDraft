@@ -163,12 +163,26 @@ namespace FluentDraft
                 // Check if we have valid providers (with API keys)
                 bool hasValidProviders = settings.Providers?.Any(p => !string.IsNullOrWhiteSpace(p.ApiKey)) == true;
                 
-                // Auto-fix: if we have providers but the flag is false, correct the flag
                 if (hasValidProviders && !settings.IsSetupCompleted)
                 {
                     File.AppendAllText("startup_log.txt", $"{DateTime.Now}: Auto-fixing IsSetupCompleted flag (providers exist)\n");
                     settings.IsSetupCompleted = true;
-                    settingsService.SaveSettings(settings);
+                    // We'll save after verifying ChatSessionId below, just once.
+                }
+
+                // Ensure ChatSessionId exists
+                if (string.IsNullOrEmpty(settings.ChatSessionId))
+                {
+                    settings.ChatSessionId = Guid.NewGuid().ToString();
+                    settingsService.SaveSettings(settings); // Save immediately
+                }
+                else if (settings.IsSetupCompleted) // Only save if we modified setup flag and didn't save above
+                {
+                     // If we changed IsSetupCompleted (dirty check? simplified here)
+                     // Actually better just save if we touched anything.
+                     // The logic was: if (hasValidProviders && !settings.IsSetupCompleted) -> save
+                     // We split the save. Let's consolidate.
+                     if (hasValidProviders) settingsService.SaveSettings(settings);
                 }
 
                 // Only show wizard if BOTH: flag is false AND no valid providers exist

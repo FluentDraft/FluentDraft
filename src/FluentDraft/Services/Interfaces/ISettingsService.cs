@@ -34,6 +34,7 @@ namespace FluentDraft.Services.Interfaces
         public int TextInjectionMode { get; set; } = 1; // 0 = Type, 1 = Paste
         public bool CloseToTray { get; set; } = true;
         public int MaxRecordingSeconds { get; set; } = 120; // Default 2 minutes
+        public string? ChatSessionId { get; set; } // Generated User ID for session tracking
 
         // Legacy/Migration properties (Optional, but might help if we wanted to read old json seamlessly, 
         // but given we are rewriting the settings structure, we might manually migrate in ViewModel if we can read the old file, 

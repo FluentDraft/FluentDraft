@@ -142,6 +142,10 @@ namespace FluentDraft.ViewModels
         [ObservableProperty]
         private string _instructionText = "Loading...";
 
+        private string _chatSessionId = ""; // Current User/Session ID
+
+        public RelayCommand ResetChatSessionCommand { get; }
+
         private void UpdateInstructionText()
         {
              if (ActivationMode == 0) // Tap to Talk
@@ -263,6 +267,8 @@ namespace FluentDraft.ViewModels
             SelectAllHistoryCommand = new RelayCommand(SelectAllHistory);
             DeselectAllHistoryCommand = new RelayCommand(DeselectAllHistory);
             CopySelectedHistoryCommand = new RelayCommand(CopySelectedHistory);
+
+            ResetChatSessionCommand = new RelayCommand(ResetChatSession);
 
             UpdateNowCommand = new RelayCommand(ExecuteUpdateNow);
             DismissUpdateCommand = new RelayCommand(DismissUpdate);
@@ -444,6 +450,22 @@ namespace FluentDraft.ViewModels
             _ = Task.Delay(2000).ContinueWith(_ => Status = "Ready");
         }
 
+        private void ResetChatSession()
+        {
+            // if (System.Windows.MessageBox.Show("This will reset your AI Session ID.\nThe model will 'forget' previous context encoded in the user ID (if any).\nContinue?", "Reset Session", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
+            // {
+                _chatSessionId = Guid.NewGuid().ToString();
+                
+                var settings = _settingsService.LoadSettings();
+                settings.ChatSessionId = _chatSessionId;
+                _settingsService.SaveSettings(settings);
+                
+                _logger.LogInfo($"Chat Session ID reset to: {_chatSessionId}");
+                Status = "Session Reset";
+                _ = Task.Delay(2000).ContinueWith(_ => Status = "Ready");
+            // }
+        }
+
         private void LoadSettings()
         {
             if (_isLoadingSettings) return; // Prevent re-entry if already loading (though unlikely to be recursive here directly)
@@ -476,6 +498,12 @@ namespace FluentDraft.ViewModels
                 TextInjectionMode = settings.TextInjectionMode;
                 SelectedAudioDevice = settings.SelectedMicrophone;
                 MaxRecordingSeconds = settings.MaxRecordingSeconds;
+                _chatSessionId = settings.ChatSessionId ?? "";
+                if (string.IsNullOrEmpty(_chatSessionId))
+                {
+                    // Should have been set by App.xaml.cs, but fallback just in case
+                    _chatSessionId = Guid.NewGuid().ToString();
+                }
 
                 _currentHotkeyCodes = settings.HotkeyCodes ?? new List<int> { 0x14 };
                 UpdateHotkeyDisplay();
@@ -710,7 +738,7 @@ namespace FluentDraft.ViewModels
                             : refProfile.RefinementModel;
                         var prompt = SelectedRefinementPreset.SystemPrompt;
                        
-                        text = await _textProcessor.ProcessTextAsync(text, prompt, refProfile.ApiKey, rEndpoint, refModel);
+                        text = await _textProcessor.ProcessTextAsync(text, prompt, refProfile.ApiKey, rEndpoint, refModel, _chatSessionId);
                     }
                 }
 

@@ -4,7 +4,7 @@ namespace FluentDraft.Services.Interfaces
 {
     public interface ITextProcessorService
     {
-        Task<string> ProcessTextAsync(string text, string prompt, string apiKey, string endpoint, string model);
+        Task<string> ProcessTextAsync(string text, string prompt, string apiKey, string endpoint, string model, string? chatSessionId = null);
         Task<IEnumerable<string>> GetAvailableModelsAsync(string apiKey, string baseUrl);
     }
 }
