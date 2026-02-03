@@ -481,7 +481,17 @@
 
                 <!-- History Panel (Row 2) -->
                 <Border Grid.Row="2" Background="#181818" BorderBrush="#333" BorderThickness="0,1,0,0" Padding="0,10"
-                        Visibility="{Binding IsHistoryVisible, Converter={StaticResource BoolToVis}}" MaxHeight="300">
+                        Visibility="{Binding IsHistoryVisible, Converter={StaticResource BoolToVis}}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="MaxHeight" Value="Infinity"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SizeToContent, RelativeSource={RelativeSource AncestorType=Window}}" Value="Height">
+                                    <Setter Property="MaxHeight" Value="300"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -532,37 +542,87 @@
                             </ListView.ItemContainerStyle>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        
-                                        <!-- Top: Time and Actions -->
-                                        <Grid Grid.Row="0" Margin="0,0,0,4">
-                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center" Margin="0,0,8,0" Style="{StaticResource DarkCheckBoxStyle}"/>
-                                                <TextBlock Text="{Binding Timestamp, StringFormat=t}" Foreground="#666" FontSize="11" VerticalAlignment="Center"/>
-                                            </StackPanel>
+                                    <Border x:Name="ItemBorder" Background="Transparent" CornerRadius="6" Padding="8">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/> <!-- Header (Always visible) -->
+                                                <RowDefinition Height="Auto"/> <!-- Details (Collapsed by default) -->
+                                            </Grid.RowDefinitions>
                                             
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                                <Button Command="{Binding DataContext.PlayHistoryItemCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
-                                                        CommandParameter="{Binding}" Content="▶" ToolTip="Play Audio"
-                                                        Foreground="#007AFF" Background="Transparent" BorderThickness="0" Cursor="Hand" Margin="0,0,8,0" FontSize="10"/>
-                                                
-                                                <Button Command="{Binding DataContext.CopyHistoryItemCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
-                                                        CommandParameter="{Binding}" Content="Copy" ToolTip="Copy Text"
-                                                        Foreground="#AAA" Background="Transparent" BorderThickness="0" Cursor="Hand" Margin="0,0,8,0" FontSize="10"/>
-                                                
-                                                <Button Command="{Binding DataContext.DeleteHistoryItemCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
-                                                        CommandParameter="{Binding}" Content="✕" ToolTip="Delete"
-                                                        Foreground="#FF453A" Background="Transparent" BorderThickness="0" Cursor="Hand" FontSize="10"/>
-                                            </StackPanel>
-                                        </Grid>
+                                            <!-- Setup Toggle Click on the whole item -->
+                                            <Grid.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" 
+                                                              Command="{Binding DataContext.ToggleHistoryItemExpandCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                              CommandParameter="{Binding}"/>
+                                            </Grid.InputBindings>
 
-                                        <!-- Bottom: Text -->
-                                        <TextBlock Grid.Row="1" Text="{Binding Text}" Foreground="White" TextWrapping="Wrap" FontSize="12"/>
-                                    </Grid>
+                                            <!-- Header: Checkbox, Text Preview, Time, Arrow -->
+                                            <Grid Grid.Row="0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/> <!-- Checkbox -->
+                                                    <ColumnDefinition Width="*"/>    <!-- Text Preview -->
+                                                    <ColumnDefinition Width="Auto"/> <!-- Time + Arrow -->
+                                                </Grid.ColumnDefinitions>
+
+                                                <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" VerticalAlignment="Center" Margin="0,0,8,0" Style="{StaticResource DarkCheckBoxStyle}"/>
+                                                
+                                                <TextBlock Grid.Column="1" Text="{Binding Text}" 
+                                                           Foreground="White" FontSize="12" VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"/>
+
+                                                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
+                                                    <TextBlock Text="{Binding Timestamp, StringFormat=t}" Foreground="#666" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                    <!-- Expand Icon (Rotates) -->
+                                                    <Path x:Name="Arrow" Data="M0,0 L4,4 L8,0" Stroke="#888" StrokeThickness="1.5" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                                                        <Path.RenderTransform>
+                                                            <RotateTransform Angle="0"/>
+                                                        </Path.RenderTransform>
+                                                    </Path>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!-- Expanded Details: Full Text + Actions -->
+                                            <Grid x:Name="DetailsGrid" Grid.Row="1" Visibility="Collapsed" Margin="24,8,0,0">
+                                                 <StackPanel>
+                                                     <TextBlock Text="{Binding Text}" Foreground="#DDD" TextWrapping="Wrap" FontSize="12" Margin="0,0,0,10"/>
+                                                     
+                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                        <Button Command="{Binding DataContext.PlayHistoryItemCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                                                CommandParameter="{Binding}" Content="▶ Play" ToolTip="Play Audio"
+                                                                Style="{StaticResource IconButtonStyle}" Foreground="#007AFF" FontSize="11" Padding="8,4" Margin="0,0,8,0"/>
+                                                        
+                                                        <Button Command="{Binding DataContext.CopyHistoryItemCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                                                CommandParameter="{Binding}" Content="Copy" ToolTip="Copy Text"
+                                                                Style="{StaticResource IconButtonStyle}" Foreground="#AAA" FontSize="11" Padding="8,4" Margin="0,0,8,0"/>
+                                                        
+                                                        <Button Command="{Binding DataContext.DeleteHistoryItemCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                                                CommandParameter="{Binding}" Content="Delete" ToolTip="Delete"
+                                                                Style="{StaticResource IconButtonStyle}" Foreground="#FF453A" FontSize="11" Padding="8,4"/>
+                                                    </StackPanel>
+                                                 </StackPanel>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsExpanded}" Value="True">
+                                            <Setter TargetName="DetailsGrid" Property="Visibility" Value="Visible"/>
+                                            <Setter TargetName="Arrow" Property="Stroke" Value="#007AFF"/>
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="180" Duration="0:0:0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="0" Duration="0:0:0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>

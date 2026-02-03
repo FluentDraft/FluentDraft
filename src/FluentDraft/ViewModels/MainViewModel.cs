@@ -227,6 +227,7 @@ namespace FluentDraft.ViewModels
         public RelayCommand SelectAllHistoryCommand { get; }
         public RelayCommand DeselectAllHistoryCommand { get; }
         public RelayCommand CopySelectedHistoryCommand { get; }
+        public RelayCommand<TranscriptionItem> ToggleHistoryItemExpandCommand { get; }
         
         public RelayCommand ManualInsertCommand { get; }
         public RelayCommand ProcessTextActionCommand { get; }
@@ -291,6 +292,10 @@ namespace FluentDraft.ViewModels
             SelectAllHistoryCommand = new RelayCommand(SelectAllHistory);
             DeselectAllHistoryCommand = new RelayCommand(DeselectAllHistory);
             CopySelectedHistoryCommand = new RelayCommand(CopySelectedHistory);
+            ToggleHistoryItemExpandCommand = new RelayCommand<TranscriptionItem>(item => 
+            {
+                if (item != null) item.IsExpanded = !item.IsExpanded;
+            });
 
             ResetChatSessionCommand = new RelayCommand(ResetChatSession);
 
