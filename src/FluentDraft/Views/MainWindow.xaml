@@ -174,18 +174,87 @@
             </Setter>
         </Style>
 
+        <!-- Dark ContextMenu Style -->
+        <Style TargetType="ContextMenu" x:Key="DarkContextMenuStyle">
+            <Setter Property="Background" Value="#252525"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#444"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HasDropShadow" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="4" 
+                                Padding="4">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.4"/>
+                            </Border.Effect>
+                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dark MenuItem Style -->
+        <Style TargetType="MenuItem" x:Key="DarkMenuItemStyle">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="3" Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <ContentPresenter Content="{TemplateBinding Header}" 
+                                                  VerticalAlignment="Center" 
+                                                  HorizontalAlignment="Left"
+                                                  RecognizesAccessKey="True"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#007AFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dark Separator Style -->
+        <Style TargetType="Separator" x:Key="DarkSeparatorStyle">
+            <Setter Property="Background" Value="#444"/>
+            <Setter Property="Margin" Value="0,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Separator">
+                        <Border Height="1" Background="{TemplateBinding Background}" HorizontalAlignment="Stretch"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </Window.Resources>
 
     <Grid>
         <tb:TaskbarIcon
             x:Name="TrayIcon"
-            IconSource="/Icons/app_icon.ico"
-            ToolTipText="Whisper"
+            IconSource="{Binding TrayIconSource}"
+            ToolTipText="FluentDraft"
             TrayMouseDoubleClick="TaskbarIcon_TrayMouseDoubleClick">
             <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Show" Click="ShowMenuItem_Click"/>
-                    <MenuItem Header="Exit" Click="ExitMenuItem_Click"/>
+                <ContextMenu Style="{StaticResource DarkContextMenuStyle}">
+                    <MenuItem Header="Show / Hide" Click="ShowMenuItem_Click" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <MenuItem Header="Settings" Command="{Binding ToggleSettingsCommand}" Style="{StaticResource DarkMenuItemStyle}"/>
+                    <Separator Style="{StaticResource DarkSeparatorStyle}"/>
+                    <MenuItem Header="Exit" Click="ExitMenuItem_Click" Style="{StaticResource DarkMenuItemStyle}"/>
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>

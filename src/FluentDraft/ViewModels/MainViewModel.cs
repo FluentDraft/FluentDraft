@@ -175,6 +175,21 @@ namespace FluentDraft.ViewModels
         [ObservableProperty]
         private ObservableCollection<WaveBar> _audioWaves = new();
 
+        [ObservableProperty]
+        private string _trayIconSource = "/Icons/app_icon.ico";
+
+        partial void OnUiStateChanged(string value)
+        {
+            if (value == "Listening")
+            {
+                TrayIconSource = "/Icons/recording_icon.ico";
+            }
+            else
+            {
+                TrayIconSource = "/Icons/app_icon.ico";
+            }
+        }
+
 
         private System.Windows.Threading.DispatcherTimer? _recordingTimer;
         private DateTime _recordingStartTime;

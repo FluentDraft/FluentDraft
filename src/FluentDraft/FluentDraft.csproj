@@ -23,6 +23,7 @@
   <ItemGroup>
     <Resource Include="Icons\app_icon.png" />
     <Resource Include="Icons\app_icon.ico" />
+    <Resource Include="Icons\recording_icon.ico" />
   </ItemGroup>
 
   <!-- Velopack: Change App.xaml from ApplicationDefinition to Page -->

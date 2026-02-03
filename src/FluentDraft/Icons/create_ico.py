@@ -1,85 +1,86 @@
-from PIL import Image, ImageDraw
+from PIL import Image
 
-def make_transparent_and_create_ico(source_path, output_ico_path, output_png_path):
+def make_transparent_and_create_app_ico(source_path, output_ico_path):
     img = Image.open(source_path)
     img = img.convert("RGBA")
     
     datas = img.getdata()
-    
-    # Simple strategy: Flood fill from corners if possible, or color replacement.
-    # Since the user mentioned "white color which surrounds our icon", we assume the background is white.
-    # We'll use a flood filling approach manually or using ImageDraw.
-    
-    # Alternative: Create a mask.
-    # If the image is a rounded square on white, we can try to turn white to transparent.
-    # However, the icon symbol is also white. So we must be careful.
-    # We will assume the white to remove is connected to the corners.
-    
-    # Let's try Image.floodfill (available in newer Pillow) or a BFS approach if needed.
-    # But first, let's see if we can just make "pure white" transparent if it's at the edges.
-    
-    # Robust approach:
-    # 1. Create a mask initialized to 0.
-    # 2. Flood fill the mask with 1 starting from (0,0) if (0,0) is white.
-    # 3. Apply mask to alpha channel.
-    
     width, height = img.size
     
-    # check if corner is white-ish
-    corner_pixel = img.getpixel((0, 0))
-    # Threshold for "white"
-    threshold = 240
-    
-    if all(x > threshold for x in corner_pixel[:3]):
-        # The corner is white/near-white. We should make it transparent.
-        # We will use a BFS flood fill to find all connected white pixels from the corners.
+    # Check if corner is white-ish to decide on transparency
+    try:
+        corner_pixel = img.getpixel((0, 0))
+        threshold = 240
         
-        # Create a new image for the mask
-        mask = Image.new('L', (width, height), 0)
-        
-        # We'll do a custom flood fill on the alpha channel of the main image
-        # logic: start at (0,0), (w,0), (0,h), (w,h). 
-        # Stack based flood fill.
-        
-        stack = [(0, 0), (width-1, 0), (0, height-1), (width-1, height-1)]
-        visited = set()
-        
-        # Get pixel access for speed
-        pixels = img.load()
-        
-        while stack:
-            x, y = stack.pop()
+        # Only attempt to make transparent if the corner is white and opaque
+        if corner_pixel[3] > 0 and all(x > threshold for x in corner_pixel[:3]):
+            print("Corner is white. Attempting to make background transparent...")
             
-            if (x, y) in visited:
-                continue
+            # Create a new image for the mask logic (simplified for speed)
+            # Actually, let's just use the flood fill logic from the original script if we want to be safe, 
+            # or simpler: Replace all White pixels with Transparent? 
+            # Original script used flood fill, let's replicate that to be safe.
             
-            if x < 0 or x >= width or y < 0 or y >= height:
-                continue
+            stack = [(0, 0), (width-1, 0), (0, height-1), (width-1, height-1)]
+            visited = set()
+            pixels = img.load()
+            
+            while stack:
+                x, y = stack.pop()
+                if (x, y) in visited: continue
+                if x < 0 or x >= width or y < 0 or y >= height: continue
                 
-            visited.add((x, y))
-            
-            p = pixels[x, y]
-            # Check if pixel is white-ish
-            if p[0] > threshold and p[1] > threshold and p[2] > threshold:
-                # Make transparent
-                pixels[x, y] = (255, 255, 255, 0)
+                visited.add((x, y))
+                p = pixels[x, y]
                 
-                # Add neighbors
-                stack.append((x+1, y))
-                stack.append((x-1, y))
-                stack.append((x, y+1))
-                stack.append((x, y-1))
-    
-    # Resize and Save strategy
+                if p[0] > threshold and p[1] > threshold and p[2] > threshold:
+                    pixels[x, y] = (255, 255, 255, 0) # Transparent
+                    stack.extend([(x+1, y), (x-1, y), (x, y+1), (x, y-1)])
+            
+            # Save the modified PNG back? The original script did.
+            # img.save(source_path, format="PNG") 
+            # Let's not overwrite the source to avoid degradation if run repeatedly, 
+            # unless desired. Original script overwrote `app_icon.png`.
+            pass
+
+    except Exception as e:
+        print(f"Transparency processing skipped or failed: {e}")
+
+    # Save App Icon
     sizes = [(256, 256), (128, 128), (64, 64), (48, 48), (32, 32), (16, 16)]
-    
-    # Save the modified PNG (with transparent background) back to source or a new file
-    img.save(output_png_path, format="PNG")
-    print(f"Saved transparent PNG to {output_png_path}")
-    
     img.save(output_ico_path, format='ICO', sizes=sizes)
-    print(f"Created {output_ico_path} with sizes: {sizes}")
+    print(f"Created {output_ico_path}")
+
+
+def create_recording_icon(source_path, output_ico_path):
+    img = Image.open(source_path)
+    img = img.convert("RGBA")
+    
+    datas = img.getdata()
+    new_data = []
+    threshold = 200 
+    
+    # Recolor White -> Red
+    for item in datas:
+        # item is (R, G, B, A)
+        if item[0] > threshold and item[1] > threshold and item[2] > threshold:
+            # Change to Red (Keeping Alpha of original pixel? Or forcing Opaque Red?)
+            # If original was transparent, item[3] is 0.
+            # If we keep item[3], transparent remains transparent red (invisible).
+            # If original was White Opaque, it becomes Red Opaque.
+            new_data.append((255, 0, 0, item[3]))
+        else:
+            new_data.append(item)
+            
+    img.putdata(new_data)
+    
+    sizes = [(256, 256), (128, 128), (64, 64), (48, 48), (32, 32), (16, 16)]
+    img.save(output_ico_path, format='ICO', sizes=sizes)
+    print(f"Created {output_ico_path}")
 
 if __name__ == "__main__":
-    # We use the current png as source
-    make_transparent_and_create_ico("app_icon.png", "app_icon.ico", "app_icon.png")
+    source = "app_icon.png"
+    print(f"Processing {source}...")
+    make_transparent_and_create_app_ico(source, "app_icon.ico")
+    create_recording_icon(source, "recording_icon.ico")
+    print("Done.")
