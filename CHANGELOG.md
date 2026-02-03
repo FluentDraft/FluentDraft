@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0] - 2026-02-03
+
+### ✨ What's New
+- **Dynamic Tray Icon**: The system tray icon now changes color (Green/Red) to clearly show when the application is recording your voice.
+- **Enhanced Dark Context Menu**: Updated the system tray menu with a custom dark theme that better matches the Windows styling.
+- **Optimized History View**: The History tab now features a more compact design that automatically adjusts to your window size, making it easier to manage your transcriptions.
+- **Security Policy**: Added a formal security policy and vulnerability reporting guidelines to ensure your data stays protected.
+
+### ⚡ Improvements
+- Simplified the system tray interaction for faster access to recording status.
+- Improved UI responsiveness when resizing the History view.
+
 ## [1.5.0] - 2026-02-03
 
 ### ✨ What's New
