@@ -30,16 +30,20 @@ appsettings*.json
 !appsettings.Development.json
 
 ## [App Specific - Whisper]
-audio/
+# Logs - Centralized
 logs/
+*.log
+*_log.txt
+!src/FluentDraft/Sounds/
+
+# App Specific
+audio/
 settings.json
 build_errors*.txt
 *.wav
-!src/FluentDraft/Sounds/
 *.mp3
 *.webm
-startup_log.txt
-Sounds/custom/
+
 
 ## [Publish]
 *.pubxml.user

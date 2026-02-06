@@ -18,7 +18,7 @@ namespace FluentDraft.Services.Implementations
         private bool _isMigrated = false;
 
         public SqliteHistoryService(
-            IDbContextFactory<FluentDraftDbContext> contextFactory, 
+            IDbContextFactory<FluentDraftDbContext> contextFactory,
             ILoggingService logger)
         {
             _contextFactory = contextFactory;
@@ -70,7 +70,7 @@ namespace FluentDraft.Services.Implementations
                 {
                     context.AudioRecordings.Remove(entity);
                     await context.SaveChangesAsync();
-                    
+
                     // Optionally delete file? keeping consistent with previous behavior (cache remove only, no file delete?)
                     // Previous JSONHistoryService commented "Optionally delete audio file?".
                     // We will stick to just DB removal for now to avoid data loss accidents.
@@ -115,7 +115,7 @@ namespace FluentDraft.Services.Implementations
                     if (File.Exists(jsonPath))
                     {
                         _logger.LogInfo("Migrating history from JSON to SQLite...");
-                        try 
+                        try
                         {
                             var json = await File.ReadAllTextAsync(jsonPath);
                             var oldItems = JsonSerializer.Deserialize<List<TranscriptionItem>>(json);
@@ -128,7 +128,7 @@ namespace FluentDraft.Services.Implementations
                                 foreach (var item in oldItems)
                                 {
                                     var entity = MapToEntity(item);
-                                    
+
                                     // Try to move file if it exists
                                     if (!string.IsNullOrEmpty(entity.FilePath) && File.Exists(entity.FilePath))
                                     {
@@ -136,7 +136,7 @@ namespace FluentDraft.Services.Implementations
                                         {
                                             var fileName = Path.GetFileName(entity.FilePath);
                                             var newPath = Path.Combine(newAudioDir, fileName);
-                                            
+
                                             if (!File.Exists(newPath))
                                             {
                                                 File.Move(entity.FilePath, newPath);
@@ -154,7 +154,7 @@ namespace FluentDraft.Services.Implementations
 
                                 context.AudioRecordings.AddRange(entities);
                                 await context.SaveChangesAsync();
-                                
+
                                 // Rename old file
                                 File.Move(jsonPath, jsonPath + ".bak");
                                 _logger.LogInfo($"Migrated {entities.Count} history items.");

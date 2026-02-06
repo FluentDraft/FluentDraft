@@ -33,8 +33,8 @@ namespace FluentDraft.Services.Implementations
                         }
 
                         System.Windows.Clipboard.SetText(text);
-                        await Task.Delay(50); 
-                        
+                        await Task.Delay(50);
+
                         _inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_V);
 
                         await Task.Delay(100);
@@ -53,7 +53,7 @@ namespace FluentDraft.Services.Implementations
             }
             else
             {
-                await Task.Run(() => 
+                await Task.Run(() =>
                 {
                     try
                     {

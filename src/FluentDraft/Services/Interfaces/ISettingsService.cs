@@ -16,17 +16,17 @@ namespace FluentDraft.Services.Interfaces
         // Selected Profile IDs
         public Guid? SelectedTranscriptionProfileId { get; set; }
         public Guid? SelectedRefinementProfileId { get; set; }  // Legacy, kept for migration
-        
+
         // Refinement Presets
         public List<FluentDraft.Models.RefinementPreset> RefinementPresets { get; set; } = new();
         public Guid? SelectedRefinementPresetId { get; set; }
-        
+
         // Post-processing settings
         public bool IsSetupCompleted { get; set; } = false;
         public bool IsPostProcessingEnabled { get; set; } = true;
         public bool PauseMediaOnRecording { get; set; } = false;
         public string PostProcessingPrompt { get; set; } = "You are a text refinement assistant. Your goal is to correct grammar, add punctuation, and improve clarity of the text provided within [INPUT_TEXT] tags. Maintain the original meaning and tone. Output ONLY the refined text itself, without any tags or additional comments."; // Legacy, kept for migration
-        
+
         // General Settings
         public string LanguageCode { get; set; } = "en";
         public bool IsAlwaysOnTop { get; set; } = false;

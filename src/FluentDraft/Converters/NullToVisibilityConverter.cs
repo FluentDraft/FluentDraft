@@ -11,7 +11,7 @@ namespace FluentDraft.Converters
         {
             if (value == null)
                 return Visibility.Collapsed;
-            
+
             return Visibility.Visible;
         }
 

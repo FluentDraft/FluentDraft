@@ -49,10 +49,10 @@ namespace FluentDraft.ViewModels
         [ObservableProperty]
         private RefinementPreset? _selectedEditingPreset;
 
-        public ObservableCollection<ProviderProfile> AvailableTranscriptionProfiles => 
+        public ObservableCollection<ProviderProfile> AvailableTranscriptionProfiles =>
             new ObservableCollection<ProviderProfile>(Providers.Where(p => p.IsTranscriptionEnabled));
 
-        public ObservableCollection<ProviderProfile> AvailableRefinementProfiles => 
+        public ObservableCollection<ProviderProfile> AvailableRefinementProfiles =>
             new ObservableCollection<ProviderProfile>(Providers.Where(p => p.IsRefinementEnabled));
 
         // Commands for Profile Management
@@ -118,12 +118,12 @@ namespace FluentDraft.ViewModels
 
         partial void OnIsDebugModeEnabledChanged(bool value)
         {
-             // Update Logger immediately
-             if (_logger is FluentDraft.Services.Implementations.FileLogger fileLogger)
-             {
-                 fileLogger.SetDebugMode(value);
-             }
-             _ = SaveSettingsAsync();
+            // Update Logger immediately
+            if (_logger is FluentDraft.Services.Implementations.FileLogger fileLogger)
+            {
+                fileLogger.SetDebugMode(value);
+            }
+            _ = SaveSettingsAsync();
         }
 
         // Update Properties
@@ -159,7 +159,7 @@ namespace FluentDraft.ViewModels
             }
         }
 
-        
+
         public ObservableCollection<string> AvailableProviderTypes { get; } = new() { "Groq", "OpenAI", "Custom" };
 
         private List<int> _currentHotkeyCodes = new List<int> { 0x14 };
@@ -168,7 +168,7 @@ namespace FluentDraft.ViewModels
         public RelayCommand CloseSettingsCommand { get; }
         public RelayCommand CheckForUpdatesCommand { get; }
         public RelayCommand ApplyUpdateCommand { get; }
-        
+
         public RelayCommand<ProviderProfile> OpenApiKeyUrlCommand { get; }
         public RelayCommand<ProviderProfile> PasteApiKeyCommand { get; }
 
@@ -195,7 +195,7 @@ namespace FluentDraft.ViewModels
             RemoveProviderCommand = new RelayCommand<ProviderProfile>(RemoveProvider);
             TestProviderCommand = new RelayCommand<ProviderProfile>(async (p) => await TestProvider(p));
             FetchModelsCommand = new RelayCommand<ProviderProfile>(async (p) => await FetchModels(p));
-            
+
             AddPresetCommand = new RelayCommand(AddPreset);
             RemovePresetCommand = new RelayCommand<RefinementPreset>(RemovePreset);
             ResetPresetCommand = new RelayCommand<RefinementPreset>(ResetPreset);
@@ -205,13 +205,13 @@ namespace FluentDraft.ViewModels
             CloseSettingsCommand = new RelayCommand(RequestCloseSettings);
             CheckForUpdatesCommand = new RelayCommand(async () => await CheckForUpdates());
             ApplyUpdateCommand = new RelayCommand(ApplyUpdate);
-            
+
             OpenApiKeyUrlCommand = new RelayCommand<ProviderProfile>(OpenApiKeyUrl);
             PasteApiKeyCommand = new RelayCommand<ProviderProfile>(PasteApiKey);
 
-            WeakReferenceMessenger.Default.Register<UpdateReadyMessage>(this, (r, m) => 
+            WeakReferenceMessenger.Default.Register<UpdateReadyMessage>(this, (r, m) =>
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() => 
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
                     _pendingUpdate = m.Update;
                     IsUpdateReady = true;
@@ -229,7 +229,7 @@ namespace FluentDraft.ViewModels
         {
             if (!ValidateSettings()) return;
             _ = SaveSettingsAsync();
-            
+
             // Close window
             foreach (System.Windows.Window window in System.Windows.Application.Current.Windows)
             {
@@ -268,7 +268,7 @@ namespace FluentDraft.ViewModels
 
         private void AddProvider()
         {
-            var newProfile = new ProviderProfile { Name = "New Provider", Type = "Groq", IsTranscriptionEnabled=true, IsRefinementEnabled=true };
+            var newProfile = new ProviderProfile { Name = "New Provider", Type = "Groq", IsTranscriptionEnabled = true, IsRefinementEnabled = true };
             newProfile.PropertyChanged += OnItemChanged;
             Providers.Add(newProfile);
             SelectedEditingProvider = newProfile; // Auto-select for editing
@@ -284,13 +284,13 @@ namespace FluentDraft.ViewModels
             if (SelectedEditingProvider == profile) SelectedEditingProvider = null;
             if (SelectedTranscriptionProfile == profile) SelectedTranscriptionProfile = Providers.FirstOrDefault(p => p.IsTranscriptionEnabled);
             if (SelectedRefinementProfile == profile) SelectedRefinementProfile = Providers.FirstOrDefault(p => p.IsRefinementEnabled);
-            
+
             // Update any presets that reference this profile
             foreach (var preset in RefinementPresets.Where(p => p.ProfileId == profile.Id))
             {
                 preset.ProfileId = null;
             }
-            
+
             _ = SaveSettingsAsync();
             RefreshFilteredCollections();
         }
@@ -298,8 +298,8 @@ namespace FluentDraft.ViewModels
         private void AddPreset()
         {
             var defaultProfile = Providers.FirstOrDefault(p => p.IsRefinementEnabled);
-            var newPreset = new RefinementPreset 
-            { 
+            var newPreset = new RefinementPreset
+            {
                 Name = "New Preset",
                 ProfileId = defaultProfile?.Id,
                 Model = defaultProfile?.RefinementModel ?? "",
@@ -324,12 +324,12 @@ namespace FluentDraft.ViewModels
         private void ResetPreset(RefinementPreset? preset)
         {
             if (preset == null) return;
-            
+
             if (System.Windows.MessageBox.Show($"Are you sure you want to reset '{preset.Name}' to default values?", "Confirm Reset", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
             {
                 // Reset to default system prompt
                 preset.SystemPrompt = "You are a text refinement assistant. Your goal is to correct grammar, add punctuation, and improve clarity of the text provided. Maintain the original meaning and tone. Output ONLY the refined text itself, without any tags or additional comments.";
-                
+
                 // Also reset model to profile default if possible
                 var profile = Providers.FirstOrDefault(p => p.Id == preset.ProfileId);
                 if (profile != null && !string.IsNullOrEmpty(profile.RefinementModel))
@@ -344,17 +344,17 @@ namespace FluentDraft.ViewModels
         private async Task FetchModels(ProviderProfile? profile)
         {
             if (profile == null) return;
-            
+
             _logger.LogInfo($"Fetching models for {profile.Name}...");
-            try 
+            try
             {
                 var models = await _transcriptionService.GetAvailableModelsAsync(profile.ApiKey, profile.BaseUrl);
-                
-                System.Windows.Application.Current.Dispatcher.Invoke(() => 
+
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
                     UpdateProfileModels(profile, models);
                 });
-                
+
                 _logger.LogInfo($"Fetched {models.Count} models for {profile.Name}.");
             }
             catch (Exception ex)
@@ -367,24 +367,24 @@ namespace FluentDraft.ViewModels
         private async Task TestProvider(ProviderProfile? profile)
         {
             if (profile == null) return;
-            
+
             _logger.LogInfo($"Testing connection for {profile.Name} ({profile.BaseUrl})...");
-            try 
+            try
             {
                 var models = await _transcriptionService.GetAvailableModelsAsync(profile.ApiKey, profile.BaseUrl);
                 _logger.LogInfo($"Connection test successful. Found {models.Count} models.");
-                
-                profile.IsValidated = true; // Mark as validated
-                OnPropertyChanged(nameof(Providers)); 
 
-                System.Windows.Application.Current.Dispatcher.Invoke(() => 
+                profile.IsValidated = true; // Mark as validated
+                OnPropertyChanged(nameof(Providers));
+
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
                     UpdateProfileModels(profile, models);
                 });
 
                 string msg = $"Connection successful!\nFound {models.Count} compatible models.";
-                if(models.Count > 0) msg += $"\nFirst: {models[0]}";
-                
+                if (models.Count > 0) msg += $"\nFirst: {models[0]}";
+
                 System.Windows.MessageBox.Show(msg, "Test Connection", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -416,7 +416,7 @@ namespace FluentDraft.ViewModels
                     profile.RefinementModels.Add(m);
                 }
             }
-            
+
             // Preserve selection
             if (!string.IsNullOrEmpty(currentTrans) && profile.TranscriptionModels.Contains(currentTrans)) profile.TranscriptionModel = currentTrans;
             if (!string.IsNullOrEmpty(currentRef) && profile.RefinementModels.Contains(currentRef)) profile.RefinementModel = currentRef;
@@ -431,7 +431,7 @@ namespace FluentDraft.ViewModels
         private async Task LoadSettingsAsync()
         {
             var settings = await _settingsService.LoadSettingsAsync();
-            
+
             // Note: Migration logic is implicitly handled if we load the same way.
             // Simplified here: assuming settings are already valid or we default them.
             // Ideally we duplicate the migration logic or have a shared Migrator, but for now copying is safer.
@@ -439,7 +439,7 @@ namespace FluentDraft.ViewModels
             if (settings.Providers == null || !settings.Providers.Any())
             {
                 // Init defaults (simplified)
-                 var defaultProfile = new ProviderProfile
+                var defaultProfile = new ProviderProfile
                 {
                     Name = "Default Groq",
                     Type = "Groq",
@@ -455,30 +455,30 @@ namespace FluentDraft.ViewModels
             }
 
             Providers = new ObservableCollection<ProviderProfile>(settings.Providers);
-            
+
             SelectedTranscriptionProfile = Providers.FirstOrDefault(p => p.Id == settings.SelectedTranscriptionProfileId) ?? Providers.FirstOrDefault(p => p.IsTranscriptionEnabled);
             SelectedRefinementProfile = Providers.FirstOrDefault(p => p.Id == settings.SelectedRefinementProfileId) ?? Providers.FirstOrDefault(p => p.IsRefinementEnabled);
 
             if (settings.RefinementPresets == null || !settings.RefinementPresets.Any())
             {
                 // Init defaults (simplified - assuming clean state, but ideally we should keep logic consistent)
-                 var defaultProfile = Providers.FirstOrDefault(p => p.IsRefinementEnabled);
-                 // ... defaulting logic omitted for brevity, assuming loaded settings are generally OK or handled by MainViewModel before
-                 // BUT if we open settings first, we need this.
-                 // Let's just create one default if empty
-                 if (settings.RefinementPresets == null) settings.RefinementPresets = new List<RefinementPreset>();
-            if (settings.RefinementPresets.Count == 0)
-                 {
-                    settings.RefinementPresets.Add(new RefinementPreset { Name="Default", ProfileId = defaultProfile?.Id });
-                 }
+                var defaultProfile = Providers.FirstOrDefault(p => p.IsRefinementEnabled);
+                // ... defaulting logic omitted for brevity, assuming loaded settings are generally OK or handled by MainViewModel before
+                // BUT if we open settings first, we need this.
+                // Let's just create one default if empty
+                if (settings.RefinementPresets == null) settings.RefinementPresets = new List<RefinementPreset>();
+                if (settings.RefinementPresets.Count == 0)
+                {
+                    settings.RefinementPresets.Add(new RefinementPreset { Name = "Default", ProfileId = defaultProfile?.Id });
+                }
             }
-            
+
             RefinementPresets = new ObservableCollection<RefinementPreset>(settings.RefinementPresets);
             SelectedRefinementPreset = RefinementPresets.FirstOrDefault(p => p.Id == settings.SelectedRefinementPresetId) ?? RefinementPresets.FirstOrDefault();
 
             // Subscribe to changes
-            foreach(var p in Providers) p.PropertyChanged += OnItemChanged;
-            foreach(var r in RefinementPresets) r.PropertyChanged += OnItemChanged;
+            foreach (var p in Providers) p.PropertyChanged += OnItemChanged;
+            foreach (var r in RefinementPresets) r.PropertyChanged += OnItemChanged;
 
             IsAlwaysOnTop = settings.IsAlwaysOnTop;
             CloseToTray = settings.CloseToTray;
@@ -500,7 +500,7 @@ namespace FluentDraft.ViewModels
             _currentHotkeyCodes = settings.HotkeyCodes ?? new List<int> { 0x14 };
             IsHotkeySuppressionEnabled = settings.IsHotkeySuppressionEnabled;
             UpdateHotkeyDisplay();
-            
+
             RefreshFilteredCollections();
         }
 
@@ -530,10 +530,10 @@ namespace FluentDraft.ViewModels
                 Providers = Providers.ToList(),
                 SelectedTranscriptionProfileId = SelectedTranscriptionProfile?.Id,
                 SelectedRefinementProfileId = SelectedRefinementProfile?.Id,
-                
+
                 RefinementPresets = RefinementPresets.ToList(),
                 SelectedRefinementPresetId = SelectedRefinementPreset?.Id,
-                
+
                 IsPostProcessingEnabled = IsPostProcessingEnabled,
                 IsAlwaysOnTop = IsAlwaysOnTop,
                 HotkeyCodes = _currentHotkeyCodes,
@@ -548,10 +548,10 @@ namespace FluentDraft.ViewModels
                 IsDebugModeEnabled = IsDebugModeEnabled
             };
             await _settingsService.SaveSettingsAsync(settings);
-            
+
             // Notify other components
             WeakReferenceMessenger.Default.Send(new SettingsChangedMessage());
-            
+
             RefreshFilteredCollections();
         }
 
@@ -568,11 +568,11 @@ namespace FluentDraft.ViewModels
                 IsRecordingHotkey = false;
                 UpdateHotkeyDisplay();
                 // SaveSettingsAsync(); // Do we save immediately on change? MainViewModel did.
-                _ = SaveSettingsAsync(); 
+                _ = SaveSettingsAsync();
             }
             else
             {
-                if (!IsModifier(key)) 
+                if (!IsModifier(key))
                 {
                     _currentHotkeyCodes = new List<int> { vk };
                     IsRecordingHotkey = false;
@@ -607,7 +607,7 @@ namespace FluentDraft.ViewModels
         {
             if (_currentHotkeyCodes.Count == 0)
             {
-                _currentHotkeyCodes.Add(0x14); 
+                _currentHotkeyCodes.Add(0x14);
             }
 
             var names = _currentHotkeyCodes.Select(vk => ((Key)KeyInterop.KeyFromVirtualKey(vk)).ToString());
@@ -618,15 +618,15 @@ namespace FluentDraft.ViewModels
         {
             var profile = Providers.FirstOrDefault(p => p.Id == preset.ProfileId);
             if (profile == null) return;
-            
+
             var currentModel = preset.Model;
-            
+
             try
             {
                 _logger.LogInfo($"Fetching text models for preset '{preset.Name}'...");
                 var allModels = await _transcriptionService.GetAvailableModelsAsync(profile.ApiKey, profile.BaseUrl);
-                
-                var textModels = allModels.Where(m => 
+
+                var textModels = allModels.Where(m =>
                     !m.Contains("whisper", StringComparison.OrdinalIgnoreCase) &&
                     !m.Contains("audio", StringComparison.OrdinalIgnoreCase) &&
                     !m.Contains("video", StringComparison.OrdinalIgnoreCase) &&
@@ -635,7 +635,7 @@ namespace FluentDraft.ViewModels
                     !m.Contains("tts", StringComparison.OrdinalIgnoreCase) &&
                     !m.Contains("playai", StringComparison.OrdinalIgnoreCase)
                 ).ToList();
-                
+
                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
                     var newModels = new List<string>(textModels);
@@ -643,10 +643,10 @@ namespace FluentDraft.ViewModels
                     {
                         newModels.Insert(0, currentModel);
                     }
-                    
+
                     preset.AvailableModels.Clear();
                     foreach (var model in newModels) preset.AvailableModels.Add(model);
-                    
+
                     if (!string.IsNullOrEmpty(currentModel)) preset.Model = currentModel;
                 });
             }
@@ -666,7 +666,7 @@ namespace FluentDraft.ViewModels
                 IsUpdateReady = false;
                 UpdateDownloadProgress = 0;
                 UpdateStatus = "Checking for updates...";
-                
+
                 var updateInfo = await _updateService.CheckForUpdatesAsync();
 
                 if (updateInfo == null)
@@ -677,19 +677,19 @@ namespace FluentDraft.ViewModels
                 }
                 else
                 {
-                     UpdateStatus = $"Found v{updateInfo.TargetFullRelease.Version}! Downloading...";
-                     await _updateService.DownloadUpdateAsync(updateInfo, (p) => 
-                     {
-                         System.Windows.Application.Current.Dispatcher.Invoke(() => 
-                         {
-                             UpdateDownloadProgress = p;
-                             UpdateStatus = $"Downloading: {p}%";
-                         });
-                     });
-                     
-                     _pendingUpdate = updateInfo;
-                     IsUpdateReady = true;
-                     UpdateStatus = $"Version {updateInfo.TargetFullRelease.Version} ready to install!";
+                    UpdateStatus = $"Found v{updateInfo.TargetFullRelease.Version}! Downloading...";
+                    await _updateService.DownloadUpdateAsync(updateInfo, (p) =>
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            UpdateDownloadProgress = p;
+                            UpdateStatus = $"Downloading: {p}%";
+                        });
+                    });
+
+                    _pendingUpdate = updateInfo;
+                    IsUpdateReady = true;
+                    UpdateStatus = $"Version {updateInfo.TargetFullRelease.Version} ready to install!";
                 }
             }
             catch (Exception ex)
@@ -716,7 +716,7 @@ namespace FluentDraft.ViewModels
             string url = "";
             if (profile.Type == "Groq") url = "https://console.groq.com/keys";
             else if (profile.Type == "OpenAI") url = "https://platform.openai.com/api-keys";
-            
+
             if (!string.IsNullOrEmpty(url))
             {
                 try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo { FileName = url, UseShellExecute = true }); }
@@ -735,12 +735,12 @@ namespace FluentDraft.ViewModels
 
         private void LoadAudioDevices()
         {
-             var devices = _audioDeviceService.GetRecordingDevices();
-             AudioDevices.Clear();
-             foreach(var (n, name) in devices)
-             {
-                 AudioDevices.Add(new AudioDeviceModel { DeviceNumber = n, ProductName = name });
-             }
+            var devices = _audioDeviceService.GetRecordingDevices();
+            AudioDevices.Clear();
+            foreach (var (n, name) in devices)
+            {
+                AudioDevices.Add(new AudioDeviceModel { DeviceNumber = n, ProductName = name });
+            }
         }
 
         // Property Change Handlers to trigger saves
@@ -752,13 +752,13 @@ namespace FluentDraft.ViewModels
         partial void OnCloseToTrayChanged(bool value) => _ = SaveSettingsAsync();
         partial void OnPauseMediaOnRecordingChanged(bool value) => _ = SaveSettingsAsync();
         partial void OnSelectedAudioDeviceChanged(int value) => _ = SaveSettingsAsync();
-        
+
         partial void OnSelectedTranscriptionProfileChanged(ProviderProfile? value) => _ = SaveSettingsAsync();
         partial void OnSelectedRefinementProfileChanged(ProviderProfile? value) => _ = SaveSettingsAsync();
         partial void OnSelectedRefinementPresetChanged(RefinementPreset? value) => _ = SaveSettingsAsync();
-        
 
-        
+
+
         partial void OnSelectedEditingProviderChanged(ProviderProfile? value)
         {
             OnPropertyChanged(nameof(IsApiKeyUrlSupported));

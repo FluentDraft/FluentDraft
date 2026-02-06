@@ -29,12 +29,12 @@ namespace FluentDraft.Services.Implementations
             {
                 EnsureUpdateManager();
                 var updateInfo = await _updateManager!.CheckForUpdatesAsync();
-                
+
                 if (updateInfo != null)
                 {
                     _logger.LogInfo($"Update available: {updateInfo.TargetFullRelease.Version}");
                 }
-                
+
                 return updateInfo;
             }
             catch (Exception ex)
@@ -88,7 +88,7 @@ namespace FluentDraft.Services.Implementations
         public async Task<bool> CheckDownloadAndApplyAsync(Action<int>? downloadProgress = null)
         {
             var updateInfo = await CheckForUpdatesAsync();
-            
+
             if (updateInfo == null)
             {
                 _logger.LogInfo("No updates available");
@@ -97,7 +97,7 @@ namespace FluentDraft.Services.Implementations
 
             await DownloadUpdateAsync(updateInfo, downloadProgress);
             ApplyUpdateAndRestart(updateInfo);
-            
+
             return true; // Note: This line may not execute as the app restarts
         }
 

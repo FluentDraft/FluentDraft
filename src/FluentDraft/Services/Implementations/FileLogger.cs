@@ -18,7 +18,7 @@ namespace FluentDraft.Services.Implementations
         {
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             _logDir = Path.Combine(appData, "FluentDraft", "logs");
-            
+
             if (!Directory.Exists(_logDir))
             {
                 Directory.CreateDirectory(_logDir);
@@ -47,7 +47,7 @@ namespace FluentDraft.Services.Implementations
         private void Log(string level, string message)
         {
             var formattedMessage = $"[{DateTime.Now:HH:mm:ss}] [{level}] {message}";
-            
+
             _inMemoryLogs.AppendLine(formattedMessage);
             OnLogAdded?.Invoke(formattedMessage);
 

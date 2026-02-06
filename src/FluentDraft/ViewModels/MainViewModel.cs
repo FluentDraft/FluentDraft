@@ -68,12 +68,12 @@ namespace FluentDraft.ViewModels
         [ObservableProperty]
         private RefinementPreset? _selectedRefinementPreset;
 
-        public ObservableCollection<ProviderProfile> AvailableTranscriptionProfiles => 
+        public ObservableCollection<ProviderProfile> AvailableTranscriptionProfiles =>
             new ObservableCollection<ProviderProfile>(Providers.Where(p => p.IsTranscriptionEnabled));
 
-        public ObservableCollection<ProviderProfile> AvailableRefinementProfiles => 
+        public ObservableCollection<ProviderProfile> AvailableRefinementProfiles =>
             new ObservableCollection<ProviderProfile>(Providers.Where(p => p.IsRefinementEnabled));
-        
+
         [ObservableProperty]
         private string _logs = "";
 
@@ -120,7 +120,7 @@ namespace FluentDraft.ViewModels
         private bool _isHistoryVisible = false;
 
         [ObservableProperty]
-        private bool _hasSelectedItems = false; 
+        private bool _hasSelectedItems = false;
 
         [ObservableProperty]
         private ObservableCollection<TranscriptionItem> _historyItems = new();
@@ -153,14 +153,14 @@ namespace FluentDraft.ViewModels
 
         private void UpdateInstructionText()
         {
-             if (ActivationMode == 0) // Tap to Talk
-             {
-                 InstructionText = $"Press {HotkeyDisplay} to start/stop dictation";
-             }
-             else // Push to Talk
-             {
-                 InstructionText = $"Hold {HotkeyDisplay} to dictate";
-             }
+            if (ActivationMode == 0) // Tap to Talk
+            {
+                InstructionText = $"Press {HotkeyDisplay} to start/stop dictation";
+            }
+            else // Push to Talk
+            {
+                InstructionText = $"Hold {HotkeyDisplay} to dictate";
+            }
         }
 
         [ObservableProperty]
@@ -200,7 +200,7 @@ namespace FluentDraft.ViewModels
 
         public RelayCommand ToggleSettingsCommand { get; }
         public RelayCommand CloseSettingsCommand { get; }
-        
+
         // Settings management moved to SettingsViewModel, 
         // but we still need to close the window if checking constraints?
         // Actually MainViewModel just toggles visibility usually.
@@ -221,7 +221,7 @@ namespace FluentDraft.ViewModels
         public RelayCommand DeselectAllHistoryCommand { get; }
         public RelayCommand CopySelectedHistoryCommand { get; }
         public RelayCommand<TranscriptionItem> ToggleHistoryItemExpandCommand { get; }
-        
+
         public RelayCommand ManualInsertCommand { get; }
         public RelayCommand ProcessTextActionCommand { get; }
 
@@ -261,7 +261,7 @@ namespace FluentDraft.ViewModels
             // Initialize 60 bars for the wave animation
             for (int i = 0; i < 60; i++)
             {
-                AudioWaves.Add(new WaveBar { Height = 3 }); 
+                AudioWaves.Add(new WaveBar { Height = 3 });
             }
 
 
@@ -272,8 +272,8 @@ namespace FluentDraft.ViewModels
             StartManualRecordingCommand = new RelayCommand(ToggleRecordingManual);
             SetTapToTalkCommand = new RelayCommand(() => ActivationMode = 0);
             SetPushToTalkCommand = new RelayCommand(() => ActivationMode = 1);
-            
-            ToggleHistoryCommand = new RelayCommand(() => 
+
+            ToggleHistoryCommand = new RelayCommand(() =>
             {
                 IsHistoryVisible = !IsHistoryVisible;
             });
@@ -281,11 +281,11 @@ namespace FluentDraft.ViewModels
             ClearHistoryCommand = new RelayCommand(async () => await ClearHistory());
             CopyHistoryItemCommand = new RelayCommand<TranscriptionItem?>(item => { if (item != null) CopyHistoryItem(item); });
             PlayHistoryItemCommand = new RelayCommand<TranscriptionItem?>(item => { if (item != null) PlayHistoryItem(item); });
-            
+
             SelectAllHistoryCommand = new RelayCommand(SelectAllHistory);
             DeselectAllHistoryCommand = new RelayCommand(DeselectAllHistory);
             CopySelectedHistoryCommand = new RelayCommand(CopySelectedHistory);
-            ToggleHistoryItemExpandCommand = new RelayCommand<TranscriptionItem>(item => 
+            ToggleHistoryItemExpandCommand = new RelayCommand<TranscriptionItem>(item =>
             {
                 if (item != null) item.IsExpanded = !item.IsExpanded;
             });
@@ -296,7 +296,7 @@ namespace FluentDraft.ViewModels
             DismissUpdateCommand = new RelayCommand(DismissUpdate);
 
             ManualInsertCommand = new RelayCommand(ExecuteManualInsert);
-            ProcessTextActionCommand = new RelayCommand(() => 
+            ProcessTextActionCommand = new RelayCommand(() =>
             {
                 if (IsAutoInsertEnabled) CopyLastTranscription();
                 else ExecuteManualInsert();
@@ -319,7 +319,7 @@ namespace FluentDraft.ViewModels
             {
                 var elapsed = DateTime.Now - _recordingStartTime;
                 RecordingTimeDisplay = $"{elapsed.TotalSeconds:F1}s".Replace(".", ",");
-                
+
                 if (elapsed.TotalSeconds >= MaxRecordingSeconds)
                 {
                     _logger.LogInfo($"Recording limit reached ({MaxRecordingSeconds}s). Auto-stopping.");
@@ -332,7 +332,7 @@ namespace FluentDraft.ViewModels
 
         public void Receive(SettingsChangedMessage message)
         {
-            System.Windows.Application.Current.Dispatcher.Invoke(() => 
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
                 _ = LoadSettingsAsync();
             });
@@ -387,45 +387,45 @@ namespace FluentDraft.ViewModels
 
         public void Receive(UpdateAvailableMessage message)
         {
-             System.Windows.Application.Current.Dispatcher.Invoke(() => 
-             {
-                 _pendingUpdateInfo = message.Update;
-                 UpdateNotificationTitle = $"New version {message.Update.TargetFullRelease.Version} available";
-                 IsUpdateNotificationVisible = true;
-                 IsUpdateDownloading = true; // Started download in background
-                 UpdateProgress = 0;
-                 UpdateNotificationButtonText = "Update"; // Will wait if clicked
-                 IsUpdateReadyToInstall = false;
-             });
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                _pendingUpdateInfo = message.Update;
+                UpdateNotificationTitle = $"New version {message.Update.TargetFullRelease.Version} available";
+                IsUpdateNotificationVisible = true;
+                IsUpdateDownloading = true; // Started download in background
+                UpdateProgress = 0;
+                UpdateNotificationButtonText = "Update"; // Will wait if clicked
+                IsUpdateReadyToInstall = false;
+            });
         }
 
         public void Receive(UpdateProgressMessage message)
         {
-             System.Windows.Application.Current.Dispatcher.Invoke(() => 
-             {
-                 UpdateProgress = message.Progress;
-                 // If user hasn't dismissed, they see the bar filling
-             });
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                UpdateProgress = message.Progress;
+                // If user hasn't dismissed, they see the bar filling
+            });
         }
 
         public void Receive(UpdateReadyMessage message)
         {
-             System.Windows.Application.Current.Dispatcher.Invoke(() => 
-             {
-                 _pendingUpdateInfo = message.Update;
-                 IsUpdateDownloading = false;
-                 IsUpdateReadyToInstall = true;
-                 UpdateNotificationButtonText = "Restart";
-                 UpdateProgress = 100;
-                 
-                 // If notification was dismissed (Later), we *could* show it again?
-                 // Or just let Settings handle it.
-                 // Let's bring it back if it was dismissed, or just update text if visible.
-                 if (IsUpdateNotificationVisible)
-                 {
-                     UpdateNotificationTitle = $"Version {message.Update.TargetFullRelease.Version} ready to install";
-                 }
-             });
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                _pendingUpdateInfo = message.Update;
+                IsUpdateDownloading = false;
+                IsUpdateReadyToInstall = true;
+                UpdateNotificationButtonText = "Restart";
+                UpdateProgress = 100;
+
+                // If notification was dismissed (Later), we *could* show it again?
+                // Or just let Settings handle it.
+                // Let's bring it back if it was dismissed, or just update text if visible.
+                if (IsUpdateNotificationVisible)
+                {
+                    UpdateNotificationTitle = $"Version {message.Update.TargetFullRelease.Version} ready to install";
+                }
+            });
         }
 
         private void ExecuteUpdateNow()
@@ -459,7 +459,7 @@ namespace FluentDraft.ViewModels
             {
                 System.Windows.Clipboard.SetText(LastTranscription);
                 _logger.LogInfo("Copied to clipboard.");
-                
+
                 IsCopiedNotificationVisible = true;
                 Task.Delay(1500).ContinueWith(_ => IsCopiedNotificationVisible = false);
             }
@@ -468,18 +468,18 @@ namespace FluentDraft.ViewModels
         private void CancelProcessing()
         {
             _recordingTimer?.Stop();
-            
+
             if (_audioRecorder.IsRecording)
             {
                 _audioRecorder.StopRecordingAsync();
                 _logger.LogInfo("Recording cancelled by user.");
             }
-            
+
             _processingCts?.Cancel();
             IsProcessing = false;
             UiState = "None";
             Status = "Cancelled";
-            _ = Task.Delay(2000).ContinueWith(_ => 
+            _ = Task.Delay(2000).ContinueWith(_ =>
             {
                 if (UiState == "None") Status = "Ready";
             }, TaskScheduler.FromCurrentSynchronizationContext());
@@ -489,15 +489,15 @@ namespace FluentDraft.ViewModels
         {
             // if (System.Windows.MessageBox.Show("This will reset your AI Session ID.\nThe model will 'forget' previous context encoded in the user ID (if any).\nContinue?", "Reset Session", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
             // {
-                _chatSessionId = Guid.NewGuid().ToString();
-                
-                var settings = await _settingsService.LoadSettingsAsync();
-                settings.ChatSessionId = _chatSessionId;
-                await _settingsService.SaveSettingsAsync(settings);
-                
-                _logger.LogInfo($"Chat Session ID reset to: {_chatSessionId}");
-                Status = "Session Reset";
-                _ = Task.Delay(2000).ContinueWith(_ => Status = "Ready");
+            _chatSessionId = Guid.NewGuid().ToString();
+
+            var settings = await _settingsService.LoadSettingsAsync();
+            settings.ChatSessionId = _chatSessionId;
+            await _settingsService.SaveSettingsAsync(settings);
+
+            _logger.LogInfo($"Chat Session ID reset to: {_chatSessionId}");
+            Status = "Session Reset";
+            _ = Task.Delay(2000).ContinueWith(_ => Status = "Ready");
             // }
         }
 
@@ -508,11 +508,11 @@ namespace FluentDraft.ViewModels
             try
             {
                 var settings = await _settingsService.LoadSettingsAsync();
-                
+
                 if (settings.Providers != null)
                 {
                     Providers = new ObservableCollection<ProviderProfile>(settings.Providers);
-                    
+
                     SelectedTranscriptionProfile = Providers.FirstOrDefault(p => p.Id == settings.SelectedTranscriptionProfileId) ?? Providers.FirstOrDefault(p => p.IsTranscriptionEnabled);
                     SelectedRefinementProfile = Providers.FirstOrDefault(p => p.Id == settings.SelectedRefinementProfileId) ?? Providers.FirstOrDefault(p => p.IsRefinementEnabled);
                 }
@@ -526,7 +526,7 @@ namespace FluentDraft.ViewModels
                 IsAlwaysOnTop = settings.IsAlwaysOnTop;
                 CloseToTray = settings.CloseToTray;
                 IsPostProcessingEnabled = settings.IsPostProcessingEnabled;
-                PostProcessingPrompt = settings.PostProcessingPrompt; 
+                PostProcessingPrompt = settings.PostProcessingPrompt;
                 PlaySoundOnRecord = settings.PlaySoundOnRecord;
                 PauseMediaOnRecording = settings.PauseMediaOnRecording;
                 ActivationMode = settings.ActivationMode;
@@ -545,7 +545,7 @@ namespace FluentDraft.ViewModels
                 _currentHotkeyCodes = settings.HotkeyCodes ?? new List<int> { 0x14 };
                 UpdateHotkeyDisplay();
                 _hotkeyManager.SetMonitoredKeys(_currentHotkeyCodes);
-                
+
                 RefreshFilteredCollections();
             }
             finally
@@ -559,38 +559,38 @@ namespace FluentDraft.ViewModels
 
         public async Task SaveSettingsAsync()
         {
-             if (_isLoadingSettings) return;
+            if (_isLoadingSettings) return;
 
-             var settings = await _settingsService.LoadSettingsAsync(); 
-             
-             if (Providers != null) settings.Providers = Providers.ToList(); 
-             settings.SelectedTranscriptionProfileId = SelectedTranscriptionProfile?.Id;
-             settings.SelectedRefinementProfileId = SelectedRefinementProfile?.Id;
-             if (RefinementPresets != null) settings.RefinementPresets = RefinementPresets.ToList();
-             settings.SelectedRefinementPresetId = SelectedRefinementPreset?.Id;
-             
-             settings.IsPostProcessingEnabled = IsPostProcessingEnabled;
-             settings.IsAlwaysOnTop = IsAlwaysOnTop;
-             settings.HotkeyCodes = _currentHotkeyCodes;
-             settings.CloseToTray = CloseToTray;
-             settings.ActivationMode = ActivationMode;
-             settings.PlaySoundOnRecord = PlaySoundOnRecord;
-             settings.PauseMediaOnRecording = PauseMediaOnRecording;
-             settings.TextInjectionMode = TextInjectionMode;
-             settings.TextInjectionMode = TextInjectionMode;
-             settings.SelectedMicrophone = SelectedAudioDevice;
-             settings.IsAutoInsertEnabled = IsAutoInsertEnabled;
-             
-             await _settingsService.SaveSettingsAsync(settings);
+            var settings = await _settingsService.LoadSettingsAsync();
 
-             // Notify others, but they should also be careful not to re-trigger us
-             WeakReferenceMessenger.Default.Send(new SettingsChangedMessage());
+            if (Providers != null) settings.Providers = Providers.ToList();
+            settings.SelectedTranscriptionProfileId = SelectedTranscriptionProfile?.Id;
+            settings.SelectedRefinementProfileId = SelectedRefinementProfile?.Id;
+            if (RefinementPresets != null) settings.RefinementPresets = RefinementPresets.ToList();
+            settings.SelectedRefinementPresetId = SelectedRefinementPreset?.Id;
+
+            settings.IsPostProcessingEnabled = IsPostProcessingEnabled;
+            settings.IsAlwaysOnTop = IsAlwaysOnTop;
+            settings.HotkeyCodes = _currentHotkeyCodes;
+            settings.CloseToTray = CloseToTray;
+            settings.ActivationMode = ActivationMode;
+            settings.PlaySoundOnRecord = PlaySoundOnRecord;
+            settings.PauseMediaOnRecording = PauseMediaOnRecording;
+            settings.TextInjectionMode = TextInjectionMode;
+            settings.TextInjectionMode = TextInjectionMode;
+            settings.SelectedMicrophone = SelectedAudioDevice;
+            settings.IsAutoInsertEnabled = IsAutoInsertEnabled;
+
+            await _settingsService.SaveSettingsAsync(settings);
+
+            // Notify others, but they should also be careful not to re-trigger us
+            WeakReferenceMessenger.Default.Send(new SettingsChangedMessage());
         }
 
         public void HandleHotkeyInput(Key key)
         {
             if (!IsRecordingHotkey) return;
-            
+
             // ... Logic same as before ...
             // Wait, does MainViewModel DO hotkey recording? 
             // The logic was in SettingsWindow previously, but bound to MainViewModel.
@@ -598,12 +598,12 @@ namespace FluentDraft.ViewModels
             // Main Window usually doesn't record hotkeys?
             // If the user wants to set hotkey, they go to Settings.
             // So MainViewModel probably doesn't need HandleHotkeyInput anymore!
-            
+
             // BUT: StartNewHotkeyCapture command exists.
             // If there's no UI for it in Main Window, we can remove it.
             // Usually hotkey setting is in Settings.
         }
-        
+
         // Removing HandleHotkeyInput and StartNewHotkeyCapture as they belong to SettingsViewModel now.
         // Unless Main Window has a Quick Hotkey Set button? unlikely.
 
@@ -637,27 +637,27 @@ namespace FluentDraft.ViewModels
         }
 
         // ... (Remaining Recording/Processing methods identical to before) ...
-        
+
         private async void OnHotkeyDown()
         {
-             // ... Same as before ...
-             if (ActivationMode == 0) // Tap to Talk
-             {
-                 if (_audioRecorder.IsRecording)
-                 {
-                     await StopAndProcessInternal();
-                 }
-                 else
-                 {
-                     if (IsProcessing) return;
-                     await StartRecordingInternal();
-                 }
-             }
-             else // Push to Talk
-             {
-                 if (_audioRecorder.IsRecording || IsProcessing) return;
-                 await StartRecordingInternal();
-             }
+            // ... Same as before ...
+            if (ActivationMode == 0) // Tap to Talk
+            {
+                if (_audioRecorder.IsRecording)
+                {
+                    await StopAndProcessInternal();
+                }
+                else
+                {
+                    if (IsProcessing) return;
+                    await StartRecordingInternal();
+                }
+            }
+            else // Push to Talk
+            {
+                if (_audioRecorder.IsRecording || IsProcessing) return;
+                await StartRecordingInternal();
+            }
         }
 
         private async Task StartRecordingInternal()
@@ -681,7 +681,7 @@ namespace FluentDraft.ViewModels
             LastTranscription = "";
             _recordingStartTime = DateTime.Now;
             _recordingTimer?.Start();
-            
+
             _targetWindowHandle = _systemControl.GetForegroundWindowHandle();
             _logger.LogInfo($"Captured target window handle: {_targetWindowHandle}");
 
@@ -715,7 +715,7 @@ namespace FluentDraft.ViewModels
 
             _logger.LogInfo("Recording stopped, processing...");
             await _audioRecorder.StopRecordingAsync();
-            
+
             await PlaySoundAsync("stop.wav");
 
             if (PauseMediaOnRecording && _mediaWasPausedByUs)
@@ -723,17 +723,17 @@ namespace FluentDraft.ViewModels
                 await _systemControl.ResumeMediaAsync();
                 _mediaWasPausedByUs = false;
             }
-            
+
             _recordingTimer?.Stop();
-            
+
             if (wasAutoStopped) Status = $"Limit ({MaxRecordingSeconds}s)";
-            
+
             _processingStartTime = DateTime.Now;
             UiState = "Transcribing";
             Status = "Transcribing...";
 
             _processingCts = new CancellationTokenSource();
-            
+
             try
             {
                 var filePath = _audioRecorder.GetRecordedFilePath();
@@ -754,33 +754,33 @@ namespace FluentDraft.ViewModels
 
                 var profile = SelectedTranscriptionProfile;
                 if (profile == null) throw new Exception("No transcription provider selected.");
-                
+
                 string endpoint = profile.BaseUrl;
                 string key = profile.ApiKey;
                 string model = profile.TranscriptionModel;
 
                 var text = await _transcriptionService.TranscribeAsync(filePath, key, endpoint, model);
-                
+
                 if (_processingCts.Token.IsCancellationRequested) return;
 
                 if (IsPostProcessingEnabled && SelectedRefinementPreset != null)
                 {
                     Status = "Refining...";
-                    
+
                     var refProfile = Providers.FirstOrDefault(p => p.Id == SelectedRefinementPreset.ProfileId);
                     if (refProfile != null)
                     {
                         string rEndpoint = refProfile.BaseUrl.TrimEnd('/');
-                        if (!rEndpoint.EndsWith("/chat/completions", StringComparison.OrdinalIgnoreCase)) 
+                        if (!rEndpoint.EndsWith("/chat/completions", StringComparison.OrdinalIgnoreCase))
                         {
                             rEndpoint += "/chat/completions";
                         }
-                       
-                        var refModel = !string.IsNullOrEmpty(SelectedRefinementPreset.Model) 
-                            ? SelectedRefinementPreset.Model 
+
+                        var refModel = !string.IsNullOrEmpty(SelectedRefinementPreset.Model)
+                            ? SelectedRefinementPreset.Model
                             : refProfile.RefinementModel;
                         var prompt = SelectedRefinementPreset.SystemPrompt;
-                       
+
                         text = await _textProcessor.ProcessTextAsync(text, prompt, refProfile.ApiKey, rEndpoint, refModel, _chatSessionId);
                     }
                 }
@@ -802,7 +802,7 @@ namespace FluentDraft.ViewModels
                     _logger.LogInfo("Auto-insert disabled. Waiting for user action.");
                 }
 
-                _ = Task.Delay(3000).ContinueWith(_ => 
+                _ = Task.Delay(3000).ContinueWith(_ =>
                 {
                     if (UiState == "Done")
                     {
@@ -836,17 +836,17 @@ namespace FluentDraft.ViewModels
             System.Windows.Application.Current.Dispatcher.Invoke(() => HistoryItems.Insert(0, item));
         }
 
-         private async Task DeleteHistoryItem(TranscriptionItem item)
+        private async Task DeleteHistoryItem(TranscriptionItem item)
         {
-             await _historyService.DeleteAsync(item);
+            await _historyService.DeleteAsync(item);
             HistoryItems.Remove(item);
-             HasSelectedItems = HistoryItems.Any(i => i.IsSelected);
+            HasSelectedItems = HistoryItems.Any(i => i.IsSelected);
         }
         private async Task ClearHistory()
         {
             await _historyService.ClearAsync();
             HistoryItems.Clear();
-             HasSelectedItems = false;
+            HasSelectedItems = false;
         }
 
         private async void ExecuteManualInsert()
@@ -862,65 +862,65 @@ namespace FluentDraft.ViewModels
             }
             else
             {
-                 // Fallback if handle invalid? Maybe just copy?
-                 // Or try to inject anyway (might go to self if active)
-                 // But wait, if user clicked, self IS active.
-                 // So we must have a handle.
-                 
+                // Fallback if handle invalid? Maybe just copy?
+                // Or try to inject anyway (might go to self if active)
+                // But wait, if user clicked, self IS active.
+                // So we must have a handle.
+
                 System.Windows.MessageBox.Show("Target window lost. Copied to clipboard instead.");
                 CopyLastTranscription();
             }
         }
-        
+
         partial void OnIsAutoInsertEnabledChanged(bool value) => _ = SaveSettingsAsync();
 
         private void CopyHistoryItem(TranscriptionItem item)
         {
-            if(!string.IsNullOrEmpty(item.Text)) System.Windows.Clipboard.SetText(item.Text);
+            if (!string.IsNullOrEmpty(item.Text)) System.Windows.Clipboard.SetText(item.Text);
         }
         private void PlayHistoryItem(TranscriptionItem item)
         {
-             if(File.Exists(item.AudioFilePath))
+            if (File.Exists(item.AudioFilePath))
             {
-                Task.Run(() => 
+                Task.Run(() =>
                 {
                     using var player = new System.Media.SoundPlayer(item.AudioFilePath);
                     player.Play();
                 });
             }
         }
-        
+
         private void SelectAllHistory()
         {
-            foreach(var item in HistoryItems) item.IsSelected = true;
+            foreach (var item in HistoryItems) item.IsSelected = true;
             OnPropertyChanged(nameof(HasSelectedItems));
         }
         private void DeselectAllHistory()
         {
-            foreach(var item in HistoryItems) item.IsSelected = false;
-             OnPropertyChanged(nameof(HasSelectedItems));
+            foreach (var item in HistoryItems) item.IsSelected = false;
+            OnPropertyChanged(nameof(HasSelectedItems));
         }
         private void CopySelectedHistory()
         {
             var selected = HistoryItems.Where(i => i.IsSelected).Select(i => i.Text);
-            if(selected.Any())
+            if (selected.Any())
             {
-                 System.Windows.Clipboard.SetText(string.Join(Environment.NewLine + Environment.NewLine, selected));
+                System.Windows.Clipboard.SetText(string.Join(Environment.NewLine + Environment.NewLine, selected));
             }
         }
 
         private async void InitializeHistory()
         {
             var items = await _historyService.GetHistoryAsync();
-             HistoryItems = new ObservableCollection<TranscriptionItem>(items);
-             foreach(var item in HistoryItems)
-             {
-                 item.PropertyChanged += (s, e) => 
-                 {
-                     if(e.PropertyName == nameof(TranscriptionItem.IsSelected))
+            HistoryItems = new ObservableCollection<TranscriptionItem>(items);
+            foreach (var item in HistoryItems)
+            {
+                item.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == nameof(TranscriptionItem.IsSelected))
                         OnPropertyChanged(nameof(HasSelectedItems));
-                 };
-             }
+                };
+            }
         }
 
         private async Task PlaySoundAsync(string fileName)
@@ -931,7 +931,7 @@ namespace FluentDraft.ViewModels
                 var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", fileName);
                 if (File.Exists(path))
                 {
-                    await Task.Run(() => 
+                    await Task.Run(() =>
                     {
                         using var player = new System.Media.SoundPlayer(path);
                         player.PlaySync();
@@ -949,39 +949,39 @@ namespace FluentDraft.ViewModels
             VolumeLevel = e;
             if (_audioRecorder.IsRecording)
             {
-                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                 {
-                     var rand = new Random();
-                     foreach (var bar in AudioWaves)
-                     {
-                         var targetHeight = (VolumeLevel * 300) * (rand.NextDouble() * 0.5 + 0.5); 
-                         targetHeight = Math.Max(3, Math.Min(40, targetHeight));
-                         bar.Height = targetHeight;
-                     }
-                 });
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var rand = new Random();
+                    foreach (var bar in AudioWaves)
+                    {
+                        var targetHeight = (VolumeLevel * 300) * (rand.NextDouble() * 0.5 + 0.5);
+                        targetHeight = Math.Max(3, Math.Min(40, targetHeight));
+                        bar.Height = targetHeight;
+                    }
+                });
             }
             else
             {
-                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                 {
-                     foreach (var bar in AudioWaves) bar.Height = 3;
-                 });
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    foreach (var bar in AudioWaves) bar.Height = 3;
+                });
             }
         }
 
         private void LoadAudioDevices()
         {
-             var devices = _audioDeviceService.GetRecordingDevices();
-             AudioDevices.Clear();
-             foreach(var (n, name) in devices)
-             {
-                 AudioDevices.Add(new AudioDeviceModel { DeviceNumber = n, ProductName = name });
-             }
+            var devices = _audioDeviceService.GetRecordingDevices();
+            AudioDevices.Clear();
+            foreach (var (n, name) in devices)
+            {
+                AudioDevices.Add(new AudioDeviceModel { DeviceNumber = n, ProductName = name });
+            }
         }
 
         private void OpenSettingsWindow()
         {
-             IsSettingsVisible = true;
+            IsSettingsVisible = true;
         }
 
         private void CloseSettingsWindow()

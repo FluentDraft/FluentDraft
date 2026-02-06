@@ -13,7 +13,7 @@ namespace FluentDraft.Services.Implementations
     public partial class LocalizationService : ObservableObject, ILocalizationService
     {
         private readonly ISettingsService _settingsService;
-        
+
         [ObservableProperty]
         private string _currentLanguageCode = "en";
 
@@ -42,7 +42,7 @@ namespace FluentDraft.Services.Implementations
         public async void SetLanguage(string code)
         {
             if (string.IsNullOrEmpty(code)) code = "en";
-            
+
             var lang = AvailableLanguages.FirstOrDefault(l => l.Code == code);
             if (lang == null)
             {
@@ -52,29 +52,29 @@ namespace FluentDraft.Services.Implementations
             // Load ResourceDictionary
             var dict = new ResourceDictionary();
             string source = $"pack://application:,,,/FluentDraft;component/Resources/Languages/Strings.{code}.xaml";
-            
+
             // Fallback to English if file not found (though simple string concat implies we expect it)
             if (code == "en")
             {
                 source = "pack://application:,,,/FluentDraft;component/Resources/Languages/Strings.xaml";
             }
-            
-            try 
+
+            try
             {
                 dict.Source = new Uri(source);
-                
+
                 var appResources = Application.Current.Resources;
                 var oldDict = appResources.MergedDictionaries.FirstOrDefault(d => d.Source != null && d.Source.OriginalString.Contains("/Strings."));
-                
+
                 if (oldDict != null)
                 {
                     appResources.MergedDictionaries.Remove(oldDict);
                 }
-                
+
                 appResources.MergedDictionaries.Add(dict);
-                
+
                 CurrentLanguageCode = code;
-                
+
                 // Persist if changed
                 var settings = await _settingsService.LoadSettingsAsync();
                 if (settings.LanguageCode != code)

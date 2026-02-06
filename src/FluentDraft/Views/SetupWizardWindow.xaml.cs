@@ -10,7 +10,7 @@ namespace FluentDraft.Views
         {
             InitializeComponent();
             DataContext = viewModel;
-            viewModel.OnRequestClose += () => 
+            viewModel.OnRequestClose += () =>
             {
                 DialogResult = true;
                 Close();

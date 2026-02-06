@@ -70,7 +70,7 @@ namespace FluentDraft.Services.Implementations
                 _waveIn?.StopRecording();
                 _isRecording = false;
                 _logger.LogInfo("Recording stop requested.");
-                
+
                 if (_stopTcs != null)
                 {
                     await _stopTcs.Task;
@@ -102,7 +102,7 @@ namespace FluentDraft.Services.Implementations
                     if (sample32 < 0) sample32 = -sample32;
                     if (sample32 > max) max = sample32;
                 }
-                
+
                 _volumeLevel = max;
                 VolumeChanged?.Invoke(max);
             }

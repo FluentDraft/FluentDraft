@@ -19,7 +19,7 @@ namespace FluentDraft.Views
             DataContext = viewModel;
             _serviceProvider = serviceProvider;
             PreviewKeyDown += MainWindow_KeyDown;
-            
+
             // Subscribe to ViewModel property changes
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
@@ -47,13 +47,13 @@ namespace FluentDraft.Views
                 // Use DI to resolve SettingsWindow (and its ViewModel)
                 _settingsWindow = Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<SettingsWindow>(_serviceProvider);
                 _settingsWindow.Owner = this;
-                _settingsWindow.Closed += (s, args) => 
-                { 
-                    _settingsWindow = null; 
+                _settingsWindow.Closed += (s, args) =>
+                {
+                    _settingsWindow = null;
                     if (DataContext is MainViewModel mainVm) mainVm.IsSettingsVisible = false;
                 };
             }
-            
+
             _settingsWindow?.Show();
             _settingsWindow?.Activate();
         }

@@ -49,7 +49,7 @@ namespace FluentDraft
 
                 // Velopack MUST be the first thing to run - it handles update installation
                 VelopackApp.Build().Run();
-            
+
                 // Now start the WPF application normally
                 App app = new();
                 app.InitializeComponent();
@@ -64,15 +64,15 @@ namespace FluentDraft
         public App()
         {
             // Catch unhandled exceptions
-            AppDomain.CurrentDomain.UnhandledException += (s, e) => 
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {
                 MessageBox.Show($"Unhandled Error: {e.ExceptionObject}");
             };
-            
+
             this.DispatcherUnhandledException += (s, e) =>
             {
-                    MessageBox.Show($"UI Error: {e.Exception.Message}");
-                    e.Handled = true;
+                MessageBox.Show($"UI Error: {e.Exception.Message}");
+                e.Handled = true;
             };
         }
 
@@ -83,7 +83,7 @@ namespace FluentDraft
 
             // Settings
             services.AddSingleton<ISecureStorageService, SecureStorageService>();
-            
+
             services.AddDbContextFactory<Data.FluentDraftDbContext>();
             services.AddSingleton<ISettingsService, SqliteSettingsService>();
 
@@ -92,7 +92,7 @@ namespace FluentDraft
             services.AddSingleton<IAudioRecorder, NAudioRecorder>();
             services.AddSingleton<IInputInjector, WindowsInputInjector>();
             services.AddSingleton<ILocalizationService, LocalizationService>();
-            
+
             // Transcription Providers
             services.AddSingleton<ITranscriptionService, OpenAiCompatibleTranscriptionService>();
 
@@ -123,11 +123,11 @@ namespace FluentDraft
             // Show Splash Screen
             var splashScreen = new FluentDraft.Views.SplashScreen();
             splashScreen.Show();
-            
+
             // Allow UI to render
             await Task.Delay(100);
 
-            try 
+            try
             {
                 // Initialize Services (moved from Constructor)
                 ServiceCollection services = new ServiceCollection();
@@ -135,7 +135,7 @@ namespace FluentDraft
                 ServiceProvider = services.BuildServiceProvider();
 
                 var settingsService = ServiceProvider.GetRequiredService<ISettingsService>();
-                
+
                 // Initialize LocalizationService to ensure resources are loaded
                 ServiceProvider.GetRequiredService<ILocalizationService>();
 
@@ -149,9 +149,9 @@ namespace FluentDraft
                 }
 
                 // Check for updates in background
-                Task.Run(async () => 
+                Task.Run(async () =>
                 {
-                    try 
+                    try
                     {
                         var updateService = ServiceProvider.GetRequiredService<IUpdateService>();
                         var update = await updateService.CheckForUpdatesAsync();
@@ -160,7 +160,7 @@ namespace FluentDraft
                             // Notify UI that update is available
                             WeakReferenceMessenger.Default.Send(new UpdateAvailableMessage(update));
 
-                            await updateService.DownloadUpdateAsync(update, (progress) => 
+                            await updateService.DownloadUpdateAsync(update, (progress) =>
                             {
                                 WeakReferenceMessenger.Default.Send(new UpdateProgressMessage(progress));
                             });
@@ -177,7 +177,7 @@ namespace FluentDraft
 
                 // Check if we have valid providers (with API keys)
                 bool hasValidProviders = settings.Providers?.Any(p => !string.IsNullOrWhiteSpace(p.ApiKey)) == true;
-                
+
                 if (hasValidProviders && !settings.IsSetupCompleted)
                 {
                     settings.IsSetupCompleted = true;
@@ -190,9 +190,9 @@ namespace FluentDraft
                     settings.ChatSessionId = Guid.NewGuid().ToString();
                     await settingsService.SaveSettingsAsync(settings); // Save immediately
                 }
-                else if (settings.IsSetupCompleted) 
+                else if (settings.IsSetupCompleted)
                 {
-                     if (hasValidProviders) await settingsService.SaveSettingsAsync(settings);
+                    if (hasValidProviders) await settingsService.SaveSettingsAsync(settings);
                 }
 
                 // Only show wizard if BOTH: flag is false AND no valid providers exist
@@ -201,7 +201,7 @@ namespace FluentDraft
                 {
                     var wizard = ServiceProvider.GetRequiredService<SetupWizardWindow>();
                     try { splashScreen.Close(); } catch { } // Close splash before showing wizard dialog
-                    
+
                     if (wizard.ShowDialog() == true)
                     {
                         var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
@@ -219,7 +219,7 @@ namespace FluentDraft
                     var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
                     Application.Current.MainWindow = mainWindow;
                     mainWindow.Show();
-                    
+
                     try { splashScreen.Close(); } catch { } // Close splash after main window is ready
 
                     // Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
@@ -254,13 +254,16 @@ namespace FluentDraft
         private static class WindowsNative
         {
             [DllImport("user32.dll")]
+            [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
             [return: MarshalAs(UnmanagedType.Bool)]
             public static extern bool SetForegroundWindow(IntPtr hWnd);
 
             [DllImport("user32.dll")]
+            [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
             public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-            
-            [DllImport("user32.dll", SetLastError = true)]
+
+            [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+            [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
             public static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
 
             public const int SW_RESTORE = 9;

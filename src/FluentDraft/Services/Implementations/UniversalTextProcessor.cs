@@ -67,13 +67,13 @@ namespace FluentDraft.Services.Implementations
 
             // Remove <think>...</think> blocks common in reasoning models (DeepSeek, Qwen)
             content = System.Text.RegularExpressions.Regex.Replace(content, @"<think>.*?</think>", "", System.Text.RegularExpressions.RegexOptions.Singleline).Trim();
-            
+
             return content;
         }
 
         public async Task<System.Collections.Generic.IEnumerable<string>> GetAvailableModelsAsync(string apiKey, string baseUrl)
         {
-            if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(baseUrl)) 
+            if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(baseUrl))
                 return new System.Collections.Generic.List<string>();
 
             // Adjust base URL to point to /models if it points to /chat/completions
@@ -99,7 +99,7 @@ namespace FluentDraft.Services.Implementations
 
                 var json = await response.Content.ReadAsStringAsync();
                 using var doc = JsonDocument.Parse(json);
-                
+
                 var models = new System.Collections.Generic.List<string>();
                 if (doc.RootElement.TryGetProperty("data", out var data))
                 {
@@ -111,7 +111,7 @@ namespace FluentDraft.Services.Implementations
                         }
                     }
                 }
-                
+
                 return models;
             }
             catch

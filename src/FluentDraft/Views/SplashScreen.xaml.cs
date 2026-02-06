@@ -27,7 +27,7 @@ namespace FluentDraft.Views
             };
 
             fadeOut.Completed += (s, e) => Close();
-            
+
             this.BeginAnimation(UIElement.OpacityProperty, fadeOut);
         }
     }

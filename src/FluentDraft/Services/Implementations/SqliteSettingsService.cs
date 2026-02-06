@@ -24,12 +24,12 @@ namespace FluentDraft.Services.Implementations
             _contextFactory = contextFactory;
             _secureStorage = secureStorage;
             _logger = logger;
-            
+
             // Ensure DB is created
             using var context = _contextFactory.CreateDbContext();
             context.Database.EnsureCreated();
         }
-        
+
         private bool _isMigrated = false;
 
         public async Task<AppSettings> LoadSettingsAsync()
@@ -37,11 +37,11 @@ namespace FluentDraft.Services.Implementations
             await EnsureMigratedAsync();
 
             var settings = new AppSettings();
-            
+
             try
             {
                 using var context = await _contextFactory.CreateDbContextAsync();
-                
+
                 // Load Key-Value Settings
                 var kvps = await context.AppSettings.ToListAsync();
                 foreach (var kvp in kvps)
@@ -99,7 +99,7 @@ namespace FluentDraft.Services.Implementations
                 // But deleting removed ones is tricky without tracking.
                 // Let's use a full replacement strategy for simplicity or tracked entities if possible.
                 // Since we are disconnected, full replacement of collection is easiest for small lists.
-                
+
                 context.ProviderProfiles.RemoveRange(context.ProviderProfiles);
                 context.ProviderProfiles.AddRange(settings.Providers.Select(MapToEntity));
 
@@ -152,9 +152,9 @@ namespace FluentDraft.Services.Implementations
                 case nameof(AppSettings.SelectedTranscriptionProfileId): if (Guid.TryParse(value, out var g1)) settings.SelectedTranscriptionProfileId = g1; break;
                 case nameof(AppSettings.SelectedRefinementProfileId): if (Guid.TryParse(value, out var g2)) settings.SelectedRefinementProfileId = g2; break;
                 case nameof(AppSettings.SelectedRefinementPresetId): if (Guid.TryParse(value, out var g3)) settings.SelectedRefinementPresetId = g3; break;
-                case nameof(AppSettings.HotkeyCodes): 
-                    if (!string.IsNullOrEmpty(value)) 
-                        settings.HotkeyCodes = value.Split(',').Select(int.Parse).ToList(); 
+                case nameof(AppSettings.HotkeyCodes):
+                    if (!string.IsNullOrEmpty(value))
+                        settings.HotkeyCodes = value.Split(',').Select(int.Parse).ToList();
                     break;
             }
         }
@@ -175,14 +175,14 @@ namespace FluentDraft.Services.Implementations
                     if (System.IO.File.Exists(jsonPath))
                     {
                         _logger.LogInfo("Migrating settings from JSON to SQLite...");
-                        try 
+                        try
                         {
                             var json = await System.IO.File.ReadAllTextAsync(jsonPath);
                             var oldSettings = System.Text.Json.JsonSerializer.Deserialize<AppSettings>(json);
                             if (oldSettings != null)
                             {
                                 await SaveSettingsAsync(oldSettings);
-                                
+
                                 // Rename old file
                                 System.IO.File.Move(jsonPath, jsonPath + ".bak");
                                 _logger.LogInfo("Settings migrated successfully.");

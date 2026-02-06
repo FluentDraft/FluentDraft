@@ -11,7 +11,7 @@ namespace FluentDraft.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string status = value?.ToString() ?? "";
-            
+
             if (status.StartsWith("Recording")) return Brushes.Red;
             if (status.StartsWith("Transcribing")) return Brushes.Yellow;
             if (status.StartsWith("Typing")) return Brushes.LightBlue;

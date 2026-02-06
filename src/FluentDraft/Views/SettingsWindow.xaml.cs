@@ -29,11 +29,11 @@ namespace FluentDraft.Views
         {
             var wizard = _serviceProvider.GetService(typeof(SetupWizardWindow)) as Window;
             if (wizard == null) return;
-            
+
             wizard.Owner = this;
             if (wizard.ShowDialog() == true)
             {
-               // Wizard completed
+                // Wizard completed
             }
         }
 

@@ -21,8 +21,8 @@ namespace FluentDraft.ViewModels
         private readonly FluentDraft.Utils.GlobalHotkeyManager _hotkeyManager;
 
         public SetupWizardViewModel(
-            ISettingsService settingsService, 
-            ITranscriptionService transcriptionService, 
+            ISettingsService settingsService,
+            ITranscriptionService transcriptionService,
             ITextProcessorService textProcessorService,
             IAudioRecorder audioRecorder,
             FluentDraft.Utils.GlobalHotkeyManager hotkeyManager)
@@ -36,7 +36,7 @@ namespace FluentDraft.ViewModels
             // Defaults
             SelectedProviderType = "OpenAI";
             BaseUrl = "https://api.openai.com/v1";
-            
+
             // Silence warnings
             _selectedTranscriptionModel = "whisper-1"; // Temp default until fetched
             _selectedRefinementModel = "gpt-3.5-turbo"; // Temp default until fetched
@@ -85,7 +85,7 @@ namespace FluentDraft.ViewModels
         private async Task ConnectAsync()
         {
             if (string.IsNullOrWhiteSpace(ApiKey)) { ConnectionStatus = "API Key is required"; return; }
-            
+
             IsConnecting = true;
             ConnectionStatus = "Connecting...";
 
@@ -99,13 +99,13 @@ namespace FluentDraft.ViewModels
                     var textModels = models.Where(m => !m.Contains("whisper", StringComparison.OrdinalIgnoreCase)).ToList();
 
                     // Fallback if no specific "whisper" model found (unlikely for compliant providers, but safe)
-                    if (!audioModels.Any()) audioModels = models.ToList(); 
+                    if (!audioModels.Any()) audioModels = models.ToList();
                     // Fallback if no text models (e.g. only whisper available?)
                     if (!textModels.Any()) textModels = models.ToList();
 
                     AvailableTranscriptionModels = new ObservableCollection<string>(audioModels);
                     AvailableRefinementModels = new ObservableCollection<string>(textModels);
-                    
+
                     // Auto-select smart defaults
                     SelectedTranscriptionModel = audioModels.FirstOrDefault(m => m.Contains("large") || m.Contains("turbo")) ?? audioModels.First();
                     SelectedRefinementModel = textModels.FirstOrDefault(m => m.Contains("gpt-4") || m.Contains("llama-3.1-70b") || m.Contains("llama3-70b")) ?? textModels.First();
@@ -140,14 +140,14 @@ namespace FluentDraft.ViewModels
         [RelayCommand]
         private void StartHotkeyCapture()
         {
-             HotkeyDisplay = "Press key...";
-             IsRecordingHotkey = true;
+            HotkeyDisplay = "Press key...";
+            IsRecordingHotkey = true;
         }
 
         public void HandleHotkeyInput(System.Windows.Input.Key key)
         {
             if (!IsRecordingHotkey) return;
-            
+
             // Simple logic for single key capture for wizard simplicity
             int vk = System.Windows.Input.KeyInterop.VirtualKeyFromKey(key);
             if (vk != 0)
@@ -167,15 +167,15 @@ namespace FluentDraft.ViewModels
                 // Stop
                 IsRecordingTest = false;
                 TestRecordingStatus = "Processing...";
-                
-                try 
+
+                try
                 {
                     await _audioRecorder.StopRecordingAsync();
                     var file = _audioRecorder.GetRecordedFilePath();
-                    if (string.IsNullOrEmpty(file) || !File.Exists(file)) 
+                    if (string.IsNullOrEmpty(file) || !File.Exists(file))
                     {
-                         TestRecordingStatus = "Error: No audio recorded";
-                         return;
+                        TestRecordingStatus = "Error: No audio recorded";
+                        return;
                     }
 
                     // 1. Transcribe
@@ -207,7 +207,7 @@ namespace FluentDraft.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    TestRecordingStatus =$"Error: {ex.Message}";
+                    TestRecordingStatus = $"Error: {ex.Message}";
                 }
             }
             else
@@ -224,9 +224,9 @@ namespace FluentDraft.ViewModels
         {
             // Save everything
             var settings = await _settingsService.LoadSettingsAsync();
-            
+
             // Check for existing provider with same API key and BaseUrl to avoid duplicates
-            var existingProvider = settings.Providers.FirstOrDefault(p => 
+            var existingProvider = settings.Providers.FirstOrDefault(p =>
                 p.ApiKey == ApiKey && p.BaseUrl == BaseUrl);
 
             ProviderProfile profileToUse;
@@ -261,7 +261,7 @@ namespace FluentDraft.ViewModels
 
             settings.SelectedTranscriptionProfileId = profileToUse.Id;
             settings.SelectedRefinementProfileId = profileToUse.Id;
-            
+
             // Update presets with selected model
             foreach (var preset in settings.RefinementPresets)
             {
@@ -272,7 +272,7 @@ namespace FluentDraft.ViewModels
             // Save Hotkey (if changed from default, it's already set in manager but need to save to settings)
             // For now, assuming GlobalHotkeyManager works, but we should update AppSettings hotkeys too
             // ... (Simple implementation: Wizard sets manager, manager should notify update or we assume single key)
-            
+
             settings.IsSetupCompleted = true;
             await _settingsService.SaveSettingsAsync(settings);
 
