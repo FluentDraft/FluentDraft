@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.7.0] - 2026-02-06
+
+### ✨ What's New
+- **Data Persistence**: We've completely overhauled how the app stores data. Your settings and recordings are now saved in a secure system folder, ensuring they are never lost when you update the application.
+- **Enhanced Security**: API keys are now fully encrypted on your device, adding an extra layer of protection for your credentials.
+- **Automatic Migration**: The app will automatically move your existing settings and recordings to the new secure location when you first launch this version.
+
+### ⚡ Improvements
+- Improved application stability and data loading performance.
+
 ## [1.6.0] - 2026-02-03
 
 ### ✨ What's New
