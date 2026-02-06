@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.7.4] - 2026-02-06
+### ✨ What's New
+- **Native Fluent Splash Screen**: Added a beautiful, fast-loading splash screen that matches the modern Fluent design of Windows. It provides immediate feedback when you launch the app, making the startup experience feel smoother and more polished.
+
 ## [1.7.3] - 2026-02-06
 ### 🐛 Bug Fixes
 - **Installer**: Ensure sound files are correctly tracked in git and included in the release.
