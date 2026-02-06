@@ -24,7 +24,8 @@ namespace FluentDraft.Services.Implementations
         public NAudioRecorder(ILoggingService logger)
         {
             _logger = logger;
-            _audioDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "audio");
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            _audioDir = Path.Combine(appData, "FluentDraft", "Audio");
             if (!Directory.Exists(_audioDir))
             {
                 Directory.CreateDirectory(_audioDir);

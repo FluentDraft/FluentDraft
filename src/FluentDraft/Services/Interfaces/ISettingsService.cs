@@ -1,9 +1,11 @@
+using System.Threading.Tasks;
+
 namespace FluentDraft.Services.Interfaces
 {
     public interface ISettingsService
     {
-        AppSettings LoadSettings();
-        void SaveSettings(AppSettings settings);
+        Task<AppSettings> LoadSettingsAsync();
+        Task SaveSettingsAsync(AppSettings settings);
     }
 
     public class AppSettings

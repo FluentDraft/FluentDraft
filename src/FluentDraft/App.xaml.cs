@@ -71,7 +71,10 @@ namespace FluentDraft
             services.AddSingleton<ILoggingService, FileLogger>();
 
             // Settings
-            services.AddSingleton<ISettingsService, JsonSettingsService>();
+            services.AddSingleton<ISecureStorageService, SecureStorageService>();
+            
+            services.AddDbContextFactory<Data.FluentDraftDbContext>();
+            services.AddSingleton<ISettingsService, SqliteSettingsService>();
 
             // Services
             services.AddSingleton<AudioDeviceService>();
@@ -88,7 +91,7 @@ namespace FluentDraft
 
             // Utils
             services.AddSingleton<GlobalHotkeyManager>();
-            services.AddSingleton<IHistoryService, JSONHistoryService>();
+            services.AddSingleton<IHistoryService, SqliteHistoryService>();
             services.AddSingleton<IUpdateService, UpdateService>();
 
             // ViewModels
@@ -102,7 +105,7 @@ namespace FluentDraft
             services.AddTransient<SetupWizardWindow>();
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             // Single Instance Check
             _mutex = new Mutex(true, MutexName, out bool createdNew);
@@ -135,7 +138,7 @@ namespace FluentDraft
                 // Initialize LocalizationService to ensure resources are loaded
                 ServiceProvider.GetRequiredService<ILocalizationService>();
 
-                var settings = settingsService.LoadSettings();
+                var settings = await settingsService.LoadSettingsAsync();
 
                 // Initialize Logger Debug Mode
                 var logger = ServiceProvider.GetRequiredService<ILoggingService>();
@@ -184,11 +187,11 @@ namespace FluentDraft
                 if (string.IsNullOrEmpty(settings.ChatSessionId))
                 {
                     settings.ChatSessionId = Guid.NewGuid().ToString();
-                    settingsService.SaveSettings(settings); // Save immediately
+                    await settingsService.SaveSettingsAsync(settings); // Save immediately
                 }
                 else if (settings.IsSetupCompleted) 
                 {
-                     if (hasValidProviders) settingsService.SaveSettings(settings);
+                     if (hasValidProviders) await settingsService.SaveSettingsAsync(settings);
                 }
 
                 // Only show wizard if BOTH: flag is false AND no valid providers exist

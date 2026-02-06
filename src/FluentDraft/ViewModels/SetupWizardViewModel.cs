@@ -220,10 +220,10 @@ namespace FluentDraft.ViewModels
         }
 
         [RelayCommand]
-        private void CompleteSetup()
+        private async Task CompleteSetup()
         {
             // Save everything
-            var settings = _settingsService.LoadSettings();
+            var settings = await _settingsService.LoadSettingsAsync();
             
             // Check for existing provider with same API key and BaseUrl to avoid duplicates
             var existingProvider = settings.Providers.FirstOrDefault(p => 
@@ -274,7 +274,7 @@ namespace FluentDraft.ViewModels
             // ... (Simple implementation: Wizard sets manager, manager should notify update or we assume single key)
             
             settings.IsSetupCompleted = true;
-            _settingsService.SaveSettings(settings);
+            await _settingsService.SaveSettingsAsync(settings);
 
             // Close Window (Handled by View)
             OnRequestClose?.Invoke();

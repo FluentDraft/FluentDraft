@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -29,11 +30,16 @@ namespace FluentDraft.Services.Implementations
         public LocalizationService(ISettingsService settingsService)
         {
             _settingsService = settingsService;
-            var settings = _settingsService.LoadSettings();
+            _ = InitializeAsync();
+        }
+
+        private async Task InitializeAsync()
+        {
+            var settings = await _settingsService.LoadSettingsAsync();
             SetLanguage(settings.LanguageCode);
         }
 
-        public void SetLanguage(string code)
+        public async void SetLanguage(string code)
         {
             if (string.IsNullOrEmpty(code)) code = "en";
             
@@ -70,11 +76,11 @@ namespace FluentDraft.Services.Implementations
                 CurrentLanguageCode = code;
                 
                 // Persist if changed
-                var settings = _settingsService.LoadSettings();
+                var settings = await _settingsService.LoadSettingsAsync();
                 if (settings.LanguageCode != code)
                 {
                     settings.LanguageCode = code;
-                    _settingsService.SaveSettings(settings);
+                    await _settingsService.SaveSettingsAsync(settings);
                 }
             }
             catch (Exception ex)

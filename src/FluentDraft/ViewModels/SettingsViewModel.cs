@@ -89,7 +89,7 @@ namespace FluentDraft.ViewModels
         partial void OnIsHotkeySuppressionEnabledChanged(bool value)
         {
             _hotkeyManager.IsSuppressionEnabled = value;
-            SaveSettings();
+            _ = SaveSettingsAsync();
         }
 
         [ObservableProperty]
@@ -123,7 +123,7 @@ namespace FluentDraft.ViewModels
              {
                  fileLogger.SetDebugMode(value);
              }
-             SaveSettings();
+             _ = SaveSettingsAsync();
         }
 
         // Update Properties
@@ -154,7 +154,7 @@ namespace FluentDraft.ViewModels
                 {
                     _localizationService.SetLanguage(value);
                     OnPropertyChanged();
-                    SaveSettings(); // Persist immediately
+                    _ = SaveSettingsAsync(); // Persist immediately
                 }
             }
         }
@@ -219,7 +219,7 @@ namespace FluentDraft.ViewModels
                 });
             });
 
-            LoadSettings();
+            _ = LoadSettingsAsync();
 
             // Hotkey listening logic needs to pass key events here or handle centrally
             // Ideally MainWindow handles PreviewKeyDown and calls ViewModel.HandleHotkeyInput
@@ -228,7 +228,7 @@ namespace FluentDraft.ViewModels
         private void RequestCloseSettings()
         {
             if (!ValidateSettings()) return;
-            SaveSettings();
+            _ = SaveSettingsAsync();
             
             // Close window
             foreach (System.Windows.Window window in System.Windows.Application.Current.Windows)
@@ -272,7 +272,7 @@ namespace FluentDraft.ViewModels
             newProfile.PropertyChanged += OnItemChanged;
             Providers.Add(newProfile);
             SelectedEditingProvider = newProfile; // Auto-select for editing
-            SaveSettings(); // Auto-save on add? Or wait? MainViewModel did save.
+            _ = SaveSettingsAsync(); // Auto-save on add? Or wait? MainViewModel did save.
             RefreshFilteredCollections();
         }
 
@@ -291,7 +291,7 @@ namespace FluentDraft.ViewModels
                 preset.ProfileId = null;
             }
             
-            SaveSettings();
+            _ = SaveSettingsAsync();
             RefreshFilteredCollections();
         }
 
@@ -308,7 +308,7 @@ namespace FluentDraft.ViewModels
             newPreset.PropertyChanged += OnItemChanged;
             RefinementPresets.Add(newPreset);
             SelectedEditingPreset = newPreset;
-            SaveSettings();
+            _ = SaveSettingsAsync();
         }
 
         private void RemovePreset(RefinementPreset? preset)
@@ -318,7 +318,7 @@ namespace FluentDraft.ViewModels
             RefinementPresets.Remove(preset);
             if (SelectedEditingPreset == preset) SelectedEditingPreset = null;
             if (SelectedRefinementPreset == preset) SelectedRefinementPreset = RefinementPresets.FirstOrDefault();
-            SaveSettings();
+            _ = SaveSettingsAsync();
         }
 
         private void ResetPreset(RefinementPreset? preset)
@@ -337,7 +337,7 @@ namespace FluentDraft.ViewModels
                     preset.Model = profile.RefinementModel;
                 }
 
-                SaveSettings();
+                _ = SaveSettingsAsync();
             }
         }
 
@@ -394,7 +394,7 @@ namespace FluentDraft.ViewModels
                 System.Windows.MessageBox.Show($"Connection failed:\n{ex.Message}", "Test Connection", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
             // Explicit save to persist validation status
-            SaveSettings();
+            _ = SaveSettingsAsync();
         }
 
         private void UpdateProfileModels(ProviderProfile profile, List<string> models)
@@ -428,9 +428,9 @@ namespace FluentDraft.ViewModels
             OnPropertyChanged(nameof(AvailableRefinementProfiles));
         }
 
-        private void LoadSettings()
+        private async Task LoadSettingsAsync()
         {
-            var settings = _settingsService.LoadSettings();
+            var settings = await _settingsService.LoadSettingsAsync();
             
             // Note: Migration logic is implicitly handled if we load the same way.
             // Simplified here: assuming settings are already valid or we default them.
@@ -516,14 +516,14 @@ namespace FluentDraft.ViewModels
 
         private void OnItemChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            SaveSettings();
+            _ = SaveSettingsAsync();
             if (e.PropertyName == nameof(ProviderProfile.Type))
             {
                 OnPropertyChanged(nameof(IsApiKeyUrlSupported));
             }
         }
 
-        public void SaveSettings()
+        public async Task SaveSettingsAsync()
         {
             var settings = new AppSettings
             {
@@ -547,7 +547,7 @@ namespace FluentDraft.ViewModels
                 MaxRecordingSeconds = MaxRecordingSeconds,
                 IsDebugModeEnabled = IsDebugModeEnabled
             };
-            _settingsService.SaveSettings(settings);
+            await _settingsService.SaveSettingsAsync(settings);
             
             // Notify other components
             WeakReferenceMessenger.Default.Send(new SettingsChangedMessage());
@@ -567,8 +567,8 @@ namespace FluentDraft.ViewModels
                 if (!_currentHotkeyCodes.Contains(vk)) _currentHotkeyCodes.Add(vk);
                 IsRecordingHotkey = false;
                 UpdateHotkeyDisplay();
-                // SaveSettings(); // Do we save immediately on change? MainViewModel did.
-                SaveSettings(); 
+                // SaveSettingsAsync(); // Do we save immediately on change? MainViewModel did.
+                _ = SaveSettingsAsync(); 
             }
             else
             {
@@ -577,7 +577,7 @@ namespace FluentDraft.ViewModels
                     _currentHotkeyCodes = new List<int> { vk };
                     IsRecordingHotkey = false;
                     UpdateHotkeyDisplay();
-                    SaveSettings();
+                    _ = SaveSettingsAsync();
                 }
                 else
                 {
@@ -744,18 +744,18 @@ namespace FluentDraft.ViewModels
         }
 
         // Property Change Handlers to trigger saves
-        partial void OnIsAlwaysOnTopChanged(bool value) => SaveSettings();
-        partial void OnIsPostProcessingEnabledChanged(bool value) => SaveSettings();
-        partial void OnActivationModeChanged(int value) => SaveSettings();
-        partial void OnTextInjectionModeChanged(int value) => SaveSettings();
-        partial void OnPlaySoundOnRecordChanged(bool value) => SaveSettings();
-        partial void OnCloseToTrayChanged(bool value) => SaveSettings();
-        partial void OnPauseMediaOnRecordingChanged(bool value) => SaveSettings();
-        partial void OnSelectedAudioDeviceChanged(int value) => SaveSettings();
+        partial void OnIsAlwaysOnTopChanged(bool value) => _ = SaveSettingsAsync();
+        partial void OnIsPostProcessingEnabledChanged(bool value) => _ = SaveSettingsAsync();
+        partial void OnActivationModeChanged(int value) => _ = SaveSettingsAsync();
+        partial void OnTextInjectionModeChanged(int value) => _ = SaveSettingsAsync();
+        partial void OnPlaySoundOnRecordChanged(bool value) => _ = SaveSettingsAsync();
+        partial void OnCloseToTrayChanged(bool value) => _ = SaveSettingsAsync();
+        partial void OnPauseMediaOnRecordingChanged(bool value) => _ = SaveSettingsAsync();
+        partial void OnSelectedAudioDeviceChanged(int value) => _ = SaveSettingsAsync();
         
-        partial void OnSelectedTranscriptionProfileChanged(ProviderProfile? value) => SaveSettings();
-        partial void OnSelectedRefinementProfileChanged(ProviderProfile? value) => SaveSettings();
-        partial void OnSelectedRefinementPresetChanged(RefinementPreset? value) => SaveSettings();
+        partial void OnSelectedTranscriptionProfileChanged(ProviderProfile? value) => _ = SaveSettingsAsync();
+        partial void OnSelectedRefinementProfileChanged(ProviderProfile? value) => _ = SaveSettingsAsync();
+        partial void OnSelectedRefinementPresetChanged(RefinementPreset? value) => _ = SaveSettingsAsync();
         
 
         

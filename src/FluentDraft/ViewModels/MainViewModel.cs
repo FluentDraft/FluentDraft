@@ -309,7 +309,7 @@ namespace FluentDraft.ViewModels
                 else ExecuteManualInsert();
             });
 
-            LoadSettings();
+            _ = LoadSettingsAsync();
             InitializeHistory();
 
             _hotkeyManager.HotkeyDown += OnHotkeyDown;
@@ -341,7 +341,7 @@ namespace FluentDraft.ViewModels
         {
             System.Windows.Application.Current.Dispatcher.Invoke(() => 
             {
-                LoadSettings();
+                _ = LoadSettingsAsync();
             });
         }
 
@@ -492,15 +492,15 @@ namespace FluentDraft.ViewModels
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private void ResetChatSession()
+        private async void ResetChatSession()
         {
             // if (System.Windows.MessageBox.Show("This will reset your AI Session ID.\nThe model will 'forget' previous context encoded in the user ID (if any).\nContinue?", "Reset Session", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
             // {
                 _chatSessionId = Guid.NewGuid().ToString();
                 
-                var settings = _settingsService.LoadSettings();
+                var settings = await _settingsService.LoadSettingsAsync();
                 settings.ChatSessionId = _chatSessionId;
-                _settingsService.SaveSettings(settings);
+                await _settingsService.SaveSettingsAsync(settings);
                 
                 _logger.LogInfo($"Chat Session ID reset to: {_chatSessionId}");
                 Status = "Session Reset";
@@ -508,13 +508,13 @@ namespace FluentDraft.ViewModels
             // }
         }
 
-        private void LoadSettings()
+        private async Task LoadSettingsAsync()
         {
             if (_isLoadingSettings) return; // Prevent re-entry if already loading (though unlikely to be recursive here directly)
             _isLoadingSettings = true;
             try
             {
-                var settings = _settingsService.LoadSettings();
+                var settings = await _settingsService.LoadSettingsAsync();
                 
                 if (settings.Providers != null)
                 {
@@ -564,11 +564,11 @@ namespace FluentDraft.ViewModels
 
         private bool _isLoadingSettings = false;
 
-        public void SaveSettings()
+        public async Task SaveSettingsAsync()
         {
              if (_isLoadingSettings) return;
 
-             var settings = _settingsService.LoadSettings(); 
+             var settings = await _settingsService.LoadSettingsAsync(); 
              
              if (Providers != null) settings.Providers = Providers.ToList(); 
              settings.SelectedTranscriptionProfileId = SelectedTranscriptionProfile?.Id;
@@ -588,7 +588,7 @@ namespace FluentDraft.ViewModels
              settings.SelectedMicrophone = SelectedAudioDevice;
              settings.IsAutoInsertEnabled = IsAutoInsertEnabled;
              
-             _settingsService.SaveSettings(settings);
+             await _settingsService.SaveSettingsAsync(settings);
 
              // Notify others, but they should also be careful not to re-trigger us
              WeakReferenceMessenger.Default.Send(new SettingsChangedMessage());
@@ -631,10 +631,10 @@ namespace FluentDraft.ViewModels
             UpdateInstructionText();
         }
 
-        partial void OnIsAlwaysOnTopChanged(bool value) => SaveSettings();
+        partial void OnIsAlwaysOnTopChanged(bool value) => _ = SaveSettingsAsync();
         // Other operational settings saving...
-        partial void OnSelectedTranscriptionProfileChanged(ProviderProfile? value) => SaveSettings();
-        partial void OnSelectedRefinementPresetChanged(RefinementPreset? value) => SaveSettings();
+        partial void OnSelectedTranscriptionProfileChanged(ProviderProfile? value) => _ = SaveSettingsAsync();
+        partial void OnSelectedRefinementPresetChanged(RefinementPreset? value) => _ = SaveSettingsAsync();
         // ... if Main UI allows changing these.
 
         private void RefreshFilteredCollections()
@@ -879,7 +879,7 @@ namespace FluentDraft.ViewModels
             }
         }
         
-        partial void OnIsAutoInsertEnabledChanged(bool value) => SaveSettings();
+        partial void OnIsAutoInsertEnabledChanged(bool value) => _ = SaveSettingsAsync();
 
         private void CopyHistoryItem(TranscriptionItem item)
         {

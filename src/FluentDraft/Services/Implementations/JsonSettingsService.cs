@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 using FluentDraft.Services.Interfaces;
+using System.Threading.Tasks;
 
 namespace FluentDraft.Services.Implementations
 {
@@ -19,13 +20,13 @@ namespace FluentDraft.Services.Implementations
             _settingsFile = Path.Combine(folder, "settings.json");
         }
 
-        public AppSettings LoadSettings()
+        public async Task<AppSettings> LoadSettingsAsync()
         {
             try
             {
                 if (File.Exists(_settingsFile))
                 {
-                    var json = File.ReadAllText(_settingsFile);
+                    var json = await File.ReadAllTextAsync(_settingsFile);
                     var settings = JsonSerializer.Deserialize<AppSettings>(json);
                     return settings ?? new AppSettings();
                 }
@@ -38,12 +39,12 @@ namespace FluentDraft.Services.Implementations
             return new AppSettings();
         }
 
-        public void SaveSettings(AppSettings settings)
+        public async Task SaveSettingsAsync(AppSettings settings)
         {
             try
             {
                 var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(_settingsFile, json);
+                await File.WriteAllTextAsync(_settingsFile, json);
                 _logger.LogInfo("Settings saved successfully.");
             }
             catch (Exception ex)
