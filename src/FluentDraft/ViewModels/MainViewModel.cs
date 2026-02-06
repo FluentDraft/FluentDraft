@@ -180,14 +180,7 @@ namespace FluentDraft.ViewModels
 
         partial void OnUiStateChanged(string value)
         {
-            if (value == "Listening")
-            {
-                TrayIconSource = "/Icons/recording_icon.ico";
-            }
-            else
-            {
-                TrayIconSource = "/Icons/app_icon.ico";
-            }
+            TrayIconSource = value == "Listening" ? "/Icons/recording_icon.ico" : "/Icons/app_icon.ico";
         }
 
 
@@ -889,7 +882,11 @@ namespace FluentDraft.ViewModels
         {
              if(File.Exists(item.AudioFilePath))
             {
-                Task.Run(() => new System.Media.SoundPlayer(item.AudioFilePath).Play());
+                Task.Run(() => 
+                {
+                    using var player = new System.Media.SoundPlayer(item.AudioFilePath);
+                    player.Play();
+                });
             }
         }
         
@@ -934,7 +931,11 @@ namespace FluentDraft.ViewModels
                 var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds", fileName);
                 if (File.Exists(path))
                 {
-                    await Task.Run(() => new System.Media.SoundPlayer(path).PlaySync());
+                    await Task.Run(() => 
+                    {
+                        using var player = new System.Media.SoundPlayer(path);
+                        player.PlaySync();
+                    });
                 }
             }
             catch (Exception ex)

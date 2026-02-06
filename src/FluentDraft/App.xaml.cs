@@ -19,7 +19,6 @@ namespace FluentDraft
     public partial class App : Application
     {
         public IServiceProvider ServiceProvider { get; private set; } = null!;
-        private static Mutex? _mutex = null;
         private const string MutexName = "Global\\FluentDraft_Mutex";
 
         /// <summary>
@@ -31,6 +30,23 @@ namespace FluentDraft
         {
             try
             {
+                // Single Instance Check
+                using var mutex = new Mutex(true, MutexName, out bool createdNew);
+                if (!createdNew)
+                {
+                    if (OperatingSystem.IsWindows())
+                    {
+                        // App is already running! Bring it to front.
+                        IntPtr hWnd = WindowsNative.FindWindow(null, "FluentDraft");
+                        if (hWnd != IntPtr.Zero)
+                        {
+                            WindowsNative.ShowWindow(hWnd, WindowsNative.SW_RESTORE);
+                            WindowsNative.SetForegroundWindow(hWnd);
+                        }
+                    }
+                    return; // Exit immediately
+                }
+
                 // Velopack MUST be the first thing to run - it handles update installation
                 VelopackApp.Build().Run();
             
@@ -44,7 +60,6 @@ namespace FluentDraft
                 MessageBox.Show($"Fatal Error: {ex.Message}");
             }
         }
-
 
         public App()
         {
@@ -103,29 +118,6 @@ namespace FluentDraft
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            // Single Instance Check
-            _mutex = new Mutex(true, MutexName, out bool createdNew);
-            if (!createdNew)
-            {
-                if (OperatingSystem.IsWindows())
-                {
-                    // App is already running! Bring it to front.
-                    IntPtr hWnd = WindowsNative.FindWindow(null, "FluentDraft");
-                    if (hWnd != IntPtr.Zero)
-                    {
-                        WindowsNative.ShowWindow(hWnd, WindowsNative.SW_RESTORE);
-                        WindowsNative.SetForegroundWindow(hWnd);
-                    }
-                }
-                
-                // Release local mutex reference so we don't hold it (though process exit clears it anyway)
-                _mutex.Dispose();
-                _mutex = null;
-                
-                Shutdown();
-                return;
-            }
-
             base.OnStartup(e);
 
             // Show Splash Screen
@@ -246,13 +238,6 @@ namespace FluentDraft
         {
             try
             {
-                if (_mutex != null)
-                {
-                    // If we own the mutex, release it
-                    _mutex.ReleaseMutex();
-                    _mutex.Dispose();
-                }
-
                 if (ServiceProvider is IDisposable disposableProvider)
                 {
                     disposableProvider.Dispose();

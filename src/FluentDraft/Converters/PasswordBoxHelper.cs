@@ -13,18 +13,15 @@ namespace FluentDraft.Converters
 
         private static void OnBoundPasswordChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is PasswordBox box)
+            if (d is PasswordBox box && d.GetValue(BindPasswordProperty) is bool bind && bind)
             {
-                if (d.GetValue(BindPasswordProperty) is bool bind && bind)
+                box.PasswordChanged -= HandlePasswordChanged;
+                var newPassword = e.NewValue as string;
+                if (newPassword != null && box.Password != newPassword)
                 {
-                    box.PasswordChanged -= HandlePasswordChanged;
-                    var newPassword = e.NewValue as string;
-                    if (newPassword != null && box.Password != newPassword)
-                    {
-                        box.Password = newPassword;
-                    }
-                    box.PasswordChanged += HandlePasswordChanged;
+                    box.Password = newPassword;
                 }
+                box.PasswordChanged += HandlePasswordChanged;
             }
         }
 

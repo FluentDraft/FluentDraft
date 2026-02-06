@@ -29,8 +29,8 @@ namespace FluentDraft.Utils
         private const int WM_KEYUP = 0x0101;
         private const int WM_SYSKEYUP = 0x0105;
 
-        private LowLevelKeyboardProc _proc;
-        private IntPtr _hookID = IntPtr.Zero;
+        private readonly LowLevelKeyboardProc _proc;
+        private readonly IntPtr _hookID = IntPtr.Zero;
         private List<int> _monitoredKeys = new List<int> { 0x14 };
         private bool _isPressed = false;
 
@@ -80,21 +80,15 @@ namespace FluentDraft.Utils
                     bool isKeyDown = (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN);
                     bool isKeyUp = (wParam == (IntPtr)WM_KEYUP || wParam == (IntPtr)WM_SYSKEYUP);
 
-                    if (isKeyDown)
+                    if (isKeyDown && !_isPressed)
                     {
-                        if (!_isPressed)
-                        {
-                            _isPressed = true;
-                            HotkeyDown?.Invoke();
-                        }
+                        _isPressed = true;
+                        HotkeyDown?.Invoke();
                     }
-                    else if (isKeyUp)
+                    else if (isKeyUp && _isPressed)
                     {
-                        if (_isPressed)
-                        {
-                            _isPressed = false;
-                            Hotkeyup?.Invoke();
-                        }
+                        _isPressed = false;
+                        Hotkeyup?.Invoke();
                     }
 
                     if (IsSuppressionEnabled)
