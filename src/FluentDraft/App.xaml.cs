@@ -59,10 +59,6 @@ namespace FluentDraft
                     MessageBox.Show($"UI Error: {e.Exception.Message}");
                     e.Handled = true;
             };
-
-            ServiceCollection services = new ServiceCollection();
-            ConfigureServices(services);
-            ServiceProvider = services.BuildServiceProvider();
         }
 
         private void ConfigureServices(ServiceCollection services)
@@ -131,8 +127,21 @@ namespace FluentDraft
             }
 
             base.OnStartup(e);
+
+            // Show Splash Screen
+            var splashScreen = new FluentDraft.Views.SplashScreen();
+            splashScreen.Show();
+            
+            // Allow UI to render
+            await Task.Delay(100);
+
             try 
             {
+                // Initialize Services (moved from Constructor)
+                ServiceCollection services = new ServiceCollection();
+                ConfigureServices(services);
+                ServiceProvider = services.BuildServiceProvider();
+
                 var settingsService = ServiceProvider.GetRequiredService<ISettingsService>();
                 
                 // Initialize LocalizationService to ensure resources are loaded
@@ -195,9 +204,12 @@ namespace FluentDraft
                 }
 
                 // Only show wizard if BOTH: flag is false AND no valid providers exist
+                // Only show wizard if BOTH: flag is false AND no valid providers exist
                 if (!settings.IsSetupCompleted && !hasValidProviders)
                 {
                     var wizard = ServiceProvider.GetRequiredService<SetupWizardWindow>();
+                    try { splashScreen.Close(); } catch { } // Close splash before showing wizard dialog
+                    
                     if (wizard.ShowDialog() == true)
                     {
                         var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
@@ -215,13 +227,18 @@ namespace FluentDraft
                     var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
                     Application.Current.MainWindow = mainWindow;
                     mainWindow.Show();
+                    
+                    try { splashScreen.Close(); } catch { } // Close splash after main window is ready
+
                     // Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
                     Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 }
             }
             catch (Exception ex)
             {
+                try { splashScreen.Close(); } catch { }
                 MessageBox.Show($"Startup Error: {ex}");
+                Shutdown();
             }
         }
 
