@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.7.2] - 2026-02-06
+### 🐛 Bug Fixes
+- **Installer**: Fixed an issue where sound files were filtered out of the final installer package.
+
 ## [1.7.1] - 2026-02-06
 
 ### 🐛 Bug Fixes
