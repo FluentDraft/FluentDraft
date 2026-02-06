@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.7.1] - 2026-02-06
+
+### 🐛 Bug Fixes
+- **Sound Files**: Fixed an issue where sound files (start/stop) were missing from the installation and build output.
+
 ## [1.7.0] - 2026-02-06
 
 ### ✨ What's New
