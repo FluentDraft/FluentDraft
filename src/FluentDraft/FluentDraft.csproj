@@ -13,9 +13,9 @@
     <Description>Global Voice Typing for Windows powered by AI</Description>
     <Copyright>Copyright (c) 2026 FluentDraft Contributors</Copyright>
     <AssemblyTitle>FluentDraft</AssemblyTitle>
-    <Version>1.7.2</Version>
-    <AssemblyVersion>1.7.2.0</AssemblyVersion>
-    <FileVersion>1.7.2.0</FileVersion>
+    <Version>1.7.3</Version>
+    <AssemblyVersion>1.7.3.0</AssemblyVersion>
+    <FileVersion>1.7.3.0</FileVersion>
     <!-- Velopack: Custom Main method entry point -->
     <StartupObject>FluentDraft.App</StartupObject>
   </PropertyGroup>

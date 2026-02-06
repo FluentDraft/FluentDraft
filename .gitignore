@@ -35,8 +35,7 @@ logs/
 settings.json
 build_errors*.txt
 *.wav
-!src/FluentDraft/Sounds/start.wav
-!src/FluentDraft/Sounds/stop.wav
+!src/FluentDraft/Sounds/
 *.mp3
 *.webm
 startup_log.txt

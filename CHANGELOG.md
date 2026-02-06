@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.7.3] - 2026-02-06
+### 🐛 Bug Fixes
+- **Installer**: Ensure sound files are correctly tracked in git and included in the release.
+
 ## [1.7.2] - 2026-02-06
 ### 🐛 Bug Fixes
 - **Installer**: Fixed an issue where sound files were filtered out of the final installer package.
