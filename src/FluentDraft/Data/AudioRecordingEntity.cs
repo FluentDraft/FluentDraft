@@ -12,6 +12,10 @@ namespace FluentDraft.Data
         public TimeSpan Duration { get; set; }
         public DateTime CreatedAt { get; set; }
         public string TranscriptionText { get; set; } = string.Empty;
+        public string? RawTranscription { get; set; } // Stores the initial transcription before refinement
+        public string? TranscriptionModel { get; set; } // Stores the model used for transcription
+        public string? RefinementPresetId { get; set; } // Stores the ID of the preset used for refinement
+        public string? RefinementPresetName { get; set; } // Snapshot of preset name
         public bool IsProcessed { get; set; }
     }
 }

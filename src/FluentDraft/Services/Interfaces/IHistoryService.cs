@@ -8,6 +8,7 @@ namespace FluentDraft.Services.Interfaces
     {
         Task<List<TranscriptionItem>> GetHistoryAsync();
         Task AddAsync(TranscriptionItem item);
+        Task UpdateAsync(TranscriptionItem item);
         Task DeleteAsync(TranscriptionItem item);
         Task ClearAsync();
     }

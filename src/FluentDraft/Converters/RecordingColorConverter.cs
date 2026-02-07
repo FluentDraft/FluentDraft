@@ -43,7 +43,7 @@ namespace FluentDraft.Converters
                 bool isMatch = false;
 
                 if (param == "ListeningVis" && state == "Listening") isMatch = true;
-                else if (param == "TranscribingVis" && state == "Transcribing") isMatch = true;
+                else if (param == "TranscribingVis" && (state == "Transcribing" || state == "Processing")) isMatch = true;
                 else if (param == "DoneVis" && state == "Done") isMatch = true;
                 else if (param == "NoneVis" && (state == "None" || string.IsNullOrEmpty(state))) isMatch = true;
 

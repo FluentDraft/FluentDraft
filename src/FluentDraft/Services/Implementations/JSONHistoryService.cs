@@ -48,6 +48,21 @@ namespace FluentDraft.Services.Implementations
             await SaveAsync();
         }
 
+        public async Task UpdateAsync(TranscriptionItem item)
+        {
+            await GetHistoryAsync();
+            var existing = _cache.Find(x => x.Id == item.Id);
+            if (existing != null)
+            {
+                existing.Text = item.Text;
+                existing.RawText = item.RawText;
+                existing.TranscriptionModel = item.TranscriptionModel;
+                existing.RefinementPresetId = item.RefinementPresetId;
+                existing.RefinementPresetName = item.RefinementPresetName;
+                await SaveAsync();
+            }
+        }
+
         public async Task DeleteAsync(TranscriptionItem item)
         {
             await GetHistoryAsync();

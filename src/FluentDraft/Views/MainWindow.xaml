@@ -313,10 +313,14 @@
                     </ItemsControl>
 
                     <!-- 4. Processing State (Visible if Transcribing) -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Visibility="{Binding UiState, Converter={StaticResource RecordingColorConverter}, ConverterParameter=TranscribingVis}">
-                        <TextBlock Text="Processing..." Foreground="#2193b0" FontSize="14" FontWeight="SemiBold"/>
-                    </StackPanel>
+                    <!-- 4. Processing State (Overlay) -->
+                    <Border Background="#E6121212" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Visibility="{Binding UiState, Converter={StaticResource RecordingColorConverter}, ConverterParameter=TranscribingVis}">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Status}" Foreground="#2193b0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
+                            <TextBlock Text="Please wait..." Foreground="#666" FontSize="11" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
 
                     <!-- 5. Copied Notification Overlay -->
                     <Border Background="#CC000000" CornerRadius="8" Padding="15,8" HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -571,6 +575,12 @@
                                                            TextTrimming="CharacterEllipsis"/>
 
                                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
+                                                    <!-- Preset Name Badge -->
+                                                    <Border Background="#333" CornerRadius="3" Padding="4,1" Margin="0,0,8,0" 
+                                                            Visibility="{Binding RefinementPresetName, Converter={StaticResource RecordingColorConverter}, ConverterParameter=HasTextVis}">
+                                                        <TextBlock Text="{Binding RefinementPresetName}" Foreground="#AAA" FontSize="10"/>
+                                                    </Border>
+                                                    
                                                     <TextBlock Text="{Binding Timestamp, StringFormat=t}" Foreground="#666" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                                     <!-- Expand Icon (Rotates) -->
                                                     <Path x:Name="Arrow" Data="M0,0 L4,4 L8,0" Stroke="#888" StrokeThickness="1.5" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
@@ -584,6 +594,12 @@
                                             <!-- Expanded Details: Full Text + Actions -->
                                             <Grid x:Name="DetailsGrid" Grid.Row="1" Visibility="Collapsed" Margin="24,8,0,0">
                                                  <StackPanel>
+                                                     <!-- Raw Text Preview (Gray) -->
+                                                     <TextBlock Text="{Binding RawText}" 
+                                                                Foreground="Gray" FontStyle="Italic" TextWrapping="Wrap" FontSize="12" Margin="0,0,0,6"
+                                                                Visibility="{Binding ShowRawText, Converter={StaticResource BoolToVis}}"/>
+
+                                                     <!-- Final Text -->
                                                      <TextBlock Text="{Binding Text}" Foreground="#DDD" TextWrapping="Wrap" FontSize="12" Margin="0,0,0,10"/>
                                                      
                                                      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

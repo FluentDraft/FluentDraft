@@ -23,6 +23,41 @@ namespace FluentDraft.Services.Implementations
         {
             _contextFactory = contextFactory;
             _logger = logger;
+            _ = InitializeSchema();
+        }
+
+        private async Task InitializeSchema()
+        {
+            try
+            {
+               using var context = await _contextFactory.CreateDbContextAsync();
+               // Ensure database exists first
+               await context.Database.EnsureCreatedAsync();
+
+               // Patch for new columns if they don't exist
+               var columnsToAdd = new[] 
+               {
+                   ("RawTranscription", "TEXT"),
+                   ("TranscriptionModel", "TEXT"),
+                   ("RefinementPresetId", "TEXT"),
+                   ("RefinementPresetName", "TEXT")
+               };
+
+               foreach (var (col, type) in columnsToAdd)
+               {
+                   try 
+                   {
+                       // This will fail if column exists, which is fine
+                       await context.Database.ExecuteSqlRawAsync($"ALTER TABLE AudioRecordings ADD COLUMN {col} {type}");
+                       _logger.LogInfo($"Added column {col} to AudioRecordings table.");
+                   }
+                   catch { /* Ignore if column exists */ }
+               }
+            }
+            catch (Exception ex)
+            {
+               _logger.LogError("Error initializing schema", ex);
+            }
         }
 
         public async Task<List<TranscriptionItem>> GetHistoryAsync()
@@ -57,6 +92,30 @@ namespace FluentDraft.Services.Implementations
             catch (Exception ex)
             {
                 _logger.LogError("Error adding history item", ex);
+            }
+        }
+
+        public async Task UpdateAsync(TranscriptionItem item)
+        {
+            try
+            {
+                using var context = await _contextFactory.CreateDbContextAsync();
+                var entity = await context.AudioRecordings.FirstOrDefaultAsync(r => r.Id == item.Id);
+                if (entity != null)
+                {
+                    entity.TranscriptionText = item.Text;
+                    entity.RawTranscription = item.RawText;
+                    entity.TranscriptionModel = item.TranscriptionModel;
+                    entity.RefinementPresetId = item.RefinementPresetId;
+                    entity.RefinementPresetName = item.RefinementPresetName;
+                    
+                    context.AudioRecordings.Update(entity);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error updating history item", ex);
             }
         }
 
@@ -180,6 +239,10 @@ namespace FluentDraft.Services.Implementations
             {
                 Id = entity.Id,
                 Text = entity.TranscriptionText,
+                RawText = entity.RawTranscription,
+                TranscriptionModel = entity.TranscriptionModel,
+                RefinementPresetId = entity.RefinementPresetId,
+                RefinementPresetName = entity.RefinementPresetName,
                 AudioFilePath = entity.FilePath,
                 Timestamp = entity.CreatedAt
             };
@@ -191,6 +254,10 @@ namespace FluentDraft.Services.Implementations
             {
                 Id = model.Id,
                 TranscriptionText = model.Text,
+                RawTranscription = model.RawText,
+                TranscriptionModel = model.TranscriptionModel,
+                RefinementPresetId = model.RefinementPresetId,
+                RefinementPresetName = model.RefinementPresetName,
                 FilePath = model.AudioFilePath ?? "",
                 CreatedAt = model.Timestamp,
                 Duration = TimeSpan.Zero, // Not captured in old model, default zero

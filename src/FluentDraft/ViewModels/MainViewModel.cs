@@ -145,6 +145,14 @@ namespace FluentDraft.ViewModels
         [ObservableProperty]
         private bool _isAutoInsertEnabled = true;
 
+
+
+        // Caching State
+        private string _lastRawTranscription = "";
+        private string _lastTranscriptionModel = "";
+        private string _lastAudioFilePath = "";
+        private TranscriptionItem? _currentHistoryItem;
+
         private IntPtr _targetWindowHandle = IntPtr.Zero;
 
         private string _chatSessionId = ""; // Current User/Session ID
@@ -627,7 +635,17 @@ namespace FluentDraft.ViewModels
         partial void OnIsAlwaysOnTopChanged(bool value) => _ = SaveSettingsAsync();
         // Other operational settings saving...
         partial void OnSelectedTranscriptionProfileChanged(ProviderProfile? value) => _ = SaveSettingsAsync();
-        partial void OnSelectedRefinementPresetChanged(RefinementPreset? value) => _ = SaveSettingsAsync();
+
+        partial void OnSelectedRefinementPresetChanged(RefinementPreset? value)
+        {
+            _ = SaveSettingsAsync();
+            if (!string.IsNullOrEmpty(_lastRawTranscription) && !IsProcessing)
+            {
+                 Status = "Starting Refinement...";
+                 UiState = "Processing"; // Immediate visual feedback
+                 _ = ProcessAudioFlow(forceRetranscribe: false);
+            }
+        }
         // ... if Main UI allows changing these.
 
         private void RefreshFilteredCollections()
@@ -730,99 +748,183 @@ namespace FluentDraft.ViewModels
 
             _processingStartTime = DateTime.Now;
             UiState = "Transcribing";
-            Status = "Transcribing...";
+            Status = "Processing...";
 
             _processingCts = new CancellationTokenSource();
 
+            var filePath = _audioRecorder.GetRecordedFilePath();
+            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+            {
+                Status = "Error: No recording";
+                IsProcessing = false;
+                return;
+            }
+
+            if (new FileInfo(filePath).Length < 8192) // Keep short check
+            {
+                Status = "Too short";
+                IsProcessing = false;
+                _ = Task.Delay(1000).ContinueWith(_ => Status = "Ready");
+                return;
+            }
+
+            // Always force retranscribe for new recording
+            await ProcessAudioFlow(forceRetranscribe: true, inputFilePath: filePath, isNewRecording: true);
+        }
+
+        private async Task ProcessAudioFlow(bool forceRetranscribe, string? inputFilePath = null, bool isNewRecording = false)
+        {
+            var filePath = inputFilePath ?? _lastAudioFilePath;
+            if (string.IsNullOrEmpty(filePath)) return;
+
+            IsProcessing = true;
+            _processingCts ??= new CancellationTokenSource();
+
             try
             {
-                var filePath = _audioRecorder.GetRecordedFilePath();
-                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                var transProfile = SelectedTranscriptionProfile;
+                if (transProfile == null) throw new Exception("No transcription provider selected.");
+                
+                string currentModel = transProfile.TranscriptionModel;
+                
+                // --- Step 1: Transcription ---
+                bool needsTranscription = forceRetranscribe || 
+                                          filePath != _lastAudioFilePath || 
+                                          string.IsNullOrEmpty(_lastRawTranscription) ||
+                                          currentModel != _lastTranscriptionModel;
+
+                if (needsTranscription)
                 {
-                    Status = "Error: No recording";
-                    IsProcessing = false;
-                    return;
+                    Status = "Transcribing...";
+                    UiState = "Transcribing";
+                    
+                    string endpoint = transProfile.BaseUrl;
+                    string key = transProfile.ApiKey;
+                    
+                    var text = await _transcriptionService.TranscribeAsync(filePath, key, endpoint, currentModel);
+                    
+                    if (_processingCts.Token.IsCancellationRequested) return;
+
+                    _lastRawTranscription = text;
+                    _lastTranscriptionModel = currentModel;
+                    _lastAudioFilePath = filePath;
+                    
+                    // Create NEW history item for new transcription
+                    _currentHistoryItem = new TranscriptionItem
+                    {
+                        Text = text, // Default to raw
+                        RawText = text,
+                        AudioFilePath = filePath,
+                        TranscriptionModel = currentModel,
+                        Timestamp = DateTime.Now
+                    };
+                    
+                    await _historyService.AddAsync(_currentHistoryItem);
+                    
+                    System.Windows.Application.Current.Dispatcher.Invoke(() => 
+                    {
+                         HistoryItems.Insert(0, _currentHistoryItem);
+                         if (HistoryItems.Count > 50) HistoryItems.Remove(HistoryItems.Last());
+                    });
+                }
+                else
+                {
+                    _logger.LogInfo("Reusing cached raw transcription.");
                 }
 
-                if (new FileInfo(filePath).Length < 8192)
+                // --- Step 2: Refinement ---
+                var finalItem = _currentHistoryItem; // Default to current (raw) item
+                
+                if (IsPostProcessingEnabled && SelectedRefinementPreset != null && !string.IsNullOrEmpty(_lastRawTranscription))
                 {
-                    Status = "Too short";
-                    IsProcessing = false;
-                    _ = Task.Delay(1000).ContinueWith(_ => Status = "Ready");
-                    return;
-                }
+                    Status = $"Refining ({SelectedRefinementPreset.Name})...";
+                    if(UiState != "Transcribing") UiState = "Processing";
 
-                var profile = SelectedTranscriptionProfile;
-                if (profile == null) throw new Exception("No transcription provider selected.");
-
-                string endpoint = profile.BaseUrl;
-                string key = profile.ApiKey;
-                string model = profile.TranscriptionModel;
-
-                var text = await _transcriptionService.TranscribeAsync(filePath, key, endpoint, model);
-
-                if (_processingCts.Token.IsCancellationRequested) return;
-
-                if (IsPostProcessingEnabled && SelectedRefinementPreset != null)
-                {
-                    Status = "Refining...";
-
+                    // Call Refinement Service (Logic extracted from previous code)
+                     // Note: The previous code had specific logic for Profile lookup. 
+                     // I need to replicate that or assume a service handles it.
+                     // The previous code block lines 849-866 did the lookup.
+                     // I will reconstruct it here to be safe and self-contained.
+                     
                     var refProfile = Providers.FirstOrDefault(p => p.Id == SelectedRefinementPreset.ProfileId);
                     if (refProfile != null)
                     {
                         string rEndpoint = refProfile.BaseUrl.TrimEnd('/');
                         if (!rEndpoint.EndsWith("/chat/completions", StringComparison.OrdinalIgnoreCase))
-                        {
                             rEndpoint += "/chat/completions";
-                        }
 
                         var refModel = !string.IsNullOrEmpty(SelectedRefinementPreset.Model)
                             ? SelectedRefinementPreset.Model
                             : refProfile.RefinementModel;
                         var prompt = SelectedRefinementPreset.SystemPrompt;
 
-                        text = await _textProcessor.ProcessTextAsync(text, prompt, refProfile.ApiKey, rEndpoint, refModel, _chatSessionId);
+                        var processedText = await _textProcessor.ProcessTextAsync(_lastRawTranscription, prompt, refProfile.ApiKey, rEndpoint, refModel, _chatSessionId);
+                        
+                        // NEW LOGIC: Create a NEW history item for the refined result
+                        // This preserves the original raw item in history, and adds the refined one on top.
+                        // Or if we just transcribed (isNewRecording), maybe we DO update the item we just added?
+                        // User said: "In history appear new record... main window shows new text... do not edit history".
+                        // Use case: Record -> [Item 1: Raw]. Refine -> [Item 2: Refined].
+                        // If isNewRecording is true, we already added Item 1 (lines 812-825).
+                        // So Refinement should add Item 2.
+                        // Correct.
+                        
+                        var refinedItem = new TranscriptionItem
+                        {
+                            Text = processedText,
+                            RawText = _lastRawTranscription,
+                            AudioFilePath = _lastAudioFilePath,
+                            TranscriptionModel = _lastTranscriptionModel,
+                            RefinementPresetId = SelectedRefinementPreset.Id.ToString(),
+                            RefinementPresetName = SelectedRefinementPreset.Name,
+                            Timestamp = DateTime.Now
+                        };
+                        
+                        await _historyService.AddAsync(refinedItem);
+                        
+                        System.Windows.Application.Current.Dispatcher.Invoke(() => 
+                        {
+                             HistoryItems.Insert(0, refinedItem);
+                             if (HistoryItems.Count > 50) HistoryItems.Remove(HistoryItems.Last());
+                        });
+                        
+                        finalItem = refinedItem;
+                        _currentHistoryItem = refinedItem; // Update reference for subsequent actions
                     }
                 }
 
-                LastTranscription = text;
-                await AddToHistory(text, filePath);
+                LastTranscription = finalItem?.Text ?? "";
                 Status = "Done";
                 UiState = "Done";
-                var processingElapsed = DateTime.Now - _processingStartTime;
-                ProcessingTimeDisplay = $"{processingElapsed.TotalSeconds:F1}s".Replace(".", ",");
-
-                if (IsAutoInsertEnabled)
+                
+                if (IsAutoInsertEnabled && isNewRecording)
                 {
-                    await _inputInjector.TypeTextAsync(text, TextInjectionMode == 1);
+                    await _inputInjector.TypeTextAsync(LastTranscription, TextInjectionMode == 1);
                     _logger.LogInfo("Text injected automatically.");
                 }
-                else
+                
+                if (isNewRecording)
                 {
-                    _logger.LogInfo("Auto-insert disabled. Waiting for user action.");
+                     var processingElapsed = DateTime.Now - _processingStartTime;
+                     ProcessingTimeDisplay = $"{processingElapsed.TotalSeconds:F1}s".Replace(".", ",");
                 }
-
-                _ = Task.Delay(3000).ContinueWith(_ =>
-                {
-                    if (UiState == "Done")
-                    {
-                        UiState = "None";
-                        Status = "Ready";
-                    }
-                });
             }
             catch (Exception ex)
             {
-                _logger.LogError("Flow failed", ex);
                 Status = $"Error: {ex.Message}";
+                _logger.LogError("Processing failed", ex);
+                UiState = "None"; // Reset
             }
             finally
             {
                 IsProcessing = false;
-                _processingCts?.Dispose();
-                _processingCts = null;
+                _ = Task.Delay(3000).ContinueWith(_ => 
+                {
+                    if (Status == "Done") Status = "Ready";
+                }, TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
+
 
         private async Task AddToHistory(string text, string audioPath)
         {
