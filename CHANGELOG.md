@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.8.0] - 2026-02-07
+
+### ✨ What's New
+- **Immutable History**: Every refinement now creates a new entry in your history instead of overwriting the previous one. This lets you compare versions and keep your original raw transcriptions safe.
+- **Refinement Context**: The history list now shows which Preset (e.g., "Summarize", "Fix Grammar") was used for each item, making it easier to track your workflow.
+- **Visual Processing Feedback**: A clear "Processing" overlay now appears when refining text, preventing confusion with the previous result.
+
+### ⚡ Improvements
+- **Build System**: Fixed several internal build issues to ensure smoother future updates.
+- **Performance**: Optimized how history items are added to the list for better responsiveness.
+
 ## [1.7.5] - 2026-02-07
 
 ### 🐛 Bug Fixes
