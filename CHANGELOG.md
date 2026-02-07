@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.5] - 2026-02-07
+
+### 🐛 Bug Fixes
+- **Stability**: Fixed a resource leak that could cause the application to consume more memory over time.
+
+### ⚡ Improvements
+- **Security Policy**: Updated security and vulnerability reporting guidelines.
+
 ## [1.7.4] - 2026-02-06
 ### ✨ What's New
 - **Native Fluent Splash Screen**: Added a beautiful, fast-loading splash screen that matches the modern Fluent design of Windows. It provides immediate feedback when you launch the app, making the startup experience feel smoother and more polished.
