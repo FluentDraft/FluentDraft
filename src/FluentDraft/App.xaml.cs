@@ -175,6 +175,9 @@ namespace FluentDraft
                     }
                 });
 
+                // Show one-time migration notification
+                ShowMigrationNoticeIfNeeded();
+
                 // Check if we have valid providers (with API keys)
                 bool hasValidProviders = settings.Providers?.Any(p => !string.IsNullOrWhiteSpace(p.ApiKey)) == true;
 
@@ -248,6 +251,53 @@ namespace FluentDraft
                 base.OnExit(e);
                 // Aggressive Shutdown to ensure no background threads remain
                 Environment.Exit(0);
+            }
+        }
+
+        /// <summary>
+        /// Shows a one-time notification that FluentDraft has been renamed to Kraw.
+        /// Uses a marker file to ensure it only shows once.
+        /// </summary>
+        private void ShowMigrationNoticeIfNeeded()
+        {
+            try
+            {
+                var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var markerPath = System.IO.Path.Combine(appData, "FluentDraft", ".migration_shown");
+
+                if (System.IO.File.Exists(markerPath)) return;
+
+                // Ensure directory exists
+                var dir = System.IO.Path.GetDirectoryName(markerPath);
+                if (dir != null && !System.IO.Directory.Exists(dir))
+                    System.IO.Directory.CreateDirectory(dir);
+
+                var result = MessageBox.Show(
+                    "FluentDraft has been renamed to Kraw! 🎉\n\n" +
+                    "The project has moved to a new home:\n" +
+                    "github.com/Kraw-Labs/Kraw\n\n" +
+                    "The app will attempt to update automatically.\n" +
+                    "If the automatic update doesn't work, click 'Yes' to open the download page.\n\n" +
+                    "Open download page now?",
+                    "FluentDraft → Kraw",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = "https://github.com/Kraw-Labs/Kraw/releases",
+                        UseShellExecute = true
+                    });
+                }
+
+                // Write marker so we don't show again
+                System.IO.File.WriteAllText(markerPath, DateTime.Now.ToString("o"));
+            }
+            catch
+            {
+                // Non-critical, silently fail
             }
         }
 

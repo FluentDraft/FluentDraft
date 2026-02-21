@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0] - 2026-02-21
+
+### 🔄 Migration
+- **Project Renamed**: FluentDraft has been renamed to **Kraw** and moved to a new repository at [github.com/Kraw-Labs/Kraw](https://github.com/Kraw-Labs/Kraw).
+- **Automatic Update Redirect**: Future updates will be delivered from the new Kraw repository.
+- **What to expect**: After this update, the next version will install the renamed Kraw application with all your settings preserved.
+
 ## [1.8.0] - 2026-02-07
 
 ### ✨ What's New

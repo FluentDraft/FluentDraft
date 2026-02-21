@@ -11,7 +11,7 @@ namespace FluentDraft.Services.Implementations
     /// </summary>
     public class UpdateService : IUpdateService
     {
-        private const string GITHUB_REPO_URL = "https://github.com/FluentDraft/FluentDraft";
+        private const string GITHUB_REPO_URL = "https://github.com/Kraw-Labs/Kraw";
         private readonly ILoggingService _logger;
         private UpdateManager? _updateManager;
 
